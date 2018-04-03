@@ -4,7 +4,7 @@ block content
   div(class='container')
     div(class='card')
       div(class='card-body')
-        form(id='registerForm' action='/bracketCheck' method='post')
+        form(id='registerForm' action='/bracket' method='post')
           p(class='h4 text-center py4') Register
           div(class='form-group')
             label(for='loginName' class='bmd-label-floating') Name
@@ -12,7 +12,7 @@ block content
           div(class='form-group')
             label(for='loginEmail' class='bmd-label-floating') Email
             input(type='text' name='email' id='loginEmail' class='form-control')
-          div(class='form-group')
+          div#screenDiv(class='form-group')
             label(for='loginScreen' class='bmd-label-floating') Screen Name
             input(type='text' name='screen' id='loginScreen' class='form-control')
           div(class='form-group')
@@ -20,4 +20,4 @@ block content
             input(type='text' name='key' id='loginKey' class='form-control')
             span(class='bmd-help') This is the key provided for you in the email sent by Chris
           br
-          button(type='submit' class='btn btn-primary btn-raised') Register
+          button.submitButton(type='submit' class='btn btn-primary btn-raised mx-auto') Make a Bracket!

@@ -4,6 +4,8 @@ block content
   div.container-fluid
     h2.text-center Stanley Cup Playoffs Bracket 2018
     form(id='bracketForm' action='/submit' method='post')
+      input(type='Text' style='display: none;' name='username' value="#{}")
+
       div.row
         div.col.round-one
           div.card
@@ -337,4 +339,4 @@ block content
                 a.dropdown-item 5
                 a.dropdown-item 6
                 a.dropdown-item 7
-      button#submitButton.btn.btn-outline-primary.mx-auto(disabled type='submit') Submit bracket
+      button.submitButton.btn.btn-outline-primary.mx-auto(disabled type='submit') Submit bracket

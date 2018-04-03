@@ -23,11 +23,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
-app.use('/bracketCheck', indexRouter);
-app.get('/bracket', isRegistered, function(req, res) {
-  res.render('bracket');
-});
-
 // TODO this needs to check that a user is completely registered with the system; because it doesn't keep track of a user, we just need to make sure that
 // the user is being redirected from the correct page and that they entered the correct key
 function isRegistered(req, res, next) {

@@ -37,19 +37,18 @@ const Bracket = mongoose.model('Bracket', {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('login', { title: 'Register' });
+  res.render('landing', { title: 'NHL 2018' });
 });
 
-router.post('/bracketCheck', function(req, res, next) {
-  if (req.body.key != 'Chris') {
-
-    // TODO this needs to include an error and you need to include the previous values, and display the error
-    res.redirect('/');
-  } else {
-    res.redirect('/bracket');
-  }
+router.get('/instructions', function(req, res, next) {
+  res.render('instructions', { title: 'NHL 2018' });
 });
 
+router.get('/bracket', function(req, res, next) {
+  res.render('bracket2');
+});
+
+// TODO refactor this into an object that you can just pass into the model as 'payload' or something, not all these fields
 router.post('/submit', function(req, res, next) {
   var newBracket = new Bracket({
       result2_0: req.body['2-0'],
