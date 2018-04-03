@@ -1,0 +1,340 @@
+extends layout
+
+block content
+  div.container-fluid
+    h2.text-center Stanley Cup Playoffs Bracket 2018
+    form(id='bracketForm' action='/submit' method='post')
+      div.row
+        div.col.round-one
+          div.card
+            div.card-body.text-center
+              = "Nashville"
+              br
+              = "Predators"
+          div.card
+            div.card-body.text-center
+              = "Colorado"
+              br
+              = "Avalanche"
+          div.card
+            div.card-body.text-center
+              = "Winnipeg"
+              br
+              = "Jets"
+          div.card
+            div.card-body.text-center
+              = "Minnesota"
+              br
+              = "Wild"
+          div.card
+            div.card-body.text-center
+              = "Vegas"
+              br
+              = "Golden Knights"
+          div.card
+            div.card-body.text-center
+              = "LA"
+              br
+              = "Kings"
+          div.card
+            div.card-body.text-center
+              = "San Jose"
+              br
+              = "Sharks"
+          div.card
+            div.card-body.text-center
+              = "Anaheim"
+              br
+              = "Ducks"
+          div.card
+            div.card-body.text-center
+              = "Boston"
+              br
+              = "Bruins"
+          div.card
+            div.card-body.text-center
+              = "New Jersey"
+              br
+              = "Devils"
+          div.card
+            div.card-body.text-center
+              = "Tampa Bay"
+              br
+              = "Lightning"
+          div.card
+            div.card-body.text-center
+              = "Toronto"
+              br
+              = "Maple Leafs"
+          div.card
+            div.card-body.text-center
+              = "Washington"
+              br
+              = "Capitals"
+          div.card
+            div.card-body.text-center
+              = "Philadelphia"
+              br
+              = "Flyers"
+          div.card
+            div.card-body.text-center
+              = "Pittsburgh"
+              br
+              = "Penguins"
+          div.card
+            div.card-body.text-center
+              = "Columbus"
+              br
+              = "Blue Jackets"
+
+
+        div.col.round-two
+          div.card
+            div.dropdown
+              button.btn.btn-secondary.dropdown-toggle#2-0-text(type='button' data-toggle='dropdown' value='Team') Team
+              input(type='Text' style='display: none;' name='2-0')
+              div.dropdown-menu#2-0-opts
+                a.dropdown-item Nashville
+                a.dropdown-item Colorado
+            = "in"
+            div.dropdown
+              button.btn.btn-secondary.dropdown-toggle#2-1-text(type='button' data-toggle='dropdown' value='#') #
+              input(type='Text' style='display: none;' name='2-1')
+              div.dropdown-menu#2-1-opts
+                a.dropdown-item 4
+                a.dropdown-item 5
+                a.dropdown-item 6
+                a.dropdown-item 7
+          div.card
+            div.dropdown
+              button.btn.btn-secondary.dropdown-toggle#2-2-text(type='button' data-toggle='dropdown' value='Team') Team
+              input(type='Text' style='display: none;' name='2-2')
+              div.dropdown-menu#2-2-opts
+                a.dropdown-item Winnipeg
+                a.dropdown-item Minnesota
+            = "in"
+            div.dropdown
+              button.btn.btn-secondary.dropdown-toggle#2-3-text(type='button' data-toggle='dropdown' value='#') #
+              input(type='Text' style='display: none;' name='2-3')
+              div.dropdown-menu#2-3-opts
+                a.dropdown-item 4
+                a.dropdown-item 5
+                a.dropdown-item 6
+                a.dropdown-item 7
+          div.card
+            div.dropdown
+              button.btn.btn-secondary.dropdown-toggle#2-4-text(type='button' data-toggle='dropdown' value='Team') Team
+              input(type='Text' style='display: none;' name='2-4')
+              div.dropdown-menu#2-4-opts
+                a.dropdown-item Vegas
+                a.dropdown-item LA
+            = "in"
+            div.dropdown
+              button.btn.btn-secondary.dropdown-toggle#2-5-text(type='button' data-toggle='dropdown' value='#') #
+              input(type='Text' style='display: none;' name='2-5')
+              div.dropdown-menu#2-5-opts
+                a.dropdown-item 4
+                a.dropdown-item 5
+                a.dropdown-item 6
+                a.dropdown-item 7
+          div.card
+            div.dropdown
+              button.btn.btn-secondary.dropdown-toggle#2-6-text(type='button' data-toggle='dropdown' value='Team') Team
+              input(type='Text' style='display: none;' name='2-6')
+              div.dropdown-menu#2-6-opts
+                a.dropdown-item San Jose
+                a.dropdown-item Anaheim
+            = "in"
+            div.dropdown
+              button.btn.btn-secondary.dropdown-toggle#2-7-text(type='button' data-toggle='dropdown' value='#') #
+              input(type='Text' style='display: none;' name='2-7')
+              div.dropdown-menu#2-7-opts
+                a.dropdown-item 4
+                a.dropdown-item 5
+                a.dropdown-item 6
+                a.dropdown-item 7
+          div.card
+            div.dropdown
+              button.btn.btn-secondary.dropdown-toggle#2-8-text(type='button' data-toggle='dropdown' value='Team') Team
+              input(type='Text' style='display: none;' name='2-8')
+              div.dropdown-menu#2-8-opts
+                a.dropdown-item Boston
+                a.dropdown-item New Jersey
+            = "in"
+            div.dropdown
+              button.btn.btn-secondary.dropdown-toggle#2-9-text(type='button' data-toggle='dropdown' value='#') #
+              input(type='Text' style='display: none;' name='2-9')
+              div.dropdown-menu#2-9-opts
+                a.dropdown-item 4
+                a.dropdown-item 5
+                a.dropdown-item 6
+                a.dropdown-item 7
+          div.card
+            div.dropdown
+              button.btn.btn-secondary.dropdown-toggle#2-10-text(type='button' data-toggle='dropdown' value='Team') Team
+              input(type='Text' style='display: none;' name='2-10')
+              div.dropdown-menu#2-10-opts
+                a.dropdown-item Tampa Bay
+                a.dropdown-item Toronto
+            = "in"
+            div.dropdown
+              button.btn.btn-secondary.dropdown-toggle#2-11-text(type='button' data-toggle='dropdown' value='#') #
+              input(type='Text' style='display: none;' name='2-11')
+              div.dropdown-menu#2-11-opts
+                a.dropdown-item 4
+                a.dropdown-item 5
+                a.dropdown-item 6
+                a.dropdown-item 7
+          div.card
+            div.dropdown
+              button.btn.btn-secondary.dropdown-toggle#2-12-text(type='button' data-toggle='dropdown' value='Team') Team
+              input(type='Text' style='display: none;' name='2-12')
+              div.dropdown-menu#2-12-opts
+                a.dropdown-item Washington
+                a.dropdown-item Philadelphia
+            = "in"
+            div.dropdown
+              button.btn.btn-secondary.dropdown-toggle#2-13-text(type='button' data-toggle='dropdown' value='#') #
+              input(type='Text' style='display: none;' name='2-13')
+              div.dropdown-menu#2-13-opts
+                a.dropdown-item 4
+                a.dropdown-item 5
+                a.dropdown-item 6
+                a.dropdown-item 7
+          div.card
+            div.dropdown
+              button.btn.btn-secondary.dropdown-toggle#2-14-text(type='button' data-toggle='dropdown' value='Team') Team
+              input(type='Text' style='display: none;' name='2-14')
+              div.dropdown-menu#2-14-opts
+                a.dropdown-item Pittsburgh
+                a.dropdown-item Columbus
+            = "in"
+            div.dropdown
+              button.btn.btn-secondary.dropdown-toggle#2-15-text(type='button' data-toggle='dropdown' value='#') #
+              input(type='Text' style='display: none;' name='2-15')
+              div.dropdown-menu#2-15-opts
+                a.dropdown-item 4
+                a.dropdown-item 5
+                a.dropdown-item 6
+                a.dropdown-item 7
+
+
+        div.col.round-three
+          div.card
+            div.dropdown
+              button.btn.btn-secondary.dropdown-toggle.disabled#3-0-text(type='button' data-toggle='dropdown' value='Team') Team
+              input(type='Text' style='display: none;' name='3-0')
+              div.dropdown-menu#3-0-opts
+                a.dropdown-item
+                a.dropdown-item
+            = "in"
+            div.dropdown
+              button.btn.btn-secondary.dropdown-toggle.disabled#3-1-text(type='button' data-toggle='dropdown' value='#') #
+              input(type='Text' style='display: none;' name='3-1')
+              div.dropdown-menu#3-1-opts
+                a.dropdown-item 4
+                a.dropdown-item 5
+                a.dropdown-item 6
+                a.dropdown-item 7
+          div.card
+            div.dropdown
+              button.btn.btn-secondary.dropdown-toggle.disabled#3-2-text(type='button' data-toggle='dropdown' value='Team') Team
+              input(type='Text' style='display: none;' name='3-2')
+              div.dropdown-menu#3-2-opts
+                a.dropdown-item
+                a.dropdown-item
+            = "in"
+            div.dropdown
+              button.btn.btn-secondary.dropdown-toggle.disabled#3-3-text(type='button' data-toggle='dropdown' value='#') #
+              input(type='Text' style='display: none;' name='3-3')
+              div.dropdown-menu#3-3-opts
+                a.dropdown-item 4
+                a.dropdown-item 5
+                a.dropdown-item 6
+                a.dropdown-item 7
+          div.card
+            div.dropdown
+              button.btn.btn-secondary.dropdown-toggle.disabled#3-4-text(type='button' data-toggle='dropdown' value='Team') Team
+              input(type='Text' style='display: none;' name='3-4')
+              div.dropdown-menu#3-4-opts
+                a.dropdown-item
+                a.dropdown-item
+            = "in"
+            div.dropdown
+              button.btn.btn-secondary.dropdown-toggle.disabled#3-5-text(type='button' data-toggle='dropdown' value='#') #
+              input(type='Text' style='display: none;' name='3-5')
+              div.dropdown-menu#3-5-opts
+                a.dropdown-item 4
+                a.dropdown-item 5
+                a.dropdown-item 6
+                a.dropdown-item 7
+          div.card
+            div.dropdown
+              button.btn.btn-secondary.dropdown-toggle.disabled#3-6-text(type='button' data-toggle='dropdown' value='Team') Team
+              input(type='Text' style='display: none;' name='3-6')
+              div.dropdown-menu#3-6-opts
+                a.dropdown-item
+                a.dropdown-item
+            = "in"
+            div.dropdown
+              button.btn.btn-secondary.dropdown-toggle.disabled#3-7-text(type='button' data-toggle='dropdown' value='#') #
+              input(type='Text' style='display: none;' name='3-7')
+              div.dropdown-menu#3-7-opts
+                a.dropdown-item 4
+                a.dropdown-item 5
+                a.dropdown-item 6
+                a.dropdown-item 7
+
+        div.col.round-four
+          div.card
+            div.dropdown
+              button.btn.btn-secondary.dropdown-toggle.disabled#4-0-text(type='button' data-toggle='dropdown' value='Team') Team
+              input(type='Text' style='display: none;' name='4-0')
+              div.dropdown-menu#4-0-opts
+                a.dropdown-item
+                a.dropdown-item
+            = "in"
+            div.dropdown
+              button.btn.btn-secondary.dropdown-toggle.disabled#4-1-text(type='button' data-toggle='dropdown' value='#') #
+              input(type='Text' style='display: none;' name='4-1')
+              div.dropdown-menu#4-1-opts
+                a.dropdown-item 4
+                a.dropdown-item 5
+                a.dropdown-item 6
+                a.dropdown-item 7
+          div.card
+            div.dropdown
+              button.btn.btn-secondary.dropdown-toggle.disabled#4-2-text(type='button' data-toggle='dropdown' value='Team') Team
+              input(type='Text' style='display: none;' name='4-2')
+              div.dropdown-menu#4-2-opts
+                a.dropdown-item
+                a.dropdown-item
+            = "in"
+            div.dropdown
+              button.btn.btn-secondary.dropdown-toggle.disabled#4-3-text(type='button' data-toggle='dropdown' value='#') #
+              input(type='Text' style='display: none;' name='4-3')
+              div.dropdown-menu#4-3-opts
+                a.dropdown-item 4
+                a.dropdown-item 5
+                a.dropdown-item 6
+                a.dropdown-item 7
+
+
+        div.col.finals
+          div.card
+            div.dropdown
+              button.btn.btn-secondary.dropdown-toggle.disabled#5-0-text(type='button' data-toggle='dropdown' value='Team') Team
+              input(type='Text' style='display: none;' name='5-0')
+              div.dropdown-menu#5-0-opts
+                a.dropdown-item
+                a.dropdown-item
+            = "in"
+            div.dropdown
+              button.btn.btn-secondary.dropdown-toggle.disabled#5-1-text(type='button' data-toggle='dropdown' value='#') #
+              input(type='Text' style='display: none;' name='5-1')
+              div.dropdown-menu#5-1-opts
+                a.dropdown-item 4
+                a.dropdown-item 5
+                a.dropdown-item 6
+                a.dropdown-item 7
+      button#submitButton.btn.btn-outline-primary.mx-auto(disabled type='submit') Submit bracket

@@ -1,0 +1,60 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+.round-one .card {
+  margin-bottom: 40px;
+}
+
+.round-two .card * {
+  display: inherit;
+}
+
+.round-two .card {
+  margin-top: 75px;
+  margin-bottom: 110px;
+  display: inline-block;
+  width: 100%;
+}
+
+.round-three .card * {
+  display: inherit;
+}
+
+.round-three .card {
+  margin-top: 180px;
+  margin-bottom: 240px;
+  display: inline-block;
+  width: 100%;
+}
+
+.round-four .card * {
+  display: inherit;
+}
+
+.round-four .card {
+  margin-top: 420px;
+  margin-bottom: 440px;
+  display: inline-block;
+  width: 100%;
+}
+
+.finals .card * {
+  display: inherit;
+}
+
+.finals .card {
+  margin-top: 860px;
+  display: inline-block;
+  width: 100%;
+}
+
+#submitButton {
+  display: block;
+  width: 25%;
+}
