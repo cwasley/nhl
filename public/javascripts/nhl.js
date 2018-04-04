@@ -41,6 +41,15 @@ angular.module('nhl', [])
                 value: 4,
                 tooltip: 'hide'
             });
+            $("input.final-slider").slider({
+                min: 0,
+                max: 50,
+                step: 1,
+                value: 10
+            });
+            $("input.final-slider").on("slide", function(e) {
+                $("#finalsGoals").text(e.value);
+            });
         }
 
 
@@ -55,21 +64,39 @@ angular.module('nhl', [])
         $scope.finalteam = [];
 
         $scope.next = function(currState, nextState) {
-            if (currState.substr(0, 4) == "conf") {
+            if (currState.substr(0, 4) === "conf") {
                 $scope.round++;
             } else if ($scope.topComplete && $scope.bottomComplete) {
                 $scope.topComplete = $scope.bottomComplete = false;
-                if ($scope.round == 1) {
-                    $scope.round2teams.push($("input[name$='winner']")[0].value);
-                    $scope.round2teams.push($("input[name$='winner']")[1].value);
-                } else if ($scope.round == 2) {
-                    $scope.round3teams.push($("input[name$='winner']")[0].value);
-                    $scope.round3teams.push($("input[name$='winner']")[1].value);
-                } else if ($scope.round == 3) {
-                    $scope.round4teams.push($("input[name$='winner']")[0].value);
-                    $scope.round4teams.push($("input[name$='winner']")[1].value);
+                var team1 = {}, team2 = {};
+                var winners = $("input[name$='winner']");
+                var games = $("input[name$='games']");
+                if ($scope.round === 1) {
+                    team1.name = winners[0].value;
+                    team1.games = games[0].value;
+                    team2.name = winners[1].value;
+                    team2.games = games[1].value;
+                    $scope.round2teams.push(team1);
+                    $scope.round2teams.push(team2);
+                } else if ($scope.round === 2) {
+                    team1.name = winners[0].value;
+                    team1.games = games[0].value;
+                    team2.name = winners[1].value;
+                    team2.games = games[1].value;
+                    $scope.round3teams.push(team1);
+                    $scope.round3teams.push(team2);
+                } else if ($scope.round === 3) {
+                    team1.name = winners[0].value;
+                    team1.games = games[0].value;
+                    team2.name = winners[1].value;
+                    team2.games = games[1].value;
+                    $scope.round4teams.push(team1);
+                    $scope.round4teams.push(team2);
                 } else {
-                    $scope.finalteam.push($("input[name$='winner']")[0].value);
+                    team1.name = winners[0].value;
+                    team1.games = games[0].value;
+                    team1.goals = $("input[name$='goals']")[0].value;
+                    $scope.finalteam.push(team1);
                 }
             } else {
                 $('.buttontooltip').tooltip('show');

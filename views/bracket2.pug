@@ -125,7 +125,7 @@ block content
       div(style='display: inline-block;')
         h4 Teams going into round 2
         ol.list-group.list-group-flush
-          li.list-group-item(ng-repeat="item in round2teams") {{item}}
+          li.list-group-item(ng-repeat="item in round2teams") {{item.name}} in {{item.games}} games
         br
         a.btn.btn-primary.btn-raised.float-left(ng-click="back('east2')") Back
         a.btn.btn-primary.btn-raised.float-right(ng-click="next('conf_1', 'west3')") Next
@@ -136,9 +136,9 @@ block content
           div.btn-group-vertical.top-group#r2i0winner
             span.bmd-form-group.is-filled
               input(type='text' style='display:none;' name='r2i0winner' value='team')
-            button.btn.btn-raised.btn-secondary(type='button') {{round2teams[0]}}
+            button.btn.btn-raised.btn-secondary(type='button') {{round2teams[0].name}}
             p.mx-auto v.
-            button.btn.btn-raised.btn-secondary(type='button') {{round2teams[1]}}
+            button.btn.btn-raised.btn-secondary(type='button') {{round2teams[1].name}}
           div
             input.slider(type="text" name='r2i0games')
             p games
@@ -148,9 +148,9 @@ block content
           div.btn-group-vertical.bottom-group#r2i1winner
             span.bmd-form-group.is-filled
               input(type='text' style='display:none;' name='r2i1winner' value='team')
-            button.btn.btn-raised.btn-secondary(type='button') {{round2teams[2]}}
+            button.btn.btn-raised.btn-secondary(type='button') {{round2teams[2].name}}
             p.mx-auto v.
-            button.btn.btn-raised.btn-secondary(type='button') {{round2teams[3]}}
+            button.btn.btn-raised.btn-secondary(type='button') {{round2teams[3].name}}
           div
             input.slider(type="text" name='r2i1games')
             p games
@@ -164,9 +164,9 @@ block content
           div.btn-group-vertical.top-group#r2i2winner
             span.bmd-form-group.is-filled
               input(type='text' style='display:none;' name='r2i2winner' value='team')
-            button.btn.btn-raised.btn-secondary(type='button') {{round2teams[4]}}
+            button.btn.btn-raised.btn-secondary(type='button') {{round2teams[4].name}}
             p.mx-auto v.
-            button.btn.btn-raised.btn-secondary(type='button') {{round2teams[5]}}
+            button.btn.btn-raised.btn-secondary(type='button') {{round2teams[5].name}}
           div
             input.slider(type="text" name='r2i2games')
             p games
@@ -176,9 +176,9 @@ block content
           div.btn-group-vertical.bottom-group#r2i3winner
             span.bmd-form-group.is-filled
               input(type='text' style='display:none;' name='r2i3winner' value='team')
-            button.btn.btn-raised.btn-secondary(type='button') {{round2teams[6]}}
+            button.btn.btn-raised.btn-secondary(type='button') {{round2teams[6].name}}
             p.mx-auto v.
-            button.btn.btn-raised.btn-secondary(type='button') {{round2teams[7]}}
+            button.btn.btn-raised.btn-secondary(type='button') {{round2teams[7].name}}
           div
             input.slider(type="text" name='r2i3games')
             p games
@@ -190,7 +190,7 @@ block content
       div(style='display: inline-block;')
         h4 Teams going into Conference Finals
         ol.list-group.list-group-flush
-          li.list-group-item(ng-repeat="item in round3teams") {{item}}
+          li.list-group-item(ng-repeat="item in round3teams") {{item.name}} in {{item.games}} games
         br
         a.btn.btn-primary.btn-raised.float-left(ng-click="back('east3')") Back
         a.btn.btn-primary.btn-raised.float-right(ng-click="next('conf_2', 'both1')") Next
@@ -201,9 +201,9 @@ block content
           div.btn-group-vertical.top-group#r3i0winner
             span.bmd-form-group.is-filled
               input(type='text' style='display:none;' name='r3i0winner' value='team')
-            button.btn.btn-raised.btn-secondary(type='button') {{round3teams[0]}}
+            button.btn.btn-raised.btn-secondary(type='button') {{round3teams[0].name}}
             p.mx-auto v.
-            button.btn.btn-raised.btn-secondary(type='button') {{round3teams[1]}}
+            button.btn.btn-raised.btn-secondary(type='button') {{round3teams[1].name}}
           div
             input.slider(type="text" name='r3i0games')
             p games
@@ -213,9 +213,9 @@ block content
           div.btn-group-vertical.bottom-group#r3i1winner
             span.bmd-form-group.is-filled
               input(type='text' style='display:none;' name='r3i1winner' value='team')
-            button.btn.btn-raised.btn-secondary(type='button') {{round3teams[2]}}
+            button.btn.btn-raised.btn-secondary(type='button') {{round3teams[2].name}}
             p.mx-auto v.
-            button.btn.btn-raised.btn-secondary(type='button') {{round3teams[3]}}
+            button.btn.btn-raised.btn-secondary(type='button') {{round3teams[3].name}}
           div
             input.slider(type="text" name='r3i1games')
             p games
@@ -227,7 +227,7 @@ block content
       div(style='display: inline-block;')
         h4 Teams going into Stanley Cup Finals
         ol.list-group.list-group-flush
-          li.list-group-item(ng-repeat="item in round4teams") {{item}}
+          li.list-group-item(ng-repeat="item in round4teams") {{item.name}} in {{item.games}} games
         br
         a.btn.btn-primary.btn-raised.float-left(ng-click="back('both1')") Back
         a.btn.btn-primary.btn-raised.float-right(ng-click="next('conf_3', 'both2')") Next
@@ -238,12 +238,16 @@ block content
           div.btn-group-vertical.finals-group#r4i0winner
             span.bmd-form-group.is-filled
               input(type='text' style='display:none;' name='r4i0winner' value='team')
-            button.btn.btn-raised.btn-secondary(type='button') {{round4teams[0]}}
+            button.btn.btn-raised.btn-secondary(type='button') {{round4teams[0].name}}
             p.mx-auto v.
-            button.btn.btn-raised.btn-secondary(type='button') {{round4teams[1]}}
+            button.btn.btn-raised.btn-secondary(type='button') {{round4teams[1].name}}
           div
             input.slider(type="text" name='r4i0games')
             p games
+          div
+            input.final-slider(type="text" name='r4i0goals')
+            span#finalsGoals(style="padding-left: 10px;") 10
+            p goals
       br
       a.btn.btn-primary.btn-raised.float-left(ng-click="back('conf_3')") Back
       a.btn.btn-primary.btn-raised.float-right.buttontooltip(ng-click="next('both2', 'conf_4')" data-toggle='tooltip' title='Please fill in your guesses for both winning teams.' style='opacity: 0.4;') Finish
@@ -252,19 +256,19 @@ block content
       h4.text-center Confirmation
       p.lead Round 1 Winners
       ol.list-group.list-group-flush
-        li.list-group-item(ng-repeat="item in round2teams") {{item}}
+        li.list-group-item(ng-repeat="item in round2teams") {{item.name}} in {{item.games}} games
       hr.my-4
       p.lead Round 2 Winners
       ol.list-group.list-group-flush
-        li.list-group-item(ng-repeat="item in round3teams") {{item}}
+        li.list-group-item(ng-repeat="item in round3teams") {{item.name}} in {{item.games}} games
       hr.my-4
       p.lead Conference Winners
       ol.list-group.list-group-flush
-        li.list-group-item(ng-repeat="item in round4teams") {{item}}
+        li.list-group-item(ng-repeat="item in round4teams") {{item.name}} in {{item.games}} games
       hr.my-4
       p.lead Stanley Cup Winner
       ol.list-group.list-group-flush
-        li.list-group-item(ng-repeat="item in finalteam") {{item}}
+        li.list-group-item(ng-repeat="item in finalteam") {{item.name}} in {{item.games}} games; {{item.goals}} goals
       br
       hr.my-4
       div.input-group.mb-3
