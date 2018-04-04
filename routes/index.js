@@ -50,6 +50,7 @@ router.get('/bracket', function(req, res, next) {
 
 // TODO refactor this into an object that you can just pass into the model as 'payload' or something, not all these fields
 router.post('/submit', function(req, res, next) {
+    console.log('test');
   var newBracket = new Bracket({
       result2_0: req.body['2-0'],
       result2_1: req.body['2-1'],

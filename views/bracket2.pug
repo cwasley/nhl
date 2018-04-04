@@ -1,388 +1,280 @@
 extends layout
 
 block content
-  h4.text-center Western Conference
-  p.text-center Round 1
+  h4.text-center(ng-if="state.charAt(0) == 'w'") Western Conference
+  h4.text-center(ng-if="state.charAt(0) == 'e'") Eastern Conference
+  h4.text-center(ng-if="round == 3 && state.substr(0, 4) != 'conf'") Conference Finals
+  h4.text-center(ng-if="round == 4 && state.substr(0, 4) != 'conf'") Stanley Cup Finals
+  p.text-center(ng-if="round == 1 && state.substr(0, 4) != 'conf'") - Round 1 -
+  p.text-center(ng-if="round == 2 && state.substr(0, 4) != 'conf'") - Round 2 -
   form(id='bracketForm' action='/submit' method='post')
-    div.ng-cloak(ng-if="state === 'west1'")
+    div(ng-if="state === 'west1'")
       div.card.bg-light(style='text-align: center;')
         div.card-body(style='display: inline-block; color: black;')
-          div.btn-group-vertical
-            button.btn.btn-raised.btn-secondary#2-0-text(type='button') Nashville Predators
+          div.btn-group-vertical.top-group#r1i0winner
+            span.bmd-form-group.is-filled
+              input(type='text' style='display:none;' name='r1i0winner' value='team')
+            button.btn.btn-raised.btn-secondary(type='button') Nashville Predators
             p.mx-auto v.
             button.btn.btn-raised.btn-secondary(type='button') Colorado Avalanche
-            input(type='Text' style='display:none;' name='r1i0winner')
           div
-            div.form-check.form-check-inline
-              input.form-check-input(type='radio' name='r1i0games' value='4')
-              label.form-check-label 4
-            div.form-check.form-check-inline
-              input.form-check-input(type='radio' name='r1i0games' value='5')
-              label.form-check-label 5
-            div.form-check.form-check-inline
-              input.form-check-input(type='radio' name='r1i0games' value='6')
-              label.form-check-label 6
-            div.form-check.form-check-inline
-              input.form-check-input(type='radio' name='r1i0games' value='7')
-              label.form-check-label 7
-            p(style="display:inline;") games
+            input.slider(type="text" name='r1i0games')
+            p games
       br
       div.card.bg-light(style='text-align: center;')
-        div.card-body(style='display: inline-block;color: black;')
-          div.btn-group-vertical
+        div.card-body(style='display: inline-block; color: black;')
+          div.btn-group-vertical.bottom-group#r1i1winner
+            span.bmd-form-group.is-filled
+              input(type='text' style='display:none;' name='r1i1winner' value='team')
             button.btn.btn-raised.btn-secondary(type='button') Winnipeg Jets
             p.mx-auto v.
             button.btn.btn-raised.btn-secondary(type='button') Minnesota Wild
-            input(type='Text' style='display:none;' name='r1i1winner')
-          input(type="text" name='r1i0games' data-provide='slider' data-slider-ticks='[4,5,6,7]' data-slider-ticks-labels='[4,5,6,7]' data-slider-value='4')
-          //div
-          //  div.form-check.form-check-inline
-          //    input.form-check-input(type='radio' name='r1i0games' value='4')
-          //    label.form-check-label 4
-          //  div.form-check.form-check-inline
-          //    input.form-check-input(type='radio' name='r1i0games' value='5')
-          //    label.form-check-label 5
-          //  div.form-check.form-check-inline
-          //    input.form-check-input(type='radio' name='r1i0games' value='6')
-          //    label.form-check-label 6
-          //  div.form-check.form-check-inline
-          //    input.form-check-input(type='radio' name='r1i0games' value='7')
-          //    label.form-check-label 7
-          p games
+          div
+            input.slider(type="text" name='r1i1games')
+            p games
       br
-      a.btn.btn-primary.btn-raised.float-left(href='/instructions') Back
-      a.btn.btn-primary.btn-raised.float-right.buttontooltip(ng-click="next('west2')" data-toggle='tooltip' title='Please fill in both winning teams and number of games.' style='opacity: 0.4;') Next
-      //div.row
-      //  div.col.round-one
-      //    div.card
-      //      div.card-body.text-center
-      //        = "Nashville"
-      //        br
-      //        = "Predators"
-      //    div.card
-      //      div.card-body.text-center
-      //        = "Colorado"
-      //        br
-      //        = "Avalanche"
-      //    div.card
-      //      div.card-body.text-center
-      //        = "Winnipeg"
-      //        br
-      //        = "Jets"
-      //    div.card
-      //      div.card-body.text-center
-      //        = "Minnesota"
-      //        br
-      //        = "Wild"
-      //    div.card
-      //      div.card-body.text-center
-      //        = "Vegas"
-      //        br
-      //        = "Golden Knights"
-      //    div.card
-      //      div.card-body.text-center
-      //        = "LA"
-      //        br
-      //        = "Kings"
-      //    div.card
-      //      div.card-body.text-center
-      //        = "San Jose"
-      //        br
-      //        = "Sharks"
-      //    div.card
-      //      div.card-body.text-center
-      //        = "Anaheim"
-      //        br
-      //        = "Ducks"
-      //    div.card
-      //      div.card-body.text-center
-      //        = "Boston"
-      //        br
-      //        = "Bruins"
-      //    div.card
-      //      div.card-body.text-center
-      //        = "New Jersey"
-      //        br
-      //        = "Devils"
-      //    div.card
-      //      div.card-body.text-center
-      //        = "Tampa Bay"
-      //        br
-      //        = "Lightning"
-      //    div.card
-      //      div.card-body.text-center
-      //        = "Toronto"
-      //        br
-      //        = "Maple Leafs"
-      //    div.card
-      //      div.card-body.text-center
-      //        = "Washington"
-      //        br
-      //        = "Capitals"
-      //    div.card
-      //      div.card-body.text-center
-      //        = "Philadelphia"
-      //        br
-      //        = "Flyers"
-      //    div.card
-      //      div.card-body.text-center
-      //        = "Pittsburgh"
-      //        br
-      //        = "Penguins"
-      //    div.card
-      //      div.card-body.text-center
-      //        = "Columbus"
-      //        br
-      //        = "Blue Jackets"
-      //
-      //
-      //  div.col.round-two
-      //    div.card
-      //      div.dropdown
-      //        button.btn.btn-secondary.dropdown-toggle#2-0-text(type='button' data-toggle='dropdown' value='Team') Team
-      //        input(type='Text' style='display: none;' name='2-0')
-      //        div.dropdown-menu#2-0-opts
-      //          a.dropdown-item Nashville
-      //          a.dropdown-item Colorado
-      //      = "in"
-      //      div.dropdown
-      //        button.btn.btn-secondary.dropdown-toggle#2-1-text(type='button' data-toggle='dropdown' value='#') #
-      //        input(type='Text' style='display: none;' name='2-1')
-      //        div.dropdown-menu#2-1-opts
-      //          a.dropdown-item 4
-      //          a.dropdown-item 5
-      //          a.dropdown-item 6
-      //          a.dropdown-item 7
-      //    div.card
-      //      div.dropdown
-      //        button.btn.btn-secondary.dropdown-toggle#2-2-text(type='button' data-toggle='dropdown' value='Team') Team
-      //        input(type='Text' style='display: none;' name='2-2')
-      //        div.dropdown-menu#2-2-opts
-      //          a.dropdown-item Winnipeg
-      //          a.dropdown-item Minnesota
-      //      = "in"
-      //      div.dropdown
-      //        button.btn.btn-secondary.dropdown-toggle#2-3-text(type='button' data-toggle='dropdown' value='#') #
-      //        input(type='Text' style='display: none;' name='2-3')
-      //        div.dropdown-menu#2-3-opts
-      //          a.dropdown-item 4
-      //          a.dropdown-item 5
-      //          a.dropdown-item 6
-      //          a.dropdown-item 7
-      //    div.card
-      //      div.dropdown
-      //        button.btn.btn-secondary.dropdown-toggle#2-4-text(type='button' data-toggle='dropdown' value='Team') Team
-      //        input(type='Text' style='display: none;' name='2-4')
-      //        div.dropdown-menu#2-4-opts
-      //          a.dropdown-item Vegas
-      //          a.dropdown-item LA
-      //      = "in"
-      //      div.dropdown
-      //        button.btn.btn-secondary.dropdown-toggle#2-5-text(type='button' data-toggle='dropdown' value='#') #
-      //        input(type='Text' style='display: none;' name='2-5')
-      //        div.dropdown-menu#2-5-opts
-      //          a.dropdown-item 4
-      //          a.dropdown-item 5
-      //          a.dropdown-item 6
-      //          a.dropdown-item 7
-      //    div.card
-      //      div.dropdown
-      //        button.btn.btn-secondary.dropdown-toggle#2-6-text(type='button' data-toggle='dropdown' value='Team') Team
-      //        input(type='Text' style='display: none;' name='2-6')
-      //        div.dropdown-menu#2-6-opts
-      //          a.dropdown-item San Jose
-      //          a.dropdown-item Anaheim
-      //      = "in"
-      //      div.dropdown
-      //        button.btn.btn-secondary.dropdown-toggle#2-7-text(type='button' data-toggle='dropdown' value='#') #
-      //        input(type='Text' style='display: none;' name='2-7')
-      //        div.dropdown-menu#2-7-opts
-      //          a.dropdown-item 4
-      //          a.dropdown-item 5
-      //          a.dropdown-item 6
-      //          a.dropdown-item 7
-      //    div.card
-      //      div.dropdown
-      //        button.btn.btn-secondary.dropdown-toggle#2-8-text(type='button' data-toggle='dropdown' value='Team') Team
-      //        input(type='Text' style='display: none;' name='2-8')
-      //        div.dropdown-menu#2-8-opts
-      //          a.dropdown-item Boston
-      //          a.dropdown-item New Jersey
-      //      = "in"
-      //      div.dropdown
-      //        button.btn.btn-secondary.dropdown-toggle#2-9-text(type='button' data-toggle='dropdown' value='#') #
-      //        input(type='Text' style='display: none;' name='2-9')
-      //        div.dropdown-menu#2-9-opts
-      //          a.dropdown-item 4
-      //          a.dropdown-item 5
-      //          a.dropdown-item 6
-      //          a.dropdown-item 7
-      //    div.card
-      //      div.dropdown
-      //        button.btn.btn-secondary.dropdown-toggle#2-10-text(type='button' data-toggle='dropdown' value='Team') Team
-      //        input(type='Text' style='display: none;' name='2-10')
-      //        div.dropdown-menu#2-10-opts
-      //          a.dropdown-item Tampa Bay
-      //          a.dropdown-item Toronto
-      //      = "in"
-      //      div.dropdown
-      //        button.btn.btn-secondary.dropdown-toggle#2-11-text(type='button' data-toggle='dropdown' value='#') #
-      //        input(type='Text' style='display: none;' name='2-11')
-      //        div.dropdown-menu#2-11-opts
-      //          a.dropdown-item 4
-      //          a.dropdown-item 5
-      //          a.dropdown-item 6
-      //          a.dropdown-item 7
-      //    div.card
-      //      div.dropdown
-      //        button.btn.btn-secondary.dropdown-toggle#2-12-text(type='button' data-toggle='dropdown' value='Team') Team
-      //        input(type='Text' style='display: none;' name='2-12')
-      //        div.dropdown-menu#2-12-opts
-      //          a.dropdown-item Washington
-      //          a.dropdown-item Philadelphia
-      //      = "in"
-      //      div.dropdown
-      //        button.btn.btn-secondary.dropdown-toggle#2-13-text(type='button' data-toggle='dropdown' value='#') #
-      //        input(type='Text' style='display: none;' name='2-13')
-      //        div.dropdown-menu#2-13-opts
-      //          a.dropdown-item 4
-      //          a.dropdown-item 5
-      //          a.dropdown-item 6
-      //          a.dropdown-item 7
-      //    div.card
-      //      div.dropdown
-      //        button.btn.btn-secondary.dropdown-toggle#2-14-text(type='button' data-toggle='dropdown' value='Team') Team
-      //        input(type='Text' style='display: none;' name='2-14')
-      //        div.dropdown-menu#2-14-opts
-      //          a.dropdown-item Pittsburgh
-      //          a.dropdown-item Columbus
-      //      = "in"
-      //      div.dropdown
-      //        button.btn.btn-secondary.dropdown-toggle#2-15-text(type='button' data-toggle='dropdown' value='#') #
-      //        input(type='Text' style='display: none;' name='2-15')
-      //        div.dropdown-menu#2-15-opts
-      //          a.dropdown-item 4
-      //          a.dropdown-item 5
-      //          a.dropdown-item 6
-      //          a.dropdown-item 7
-      //
-      //
-      //  div.col.round-three
-      //    div.card
-      //      div.dropdown
-      //        button.btn.btn-secondary.dropdown-toggle.disabled#3-0-text(type='button' data-toggle='dropdown' value='Team') Team
-      //        input(type='Text' style='display: none;' name='3-0')
-      //        div.dropdown-menu#3-0-opts
-      //          a.dropdown-item
-      //          a.dropdown-item
-      //      = "in"
-      //      div.dropdown
-      //        button.btn.btn-secondary.dropdown-toggle.disabled#3-1-text(type='button' data-toggle='dropdown' value='#') #
-      //        input(type='Text' style='display: none;' name='3-1')
-      //        div.dropdown-menu#3-1-opts
-      //          a.dropdown-item 4
-      //          a.dropdown-item 5
-      //          a.dropdown-item 6
-      //          a.dropdown-item 7
-      //    div.card
-      //      div.dropdown
-      //        button.btn.btn-secondary.dropdown-toggle.disabled#3-2-text(type='button' data-toggle='dropdown' value='Team') Team
-      //        input(type='Text' style='display: none;' name='3-2')
-      //        div.dropdown-menu#3-2-opts
-      //          a.dropdown-item
-      //          a.dropdown-item
-      //      = "in"
-      //      div.dropdown
-      //        button.btn.btn-secondary.dropdown-toggle.disabled#3-3-text(type='button' data-toggle='dropdown' value='#') #
-      //        input(type='Text' style='display: none;' name='3-3')
-      //        div.dropdown-menu#3-3-opts
-      //          a.dropdown-item 4
-      //          a.dropdown-item 5
-      //          a.dropdown-item 6
-      //          a.dropdown-item 7
-      //    div.card
-      //      div.dropdown
-      //        button.btn.btn-secondary.dropdown-toggle.disabled#3-4-text(type='button' data-toggle='dropdown' value='Team') Team
-      //        input(type='Text' style='display: none;' name='3-4')
-      //        div.dropdown-menu#3-4-opts
-      //          a.dropdown-item
-      //          a.dropdown-item
-      //      = "in"
-      //      div.dropdown
-      //        button.btn.btn-secondary.dropdown-toggle.disabled#3-5-text(type='button' data-toggle='dropdown' value='#') #
-      //        input(type='Text' style='display: none;' name='3-5')
-      //        div.dropdown-menu#3-5-opts
-      //          a.dropdown-item 4
-      //          a.dropdown-item 5
-      //          a.dropdown-item 6
-      //          a.dropdown-item 7
-      //    div.card
-      //      div.dropdown
-      //        button.btn.btn-secondary.dropdown-toggle.disabled#3-6-text(type='button' data-toggle='dropdown' value='Team') Team
-      //        input(type='Text' style='display: none;' name='3-6')
-      //        div.dropdown-menu#3-6-opts
-      //          a.dropdown-item
-      //          a.dropdown-item
-      //      = "in"
-      //      div.dropdown
-      //        button.btn.btn-secondary.dropdown-toggle.disabled#3-7-text(type='button' data-toggle='dropdown' value='#') #
-      //        input(type='Text' style='display: none;' name='3-7')
-      //        div.dropdown-menu#3-7-opts
-      //          a.dropdown-item 4
-      //          a.dropdown-item 5
-      //          a.dropdown-item 6
-      //          a.dropdown-item 7
-      //
-      //  div.col.round-four
-      //    div.card
-      //      div.dropdown
-      //        button.btn.btn-secondary.dropdown-toggle.disabled#4-0-text(type='button' data-toggle='dropdown' value='Team') Team
-      //        input(type='Text' style='display: none;' name='4-0')
-      //        div.dropdown-menu#4-0-opts
-      //          a.dropdown-item
-      //          a.dropdown-item
-      //      = "in"
-      //      div.dropdown
-      //        button.btn.btn-secondary.dropdown-toggle.disabled#4-1-text(type='button' data-toggle='dropdown' value='#') #
-      //        input(type='Text' style='display: none;' name='4-1')
-      //        div.dropdown-menu#4-1-opts
-      //          a.dropdown-item 4
-      //          a.dropdown-item 5
-      //          a.dropdown-item 6
-      //          a.dropdown-item 7
-      //    div.card
-      //      div.dropdown
-      //        button.btn.btn-secondary.dropdown-toggle.disabled#4-2-text(type='button' data-toggle='dropdown' value='Team') Team
-      //        input(type='Text' style='display: none;' name='4-2')
-      //        div.dropdown-menu#4-2-opts
-      //          a.dropdown-item
-      //          a.dropdown-item
-      //      = "in"
-      //      div.dropdown
-      //        button.btn.btn-secondary.dropdown-toggle.disabled#4-3-text(type='button' data-toggle='dropdown' value='#') #
-      //        input(type='Text' style='display: none;' name='4-3')
-      //        div.dropdown-menu#4-3-opts
-      //          a.dropdown-item 4
-      //          a.dropdown-item 5
-      //          a.dropdown-item 6
-      //          a.dropdown-item 7
-      //
-      //
-      //  div.col.finals
-      //    div.card
-      //      div.dropdown
-      //        button.btn.btn-secondary.dropdown-toggle.disabled#5-0-text(type='button' data-toggle='dropdown' value='Team') Team
-      //        input(type='Text' style='display: none;' name='5-0')
-      //        div.dropdown-menu#5-0-opts
-      //          a.dropdown-item
-      //          a.dropdown-item
-      //      = "in"
-      //      div.dropdown
-      //        button.btn.btn-secondary.dropdown-toggle.disabled#5-1-text(type='button' data-toggle='dropdown' value='#') #
-      //        input(type='Text' style='display: none;' name='5-1')
-      //        div.dropdown-menu#5-1-opts
-      //          a.dropdown-item 4
-      //          a.dropdown-item 5
-      //          a.dropdown-item 6
-      //          a.dropdown-item 7
-      //button.submitButton.btn.btn-outline-primary.mx-auto(disabled type='submit') Submit bracket
+      a.btn.btn-primary.btn-raised.float-left(ng-click="back('instructions')") Back
+      a.btn.btn-primary.btn-raised.float-right.buttontooltip(ng-click="next('west1', 'west2')" data-toggle='tooltip' title='Please fill in your guesses for both winning teams.' style='opacity: 0.4;') Next
+
+
+    div(ng-if="state === 'west2'")
+      div.card.bg-light(style='text-align: center;')
+        div.card-body(style='display: inline-block; color: black;')
+          div.btn-group-vertical.top-group#r1i2winner
+            span.bmd-form-group.is-filled
+              input(type='text' style='display:none;' name='r1i2winner' value='team')
+            button.btn.btn-raised.btn-secondary(type='button') Vegas Golden Knights
+            p.mx-auto v.
+            button.btn.btn-raised.btn-secondary(type='button') Anaheim Ducks
+          div
+            input.slider(type="text" name='r1i2games')
+            p games
+      br
+      div.card.bg-light(style='text-align: center;')
+        div.card-body(style='display: inline-block; color: black;')
+          div.btn-group-vertical.bottom-group#r1i3winner
+            span.bmd-form-group.is-filled
+              input(type='text' style='display:none;' name='r1i3winner' value='team')
+            button.btn.btn-raised.btn-secondary(type='button') San Jose Sharks
+            p.mx-auto v.
+            button.btn.btn-raised.btn-secondary(type='button') LA Kings
+          div
+            input.slider(type="text" name='r1i3games')
+            p games
+      br
+      a.btn.btn-primary.btn-raised.float-left(ng-click="back('west1')") Back
+      a.btn.btn-primary.btn-raised.float-right.buttontooltip(ng-click="next('west2', 'east1')" data-toggle='tooltip' title='Please fill in your guesses for both winning teams.' style='opacity: 0.4;') Next
+
+    div(ng-if="state === 'east1'")
+      div.card.bg-light(style='text-align: center;')
+        div.card-body(style='display: inline-block; color: black;')
+          div.btn-group-vertical.top-group#r1i4winner
+            span.bmd-form-group.is-filled
+              input(type='text' style='display:none;' name='r1i4winner' value='team')
+            button.btn.btn-raised.btn-secondary(type='button') Boston Bruins
+            p.mx-auto v.
+            button.btn.btn-raised.btn-secondary(type='button') New Jersey Devils
+          div
+            input.slider(type="text" name='r1i4games')
+            p games
+      br
+      div.card.bg-light(style='text-align: center;')
+        div.card-body(style='display: inline-block; color: black;')
+          div.btn-group-vertical.bottom-group#r1i5winner
+            span.bmd-form-group.is-filled
+              input(type='text' style='display:none;' name='r1i5winner' value='team')
+            button.btn.btn-raised.btn-secondary(type='button') Tampa Bay Lightning
+            p.mx-auto v.
+            button.btn.btn-raised.btn-secondary(type='button') Toronto Maple Leafs
+          div
+            input.slider(type="text" name='r1i5games')
+            p games
+      br
+      a.btn.btn-primary.btn-raised.float-left(ng-click="back('west2')") Back
+      a.btn.btn-primary.btn-raised.float-right.buttontooltip(ng-click="next('east1', 'east2')" data-toggle='tooltip' title='Please fill in your guesses for both winning teams.' style='opacity: 0.4;') Next
+
+    div(ng-if="state === 'east2'")
+      div.card.bg-light(style='text-align: center;')
+        div.card-body(style='display: inline-block; color: black;')
+          div.btn-group-vertical.top-group#r1i6winner
+            span.bmd-form-group.is-filled
+              input(type='text' style='display:none;' name='r1i6winner' value='team')
+            button.btn.btn-raised.btn-secondary(type='button') Washington Capitals
+            p.mx-auto v.
+            button.btn.btn-raised.btn-secondary(type='button') Philadelphia Flyers
+          div
+            input.slider(type="text" name='r1i6games')
+            p games
+      br
+      div.card.bg-light(style='text-align: center;')
+        div.card-body(style='display: inline-block; color: black;')
+          div.btn-group-vertical.bottom-group#r1i7winner
+            span.bmd-form-group.is-filled
+              input(type='text' style='display:none;' name='r1i7winner' value='team')
+            button.btn.btn-raised.btn-secondary(type='button') Pittsburgh Penguins
+            p.mx-auto v.
+            button.btn.btn-raised.btn-secondary(type='button') Columbus Blue Jackets
+          div
+            input.slider(type="text" name='r1i7games')
+            p games
+      br
+      a.btn.btn-primary.btn-raised.float-left(ng-click="back('east1')") Back
+      a.btn.btn-primary.btn-raised.float-right.buttontooltip(ng-click="next('east2', 'conf_1')" data-toggle='tooltip' title='Please fill in your guesses for both winning teams.' style='opacity: 0.4;') Next
+
+    div(ng-if="state == 'conf_1'" style='text-align: center;')
+      div(style='display: inline-block;')
+        h4 Teams going into round 2
+        ol.list-group.list-group-flush
+          li.list-group-item(ng-repeat="item in round2teams") {{item}}
+        br
+        a.btn.btn-primary.btn-raised.float-left(ng-click="back('east2')") Back
+        a.btn.btn-primary.btn-raised.float-right(ng-click="next('conf_1', 'west3')") Next
+
+    div(ng-if="state == 'west3'")
+      div.card.bg-light(style='text-align: center;')
+        div.card-body(style='display: inline-block; color: black;')
+          div.btn-group-vertical.top-group#r2i0winner
+            span.bmd-form-group.is-filled
+              input(type='text' style='display:none;' name='r2i0winner' value='team')
+            button.btn.btn-raised.btn-secondary(type='button') {{round2teams[0]}}
+            p.mx-auto v.
+            button.btn.btn-raised.btn-secondary(type='button') {{round2teams[1]}}
+          div
+            input.slider(type="text" name='r2i0games')
+            p games
+      br
+      div.card.bg-light(style='text-align: center;')
+        div.card-body(style='display: inline-block; color: black;')
+          div.btn-group-vertical.bottom-group#r2i1winner
+            span.bmd-form-group.is-filled
+              input(type='text' style='display:none;' name='r2i1winner' value='team')
+            button.btn.btn-raised.btn-secondary(type='button') {{round2teams[2]}}
+            p.mx-auto v.
+            button.btn.btn-raised.btn-secondary(type='button') {{round2teams[3]}}
+          div
+            input.slider(type="text" name='r2i1games')
+            p games
+      br
+      a.btn.btn-primary.btn-raised.float-left(ng-click="back('conf_1')") Back
+      a.btn.btn-primary.btn-raised.float-right.buttontooltip(ng-click="next('west3', 'east3')" data-toggle='tooltip' title='Please fill in your guesses for both winning teams.' style='opacity: 0.4;') Next
+
+    div(ng-if="state == 'east3'")
+      div.card.bg-light(style='text-align: center;')
+        div.card-body(style='display: inline-block; color: black;')
+          div.btn-group-vertical.top-group#r2i2winner
+            span.bmd-form-group.is-filled
+              input(type='text' style='display:none;' name='r2i2winner' value='team')
+            button.btn.btn-raised.btn-secondary(type='button') {{round2teams[4]}}
+            p.mx-auto v.
+            button.btn.btn-raised.btn-secondary(type='button') {{round2teams[5]}}
+          div
+            input.slider(type="text" name='r2i2games')
+            p games
+      br
+      div.card.bg-light(style='text-align: center;')
+        div.card-body(style='display: inline-block; color: black;')
+          div.btn-group-vertical.bottom-group#r2i3winner
+            span.bmd-form-group.is-filled
+              input(type='text' style='display:none;' name='r2i3winner' value='team')
+            button.btn.btn-raised.btn-secondary(type='button') {{round2teams[6]}}
+            p.mx-auto v.
+            button.btn.btn-raised.btn-secondary(type='button') {{round2teams[7]}}
+          div
+            input.slider(type="text" name='r2i3games')
+            p games
+      br
+      a.btn.btn-primary.btn-raised.float-left(ng-click="back('west3')") Back
+      a.btn.btn-primary.btn-raised.float-right.buttontooltip(ng-click="next('east3', 'conf_2')" data-toggle='tooltip' title='Please fill in your guesses for both winning teams.' style='opacity: 0.4;') Next
+
+    div(ng-if="state == 'conf_2'" style='text-align: center;')
+      div(style='display: inline-block;')
+        h4 Teams going into Conference Finals
+        ol.list-group.list-group-flush
+          li.list-group-item(ng-repeat="item in round3teams") {{item}}
+        br
+        a.btn.btn-primary.btn-raised.float-left(ng-click="back('east3')") Back
+        a.btn.btn-primary.btn-raised.float-right(ng-click="next('conf_2', 'both1')") Next
+
+    div(ng-if="state == 'both1'")
+      div.card.bg-light(style='text-align: center;')
+        div.card-body(style='display: inline-block; color: black;')
+          div.btn-group-vertical.top-group#r3i0winner
+            span.bmd-form-group.is-filled
+              input(type='text' style='display:none;' name='r3i0winner' value='team')
+            button.btn.btn-raised.btn-secondary(type='button') {{round3teams[0]}}
+            p.mx-auto v.
+            button.btn.btn-raised.btn-secondary(type='button') {{round3teams[1]}}
+          div
+            input.slider(type="text" name='r3i0games')
+            p games
+      br
+      div.card.bg-light(style='text-align: center;')
+        div.card-body(style='display: inline-block; color: black;')
+          div.btn-group-vertical.bottom-group#r3i1winner
+            span.bmd-form-group.is-filled
+              input(type='text' style='display:none;' name='r3i1winner' value='team')
+            button.btn.btn-raised.btn-secondary(type='button') {{round3teams[2]}}
+            p.mx-auto v.
+            button.btn.btn-raised.btn-secondary(type='button') {{round3teams[3]}}
+          div
+            input.slider(type="text" name='r3i1games')
+            p games
+      br
+      a.btn.btn-primary.btn-raised.float-left(ng-click="back('conf_2')") Back
+      a.btn.btn-primary.btn-raised.float-right.buttontooltip(ng-click="next('both1', 'conf_3')" data-toggle='tooltip' title='Please fill in your guesses for both winning teams.' style='opacity: 0.4;') Next
+
+    div(ng-if="state == 'conf_3'" style='text-align: center;')
+      div(style='display: inline-block;')
+        h4 Teams going into Stanley Cup Finals
+        ol.list-group.list-group-flush
+          li.list-group-item(ng-repeat="item in round4teams") {{item}}
+        br
+        a.btn.btn-primary.btn-raised.float-left(ng-click="back('both1')") Back
+        a.btn.btn-primary.btn-raised.float-right(ng-click="next('conf_3', 'both2')") Next
+
+    div(ng-if="state == 'both2'")
+      div.card.bg-light(style='text-align: center;')
+        div.card-body(style='display: inline-block; color: black;')
+          div.btn-group-vertical.finals-group#r4i0winner
+            span.bmd-form-group.is-filled
+              input(type='text' style='display:none;' name='r4i0winner' value='team')
+            button.btn.btn-raised.btn-secondary(type='button') {{round4teams[0]}}
+            p.mx-auto v.
+            button.btn.btn-raised.btn-secondary(type='button') {{round4teams[1]}}
+          div
+            input.slider(type="text" name='r4i0games')
+            p games
+      br
+      a.btn.btn-primary.btn-raised.float-left(ng-click="back('conf_3')") Back
+      a.btn.btn-primary.btn-raised.float-right.buttontooltip(ng-click="next('both2', 'conf_4')" data-toggle='tooltip' title='Please fill in your guesses for both winning teams.' style='opacity: 0.4;') Finish
+
+    div(ng-if="state == 'conf_4'")
+      h4.text-center Confirmation
+      p.lead Round 1 Winners
+      ol.list-group.list-group-flush
+        li.list-group-item(ng-repeat="item in round2teams") {{item}}
+      hr.my-4
+      p.lead Round 2 Winners
+      ol.list-group.list-group-flush
+        li.list-group-item(ng-repeat="item in round3teams") {{item}}
+      hr.my-4
+      p.lead Conference Winners
+      ol.list-group.list-group-flush
+        li.list-group-item(ng-repeat="item in round4teams") {{item}}
+      hr.my-4
+      p.lead Stanley Cup Winner
+      ol.list-group.list-group-flush
+        li.list-group-item(ng-repeat="item in finalteam") {{item}}
+      br
+      hr.my-4
+      div.input-group.mb-3
+        input(type='text' name='name' id='loginName' class='form-control' placeholder='Name')
+      div.input-group.mb-3
+        input(type='text' name='email' id='loginEmail' class='form-control' placeholder='Email')
+      div.input-group.mb-3
+        input(type='text' name='screen' id='loginScreen' class='form-control' placeholder='Screen Name')
+      div.input-group.mb-3
+        input(type='text' name='key' id='loginKey' class='form-control' placeholder='Key')
+      br
+      a.btn.btn-primary.btn-raised.float-left(ng-click="back('both2')") Back
+      a.btn.btn-primary.btn-raised.float-right(ng-click="submit()") Submit

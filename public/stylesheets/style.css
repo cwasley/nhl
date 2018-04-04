@@ -1,10 +1,17 @@
 body {
-  padding: 50px;
+  padding: 20px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
   height: 100%;
   background-color: #333;
   color: #fff;
-  text-shadow: 0 .05rem .1rem rgba(0, 0, 0, .5);
+  /*text-shadow: 0 .05rem .1rem rgba(0, 0, 0, .5);*/
+  text-align: center;
+}
+
+form {
+  display: inline-block;
+  max-width: 900px;
+  width: 100%;
 }
 
 .cover-container {
@@ -29,6 +36,10 @@ body {
   right: 0;
   bottom: 0;
   left: 0;
+}
+
+.card-body {
+  padding: 0;
 }
 
 a {
@@ -118,4 +129,8 @@ pre {
 
 .bg-secondary img {
   width: 40%;
+}
+
+button {
+  z-index: 9999;
 }

@@ -1,97 +1,127 @@
 angular.module('nhl', [])
     .controller('NHLBracketController', ['$scope', function($scope) {
+
         $('body').bootstrapMaterialDesign();
+        $(function() {
+            addClickListeners();
+            setSliders();
+            $('body').bootstrapMaterialDesign();
+        });
 
-        $scope.state = "west1";
+        function addClickListeners() {
+            $("button").click(function() {
 
-        $(document).ready(function() {
-            $("#r1i1games").slider({
-                tooltip: 'always'
+                var roundGroup = this.parentElement;
+                // Styling: change button classes to show that the user has selected a specific one
+
+                $("#" + roundGroup.id + " button").removeClass('btn-primary').addClass('btn-secondary');
+                $(this).removeClass('btn-secondary').addClass('btn-primary');
+
+                // Set the input value for the winning team to the user-chosen one
+                $("input[name='" + roundGroup.id + "']").attr('value', $(this).text());
+
+                if (roundGroup.classList[1].substring(0,3) == "top") {
+                    $scope.topComplete = true;
+                } else if (roundGroup.classList[1].substring(0,3) == "bottom") {
+                    $scope.bottomComplete = true;
+                } else {
+                    $scope.topComplete = $scope.bottomComplete = true;
+                }
+                if ($scope.topComplete && $scope.bottomComplete) {
+                    $('.buttontooltip').attr('style', '');
+                }
             });
-        });
-
-
-        $("button").click(function() {
-
-            // Replace text in dropdown with what the team you selected / number of games
-            // context is something like west-2-1 where 'west' is the conference,
-            // 2 in this case would be the round, and 1 would be the index
-            var details = this.parentElement.id.replace('#', '').split('-');
-            var round = details[0];
-            var roundIndex = details[1];
-            var idToFind = "#" + this.parentElement.id.replace('-opts', '-text');
-
-            // TODO if we have values that depend on this one, remove them
-            $(idToFind).text($(this).text());
-            $(idToFind).val($(this).text());
-            $('input[name=' + round + '-' + roundIndex + ']').val($(this).text());
-
-            // Check if we have all four elements filled in to go to the next step
-            // (team 1, number of games 1, team 2, number of games 2)
-
-            // TODO combine logic from rounds 2 & 3
-            // First sort by round so we know which elements to grab
-            if (round !== '5') {
-                // second round; 8 total fields per conference, we only want to look @ first or last four depending on index
-                var subGroup = Math.floor(roundIndex / 4);
-                var filled_in = true;
-                var newValues = [];
-                for (var i = subGroup * 4; i < subGroup * 4 + 4; i++) {
-                    var toCheck = '#'  + round + '-' + i + '-text';
-                    var itemValue = $(toCheck)[0].value;
-                    if (itemValue === 'Team' || itemValue === '#') {
-                        filled_in = false;
-                        break;
-                    } else {
-                        newValues.push(itemValue);
-                    }
-                }
-
-                // If we have all four fields, we want to allow next round to be edited
-                // & fill in values based on user input
-                if (filled_in) {
-                    var winningTeamId = '#' + (parseInt(round) + 1) + '-' + (subGroup * 2);
-                    $(winningTeamId + '-text').removeClass('disabled');
-                    $(winningTeamId + '-opts')[0].children[0].text = newValues[0];
-                    $(winningTeamId + '-opts')[0].children[1].text = newValues[2];
-
-                    var numGamesId = '#' + (parseInt(round) + 1) + '-' + (subGroup * 2 + 1);
-                    $(numGamesId + '-text').removeClass('disabled');
-
-                    // TODO For now we just reset the values & text of this item but we really need something more dynamic;
-                    // this is tied to TODO above
-                    $(winningTeamId + '-text').text = "Team";
-                    $(winningTeamId + '-text').value = "Team";
-                    $(numGamesId + '-text').text = "#";
-                    $(numGamesId + '-text').value = "#";
-                }
-            }
-            else {
-                var filled_in = true;
-                for (var i = 0; i < 2; i++) {
-                    var toCheck = '#5-' + i + '-text';
-                    var itemValue = $(toCheck)[0].value;
-                    if (itemValue === 'Team' || itemValue === '#') {
-                        filled_in = false;
-                        break;
-                    }
-                }
-
-                if (filled_in) {
-                    $('#submitButton').prop('disabled', false);
-                }
-            }
-        });
-
-        $scope.showInstructions = function() {
-
         }
 
-        $scope.next = function(nextState) {
-            if ($scope.filled_in) {
-                $scope.state = nextState;
+        function setSliders() {
+            $("input.slider").slider({
+                ticks: [4,5,6,7],
+                ticks_labels: [4,5,6,7],
+                step: 1,
+                value: 4,
+                tooltip: 'hide'
+            });
+        }
+
+
+        $scope.round = 1;
+        $scope.state = "west1";
+        $scope.topComplete = false;
+        $scope.bottomComplete = false;
+
+        $scope.round2teams = [];
+        $scope.round3teams = [];
+        $scope.round4teams = [];
+        $scope.finalteam = [];
+
+        $scope.next = function(currState, nextState) {
+            if (currState.substr(0, 4) == "conf") {
+                $scope.round++;
+            } else if ($scope.topComplete && $scope.bottomComplete) {
+                $scope.topComplete = $scope.bottomComplete = false;
+                if ($scope.round == 1) {
+                    $scope.round2teams.push($("input[name$='winner']")[0].value);
+                    $scope.round2teams.push($("input[name$='winner']")[1].value);
+                } else if ($scope.round == 2) {
+                    $scope.round3teams.push($("input[name$='winner']")[0].value);
+                    $scope.round3teams.push($("input[name$='winner']")[1].value);
+                } else if ($scope.round == 3) {
+                    $scope.round4teams.push($("input[name$='winner']")[0].value);
+                    $scope.round4teams.push($("input[name$='winner']")[1].value);
+                } else {
+                    $scope.finalteam.push($("input[name$='winner']")[0].value);
+                }
             } else {
                 $('.buttontooltip').tooltip('show');
+                return;
             }
+            $scope.state = nextState;
+            $('.buttontooltip').tooltip('hide');
+            setTimeout(function() {
+                addClickListeners();
+                setSliders();
+            }, 1);
+        };
+
+        $scope.back = function(backState) {
+            if (backState == 'instructions') {
+                window.location = '/instructions';
+            } else {
+                $scope.state = backState;
+                setTimeout(function() {
+                    addClickListeners();
+                    setSliders();
+                }, 1);
+            }
+            $scope.topComplete = $scope.bottomComplete = false;
+            if (backState.substr(0, 4) !== "conf") {
+                if ($scope.round == 1) {
+                    $scope.round2teams.pop();
+                    $scope.round2teams.pop();
+                } else if ($scope.round == 2) {
+                    $scope.round3teams.pop();
+                    $scope.round3teams.pop();
+                } else if ($scope.round == 3) {
+                    $scope.round4teams.pop();
+                    $scope.round4teams.pop();
+                } else {
+                    $scope.finalteam.pop();
+                }
+            } else {
+                $scope.round--;
+            }
+        }
+
+        function processForm(e) {
+            if (e.preventDefault) e.preventDefault();
+
+            /* do what you want with the form */
+
+            // You must return false to prevent the default form behavior
+            return false;
+        }
+
+        $scope.submit = function() {
+            document.getElementById('bracketForm').submit()
         }
 }]);
