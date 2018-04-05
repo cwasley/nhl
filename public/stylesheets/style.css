@@ -1,7 +1,7 @@
 @supports (-webkit-overflow-scrolling: touch) {
   /* CSS specific to iOS devices */
   body {
-    cursor:pointer; 
+    cursor:pointer;
   }
 }
 
