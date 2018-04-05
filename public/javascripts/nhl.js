@@ -1,6 +1,8 @@
 angular.module('nhl', [])
     .controller('NHLBracketController', ['$scope', '$http', function($scope, $http) {
 
+        const states = ['instructions', 'west1', 'west2', 'east1', 'east2', 'conf_1', 'west3', 'east3', 'conf_2', 'both1', 'conf_3', 'both2', 'conf_4'];
+
         $('body').bootstrapMaterialDesign();
         $scope.round = 1;
         $scope.state = "west1";
@@ -46,7 +48,7 @@ angular.module('nhl', [])
                     $scope.topComplete = true;
                 } else if (roundGroup.classList[1].substring(0,3) == "bot") {
                     $scope.bottomComplete = true;
-                } else {
+                } else if (roundGroup.classList[1].substring(0,3) == "fin") {
                     $scope.topComplete = $scope.bottomComplete = true;
                 }
                 if ($scope.topComplete && $scope.bottomComplete) {
@@ -120,8 +122,10 @@ angular.module('nhl', [])
             // });
         }
 
-        $scope.next = function(currState, nextState) {
+        $scope.next = function() {
 
+            var currState = $scope.state;
+            var nextState = states[states.indexOf($scope.state) + 1];
             // If we are going to a interstitial page
             if (nextState.substr(0, 4) === "conf") {
                 setTimeout(function() {
@@ -180,16 +184,16 @@ angular.module('nhl', [])
                     // grab the winners and losers from each matchup, and update teams if they lost
                     for (var i = 0; i < $scope.teams.length; i++) {
                         var team = $scope.teams[i];
-                        if (team[0] === winners[0].value) {
-                            match1.winner = team[1].city;
-                        } else if (team[0] === winners[1].value) {
-                            match2.winner = team[1].city;
-                        } else if (team[0] === losers[0].value) {
+                        if (team.city === winners[0].value) {
+                            match1.winner = team.city;
+                        } else if (team.city === winners[1].value) {
+                            match2.winner = team.city;
+                        } else if (team.city === losers[0].value) {
                             team.alive = false;
-                            match1.loser = team[1].city;
-                        } else if (team[0] === losers[1].value) {
+                            match1.loser = team.city;
+                        } else if (team.city === losers[1].value) {
                             team.alive = false;
-                            match2.loser = team[1].city;
+                            match2.loser = team.city;
                         }
                     }
                     match1.games = games[0].value;
@@ -205,16 +209,16 @@ angular.module('nhl', [])
                     // grab the winners and losers from each matchup, and update teams if they lost
                     for (var i = 0; i < $scope.teams.length; i++) {
                         var team = $scope.teams[i];
-                        if (team[0] === winners[0].value) {
-                            match1.winner = team[1].city;
-                        } else if (team[0] === winners[1].value) {
-                            match2.winner = team[1].city;
-                        } else if (team[0] === losers[0].value) {
+                        if (team.city === winners[0].value) {
+                            match1.winner = team.city;
+                        } else if (team.city === winners[1].value) {
+                            match2.winner = team.city;
+                        } else if (team.city === losers[0].value) {
                             team.alive = false;
-                            match1.loser = team[1].city;
-                        } else if (team[0] === losers[1].value) {
+                            match1.loser = team.city;
+                        } else if (team.city === losers[1].value) {
                             team.alive = false;
-                            match2.loser = team[1].city;
+                            match2.loser = team.city;
                         }
                     }
                     match1.games = games[0].value;
@@ -230,11 +234,11 @@ angular.module('nhl', [])
                     // Only match
                     for (var i = 0; i < $scope.teams.length; i++) {
                         var team = $scope.teams[i];
-                        if (team[0] === winners[0].value) {
-                            match1.winner = team[1].city;
-                        } else if (team[0] === losers[0].value) {
+                        if (team.city === winners[0].value) {
+                            match1.winner = team.city;
+                        } else if (team.city === losers[0].value) {
                             team.alive = false;
-                            match1.loser = team[1].city;
+                            match1.loser = team.city;
                         }
                     }
                     match1.games = games[0].value;
