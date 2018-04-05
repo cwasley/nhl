@@ -14,6 +14,7 @@ angular.module('nhl', [])
         $scope.results.round2 = [];
         $scope.results.round3 = [];
         $scope.results.finals = [];
+        $scope.teamBackups = [];
 
         // Get team data
         $http.get('/data').then(function(res) {
@@ -82,46 +83,6 @@ angular.module('nhl', [])
             });
         }
 
-        function generateBracket() {
-            var minimalData = {
-                teams : [
-                    ["Team 1", "Team 2"], /* first matchup */
-                    ["Team 3", "Team 4"]  /* second matchup */
-                ],
-                results : [
-                    [[1,0], [0,1]],       /* first round */
-                    [[1,0]]        /* second round */
-                ]
-            };
-            // if ($scope.round === 1) {
-            //
-            //     var bracket1 = [], bracket2 = [], bracket3 = [], bracket4 = [], results1 = [], results2 = [], results3 = [], results4 = [];
-            //     bracket1.push([$scope.rounds.round1[0].name, $scope.rounds.round1[1].name], [$scope.rounds.round1[2].name, $scope.rounds.round1[3].name]);
-            //     bracket2.push([$scope.rounds.round1[4].name, $scope.rounds.round1[5].name], [$scope.rounds.round1[6].name, $scope.rounds.round1[7].name]);
-            //     bracket3.push([$scope.rounds.round1[8].name, $scope.rounds.round1[9].name], [$scope.rounds.round1[10].name, $scope.rounds.round1[11].name]);
-            //     bracket4.push([$scope.rounds.round1[12].name, $scope.rounds.round1[13].name], [$scope.rounds.round1[14].name, $scope.rounds.round1[15].name]);
-            //     results1.push(
-            //         [[$scope.rounds.round1[0].won ? 4 : parseInt($scope.rounds.round1[0].games) - 4,
-            //             $scope.rounds.round1[1].won ? 4 : parseInt($scope.rounds.round1[1].games) - 4],
-            //             [$scope.rounds.round1[2].won ? 4 : parseInt($scope.rounds.round1[2].games) - 4,
-            //                 $scope.rounds.round1[3].won ? 4 : parseInt($scope.rounds.round1[3].games) - 4]],
-            //         [[0,0]]);
-            // }
-            //
-            // $('.demo').bracket({
-            //     teamWidth: 130,
-            //     scoreWidth: 20,
-            //     matchMargin: 10,
-            //     roundMargin: 20,
-            //     centerConnectors: true,
-            //     skipConsolationRound: true,
-            //     init: {
-            //         teams: bracket1,
-            //         results: results1
-            //     }
-            // });
-        }
-
         $scope.next = function() {
 
             $('.buttontooltip').tooltip('enable');
@@ -132,9 +93,6 @@ angular.module('nhl', [])
             // If we are going to a interstitial page
             if (nextState.substr(0, 4) === "conf") {
                 $('.buttontooltip').attr('style', '');
-                setTimeout(function() {
-                    generateBracket();
-                }, 1);
             } else {
                 $('.buttontooltip').attr('style', 'opacity: 0.4;');
             }
@@ -144,6 +102,8 @@ angular.module('nhl', [])
             if (currState.substr(0, 4) === "conf") {
                 $scope.round++;
                 $('.buttontooltip').attr('style', 'opacity: 0.4;');
+                var backup = angular.copy($scope.teams)
+                $scope.teamBackups.push(backup);
                 $scope.teams = $scope.teams.filter(function(a) {
                     return a.alive;
                 });
@@ -270,34 +230,48 @@ angular.module('nhl', [])
             }, 1);
         };
 
-        $scope.back = function(backState) {
-            if (backState == 'instructions') {
-                window.location = '/instructions';
-            } else {
-                $scope.state = backState;
-                setTimeout(function() {
-                    addClickListeners();
-                    setSliders();
-                }, 1);
-            }
-            $scope.topComplete = $scope.bottomComplete = false;
-            if (backState.substr(0, 4) !== "conf") {
-                if ($scope.round == 1) {
-                    $scope.round2teams.pop();
-                    $scope.round2teams.pop();
-                } else if ($scope.round == 2) {
-                    $scope.round3teams.pop();
-                    $scope.round3teams.pop();
-                } else if ($scope.round == 3) {
-                    $scope.round4teams.pop();
-                    $scope.round4teams.pop();
-                } else {
-                    $scope.finalteam.pop();
-                }
-            } else {
+        $scope.back = function() {
+
+            var backState = states[states.indexOf($scope.state) - 1];
+            // TODO check if we need to change opacity of next button and/or tooltip
+            if (backState.substr(0, 4) === "conf") {
+                $scope.teams = $scope.teamBackups.pop();
                 $scope.round--;
+            } else {
+                var result1, result2;
+                if ($scope.round == 1) {
+                    result1 = $scope.results.round1.pop();
+                    result2 = $scope.results.round1.pop();
+
+                } else if ($scope.round == 2) {
+                    result1 = $scope.results.round2.pop();
+                    result2 = $scope.results.round2.pop();
+                } else if ($scope.round == 3) {
+                    result1 = $scope.results.round3.pop();
+                    result2 = $scope.results.round3.pop();
+                } else {
+                    result1 = $scope.results.finals.pop();
+                    result2 = null;
+                }
+                for (var i = 0; i < $scope.teams.length; i++) {
+                    var team = $scope.teams[i];
+                    if (team.city === result1.loser) {
+                        team.alive = true;
+                    } else if (result2 && team.city === result2.loser) {
+                        team.alive = true;
+                    }
+                }
+                if (backState == 'instructions') {
+                    window.location = '/instructions';
+                }
             }
-        }
+            $scope.state = backState;
+            setTimeout(function() {
+                addClickListeners();
+                setSliders();
+            }, 1);
+            $scope.topComplete = $scope.bottomComplete = false;
+        };
 
 
 
