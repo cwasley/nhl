@@ -1,13 +1,13 @@
 extends layout
 
 block content
-  nav.navbar.fixed-top.justify-content-center
+  nav.navbar.fixed-top.justify-content-center(ng-if="state.substr(0,4) != 'conf'")
     h4(ng-if="round == 1 && state.substr(0, 4) != 'conf'") Quarter-finals
     h4(ng-if="round == 2 && state.substr(0, 4) != 'conf'") Semi-finals
     h4(ng-if="round == 3 && state.substr(0, 4) != 'conf'") Conference Finals
     h4(ng-if="round == 4 && state.substr(0, 4) != 'conf'") Finals
-  div.main-container
-    form(id='bracketForm' action='/submit' method='post')
+  div.main-container(ng-if="state != 'conf_4'")
+    form
       div(ng-if="state === 'west1'")
         div.card.bg-light(style='text-align: center;')
           div.card-body.top-group#r1i0(style='display: inline-block; color: black;')
@@ -307,30 +307,29 @@ block content
               input.final-slider#r4i0goals(type="text")
               span#finalsGoals(style="padding-left: 10px;") 10
               p goals
-
-      div(ng-if="state == 'conf_4'")
-        h4.text-center Confirmation
-        p.lead Quarter-finals Prediction
-        ol.list-group.list-group-flush
-          li.list-group-item.small-list(ng-repeat="item in results.round1") {{item.winner}} over {{item.loser}} in {{item.games}} games
-        hr.my-4
-        p.lead Semi-finals Prediction
-        ol.list-group.list-group-flush
-          li.list-group-item.small-list(ng-repeat="item in results.round2") {{item.winner}} over {{item.loser}} in {{item.games}} games
-        hr.my-4
-        p.lead Conference Finals Prediction
-        ol.list-group.list-group-flush
-          li.list-group-item.small-list(ng-repeat="item in results.round3") {{item.winner}} over {{item.loser}} in {{item.games}} games
-        hr.my-4
-        p.lead Finals Prediction
-        ol.list-group.list-group-flush
-          li.list-group-item.small-list(ng-repeat="item in results.finals") {{item.winner}} over {{item.loser}} in {{item.games}} games ({{item.goals}} goals)
-        br
-        hr.my-4
-        div.input-group.mb-3
-          input(type='text' name='name' id='loginName' class='form-control' placeholder='Name')
-        div.input-group.mb-3
-          input(type='text' name='email' id='loginEmail' class='form-control' placeholder='Email')
+  div(ng-if="state == 'conf_4'" style="padding-bottom: 60px")
+    h4.text-center Confirmation
+    p.lead Quarter-finals Prediction
+    ol.list-group.list-group-flush
+      li.list-group-item.small-list(ng-repeat="item in results.round1") {{item.winner}} over {{item.loser}} in {{item.games}} games
+    hr.my-4
+    p.lead Semi-finals Prediction
+    ol.list-group.list-group-flush
+      li.list-group-item.small-list(ng-repeat="item in results.round2") {{item.winner}} over {{item.loser}} in {{item.games}} games
+    hr.my-4
+    p.lead Conference Finals Prediction
+    ol.list-group.list-group-flush
+      li.list-group-item.small-list(ng-repeat="item in results.round3") {{item.winner}} over {{item.loser}} in {{item.games}} games
+    hr.my-4
+    p.lead Finals Prediction
+    ol.list-group.list-group-flush
+      li.list-group-item.small-list(ng-repeat="item in results.finals") {{item.winner}} over {{item.loser}} in {{item.games}} games ({{item.goals}} goals)
+    br
+    hr.my-4
+    div.input-group.mb-3
+      input(type='text' name='name' id='loginName' class='form-control' placeholder='Name')
+    div.input-group.mb-3
+      input(type='text' name='email' id='loginEmail' class='form-control' placeholder='Email')
   nav.navbar.fixed-bottom
     a.btn.btn-primary.btn-raised.float-left(ng-click="back()") Back
     a.btn.btn-primary.btn-raised.float-right.buttontooltip(ng-click="next()" title='Please fill in your guesses for both winning teams.' style='opacity: 0.4;') {{state == 'conf_4' ? "Submit" : "Next"}}

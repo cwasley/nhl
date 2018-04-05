@@ -15,6 +15,7 @@ body {
   text-align: center;
 }
 
+/* TODO move this into main container css & make sure it works*/
 form {
   display: inline-block;
   max-width: 1000px;
