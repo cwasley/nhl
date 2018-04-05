@@ -124,6 +124,9 @@ angular.module('nhl', [])
 
         $scope.next = function() {
 
+            $('.buttontooltip').tooltip('enable');
+            $('.buttontooltip').tooltip('hide');
+
             var currState = $scope.state;
             var nextState = states[states.indexOf($scope.state) + 1];
             // If we are going to a interstitial page
