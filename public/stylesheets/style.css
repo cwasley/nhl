@@ -1,3 +1,10 @@
+@supports (-webkit-overflow-scrolling: touch) {
+  /* CSS specific to iOS devices */
+  body {
+    cursor:pointer; 
+  }
+}
+
 body {
   padding: 20px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
