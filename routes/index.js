@@ -2,6 +2,153 @@ var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
 
+var data = {
+    0: {
+        "city": "Nashville",
+        "mascot": "Predators",
+        "pts": 113,
+        "row": 45,
+        "division": "central",
+        "conference": "western",
+        "seed": "(1)"
+    },
+    1 : {
+        "city": "Colorado",
+        "mascot": "Avalanche",
+        "pts": 93,
+        "row": 40,
+        "division": "central",
+        "conference": "western",
+        "seed": "(WC2)"
+    },
+    2 : {
+        "city": "Winnipeg",
+        "mascot": "Jets",
+        "pts": 110,
+        "row": 46,
+        "division": "central",
+        "conference": "western",
+        "seed": "(2)"
+    },
+    3 : {
+        "city": "Minnesota",
+        "mascot": "Wild",
+        "pts": 98,
+        "row": 41,
+        "division": "central",
+        "conference": "western",
+        "seed": "(3)"
+    },
+    4 : {
+        "city": "Vegas",
+        "mascot": "Golden Knights",
+        "pts": 109,
+        "row": 47,
+        "division": "pacific",
+        "conference": "western",
+        "seed": "(1)"
+    },
+    5 : {
+        "city": "Anaheim",
+        "mascot": "Ducks",
+        "pts": 95,
+        "row": 37,
+        "division": "pacific",
+        "conference": "western",
+        "seed": "(WC1)"
+    },
+    6 : {
+        "city": "San Jose",
+        "mascot": "Sharks",
+        "pts": 98,
+        "row": 39,
+        "division": "pacific",
+        "conference": "western",
+        "seed": "(2)"
+    },
+    7 : {
+        "city": "LA",
+        "mascot": "Kings",
+        "pts": 96,
+        "row": 42,
+        "division": "pacific",
+        "conference": "western",
+        "seed": "(3)"
+    },
+    8 : {
+        "city": "Boston",
+        "mascot": "Bruins",
+        "pts": 110,
+        "row": 46,
+        "division": "atlantic",
+        "conference": "eastern",
+        "seed": "(1)"
+    },
+    9 : {
+        "city": "Philadelphia",
+        "mascot": "Flyers",
+        "pts": 94,
+        "row": 38,
+        "division": "metropolitan",
+        "conference": "eastern",
+        "seed": "(WC2)"
+    },
+    10 : {
+        "city": "Tampa Bay",
+        "mascot": "Lightning",
+        "pts": 110,
+        "row": 47,
+        "division": "atlantic",
+        "conference": "eastern",
+        "seed": "(2)"
+    },
+    11 : {
+        "city": "Toronto",
+        "mascot": "Maple Leafs",
+        "pts": 103,
+        "row": 41,
+        "division": "atlantic",
+        "conference": "eastern",
+        "seed": "(3)"
+    },
+    12 : {
+        "city": "Washington",
+        "mascot": "Capitals",
+        "pts": 103,
+        "row": 45,
+        "division": "metropolitan",
+        "conference": "eastern",
+        "seed": "(1)"
+    },
+    13 : {
+        "city": "New Jersey",
+        "mascot": "Devils",
+        "pts": 95,
+        "row": 38,
+        "division": "metropolitan",
+        "conference": "eastern",
+        "seed": "(WC1)"
+    },
+    14 : {
+        "city": "Pittsburgh",
+        "mascot": "Penguins",
+        "pts": 96,
+        "row": 43,
+        "division": "metropolitan",
+        "conference": "eastern",
+        "seed": "(2)"
+    },
+    15 : {
+        "city": "Columbus",
+        "mascot": "Blue Jackets",
+        "pts": 96,
+        "row": 39,
+        "division": "metropolitan",
+        "conference": "eastern",
+        "seed": "(3)"
+    }
+};
+
 const Bracket = mongoose.model('Bracket', {
     result2_0: String,
     result2_1: String,
@@ -87,6 +234,10 @@ router.post('/submit', function(req, res, next) {
     res.redirect('/');
   });
 
+});
+
+router.get('/data', function(req, res, next) {
+    res.json({'data': data});
 });
 
 module.exports = router;

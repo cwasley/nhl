@@ -1,284 +1,317 @@
 extends layout
 
 block content
-  h4.text-center(ng-if="state.charAt(0) == 'w'") Western Conference
-  h4.text-center(ng-if="state.charAt(0) == 'e'") Eastern Conference
+  h4.text-center(ng-if="round == 1 && state.substr(0, 4) != 'conf'") Quarter-finals
+  h4.text-center(ng-if="round == 2 && state.substr(0, 4) != 'conf'") Semi-finals
   h4.text-center(ng-if="round == 3 && state.substr(0, 4) != 'conf'") Conference Finals
-  h4.text-center(ng-if="round == 4 && state.substr(0, 4) != 'conf'") Stanley Cup Finals
-  p.text-center(ng-if="round == 1 && state.substr(0, 4) != 'conf'") - Round 1 -
-  p.text-center(ng-if="round == 2 && state.substr(0, 4) != 'conf'") - Round 2 -
-  form(id='bracketForm' action='/submit' method='post')
-    div(ng-if="state === 'west1'")
-      div.card.bg-light(style='text-align: center;')
-        div.card-body(style='display: inline-block; color: black;')
-          div.btn-group-vertical.top-group#r1i0winner
-            span.bmd-form-group.is-filled
-              input(type='text' style='display:none;' name='r1i0winner' value='team')
-            button.btn.btn-raised.btn-secondary(type='button') Nashville Predators
-            p.mx-auto v.
-            button.btn.btn-raised.btn-secondary(type='button') Colorado Avalanche
-          div
-            input.slider(type="text" name='r1i0games')
-            p games
-      br
-      div.card.bg-light(style='text-align: center;')
-        div.card-body(style='display: inline-block; color: black;')
-          div.btn-group-vertical.bottom-group#r1i1winner
-            span.bmd-form-group.is-filled
-              input(type='text' style='display:none;' name='r1i1winner' value='team')
-            button.btn.btn-raised.btn-secondary(type='button') Winnipeg Jets
-            p.mx-auto v.
-            button.btn.btn-raised.btn-secondary(type='button') Minnesota Wild
-          div
-            input.slider(type="text" name='r1i1games')
-            p games
-      br
-      a.btn.btn-primary.btn-raised.float-left(ng-click="back('instructions')") Back
-      a.btn.btn-primary.btn-raised.float-right.buttontooltip(ng-click="next('west1', 'west2')" data-toggle='tooltip' title='Please fill in your guesses for both winning teams.' style='opacity: 0.4;') Next
-
-
-    div(ng-if="state === 'west2'")
-      div.card.bg-light(style='text-align: center;')
-        div.card-body(style='display: inline-block; color: black;')
-          div.btn-group-vertical.top-group#r1i2winner
-            span.bmd-form-group.is-filled
-              input(type='text' style='display:none;' name='r1i2winner' value='team')
-            button.btn.btn-raised.btn-secondary(type='button') Vegas Golden Knights
-            p.mx-auto v.
-            button.btn.btn-raised.btn-secondary(type='button') Anaheim Ducks
-          div
-            input.slider(type="text" name='r1i2games')
-            p games
-      br
-      div.card.bg-light(style='text-align: center;')
-        div.card-body(style='display: inline-block; color: black;')
-          div.btn-group-vertical.bottom-group#r1i3winner
-            span.bmd-form-group.is-filled
-              input(type='text' style='display:none;' name='r1i3winner' value='team')
-            button.btn.btn-raised.btn-secondary(type='button') San Jose Sharks
-            p.mx-auto v.
-            button.btn.btn-raised.btn-secondary(type='button') LA Kings
-          div
-            input.slider(type="text" name='r1i3games')
-            p games
-      br
-      a.btn.btn-primary.btn-raised.float-left(ng-click="back('west1')") Back
-      a.btn.btn-primary.btn-raised.float-right.buttontooltip(ng-click="next('west2', 'east1')" data-toggle='tooltip' title='Please fill in your guesses for both winning teams.' style='opacity: 0.4;') Next
-
-    div(ng-if="state === 'east1'")
-      div.card.bg-light(style='text-align: center;')
-        div.card-body(style='display: inline-block; color: black;')
-          div.btn-group-vertical.top-group#r1i4winner
-            span.bmd-form-group.is-filled
-              input(type='text' style='display:none;' name='r1i4winner' value='team')
-            button.btn.btn-raised.btn-secondary(type='button') Boston Bruins
-            p.mx-auto v.
-            button.btn.btn-raised.btn-secondary(type='button') New Jersey Devils
-          div
-            input.slider(type="text" name='r1i4games')
-            p games
-      br
-      div.card.bg-light(style='text-align: center;')
-        div.card-body(style='display: inline-block; color: black;')
-          div.btn-group-vertical.bottom-group#r1i5winner
-            span.bmd-form-group.is-filled
-              input(type='text' style='display:none;' name='r1i5winner' value='team')
-            button.btn.btn-raised.btn-secondary(type='button') Tampa Bay Lightning
-            p.mx-auto v.
-            button.btn.btn-raised.btn-secondary(type='button') Toronto Maple Leafs
-          div
-            input.slider(type="text" name='r1i5games')
-            p games
-      br
-      a.btn.btn-primary.btn-raised.float-left(ng-click="back('west2')") Back
-      a.btn.btn-primary.btn-raised.float-right.buttontooltip(ng-click="next('east1', 'east2')" data-toggle='tooltip' title='Please fill in your guesses for both winning teams.' style='opacity: 0.4;') Next
-
-    div(ng-if="state === 'east2'")
-      div.card.bg-light(style='text-align: center;')
-        div.card-body(style='display: inline-block; color: black;')
-          div.btn-group-vertical.top-group#r1i6winner
-            span.bmd-form-group.is-filled
-              input(type='text' style='display:none;' name='r1i6winner' value='team')
-            button.btn.btn-raised.btn-secondary(type='button') Washington Capitals
-            p.mx-auto v.
-            button.btn.btn-raised.btn-secondary(type='button') Philadelphia Flyers
-          div
-            input.slider(type="text" name='r1i6games')
-            p games
-      br
-      div.card.bg-light(style='text-align: center;')
-        div.card-body(style='display: inline-block; color: black;')
-          div.btn-group-vertical.bottom-group#r1i7winner
-            span.bmd-form-group.is-filled
-              input(type='text' style='display:none;' name='r1i7winner' value='team')
-            button.btn.btn-raised.btn-secondary(type='button') Pittsburgh Penguins
-            p.mx-auto v.
-            button.btn.btn-raised.btn-secondary(type='button') Columbus Blue Jackets
-          div
-            input.slider(type="text" name='r1i7games')
-            p games
-      br
-      a.btn.btn-primary.btn-raised.float-left(ng-click="back('east1')") Back
-      a.btn.btn-primary.btn-raised.float-right.buttontooltip(ng-click="next('east2', 'conf_1')" data-toggle='tooltip' title='Please fill in your guesses for both winning teams.' style='opacity: 0.4;') Next
-
-    div(ng-if="state == 'conf_1'" style='text-align: center;')
-      div(style='display: inline-block;')
-        h4 Teams going into round 2
-        ol.list-group.list-group-flush
-          li.list-group-item(ng-repeat="item in round2teams") {{item.name}} in {{item.games}} games
+  h4.text-center(ng-if="round == 4 && state.substr(0, 4) != 'conf'") Finals
+  div.main-container
+    form(id='bracketForm' action='/submit' method='post')
+      div(ng-if="state === 'west1'")
+        div.card.bg-light(style='text-align: center;')
+          div.card-body.top-group#r1i0(style='display: inline-block; color: black;')
+            p(style='padding-top: 10px; margin-bottom: 0px;') Pacific Quarter-final 1
+            hr(style='margin-top: 4px; margin-bottom: 0px;')
+            div.btn-group-vertical(style='width: 80%')
+              span.bmd-form-group.is-filled(style="display: none;")
+                input#r1i0winner(type='text')
+                input#r1i0loser(type='text')
+              button.btn.btn-raised.btn-secondary(type='button' value='{{teams[0].city}}')
+                p(style='margin-bottom: 0px;') {{teams[0].city}} {{teams[0].mascot}} {{teams[0].seed}}
+                p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[0].pts}} pts, {{teams[0].row}} row
+              button.btn.btn-raised.btn-secondary(type='button' value='{{teams[1].city}}')
+                p(style='margin-bottom: 0px;') {{teams[1].city}} {{teams[1].mascot}} {{teams[1].seed}}
+                p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[1].pts}} pts, {{teams[1].row}} row
+            p(style='margin-bottom: 0px;') in
+            div(style='padding-bottom: 10px;')
+              input.slider#r1i0games(type="text")
         br
-        a.btn.btn-primary.btn-raised.float-left(ng-click="back('east2')") Back
-        a.btn.btn-primary.btn-raised.float-right(ng-click="next('conf_1', 'west3')") Next
+        div.card.bg-light(style='text-align: center;')
+          div.card-body.bottom-group#r1i1(style='display: inline-block; color: black;')
+            p(style='padding-top: 10px; margin-bottom: 0px;') Pacific Quarter-final 2
+            hr(style='margin-top: 4px; margin-bottom: 0px;')
+            div.btn-group-vertical(style='width: 80%')
+              span.bmd-form-group.is-filled(style="display: none;")
+                input#r1i1winner(type='text')
+                input#r1i1loser(type='text')
+              button.btn.btn-raised.btn-secondary(type='button' value='{{teams[2].city}}')
+                p(style='margin-bottom: 0px;') {{teams[2].city}} {{teams[2].mascot}} {{teams[2].seed}}
+                p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[2].pts}} pts, {{teams[2].row}} row
+              button.btn.btn-raised.btn-secondary(type='button' value='{{teams[3].city}}')
+                p(style='margin-bottom: 0px;') {{teams[3].city}} {{teams[3].mascot}} {{teams[3].seed}}
+                p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[3].pts}} pts, {{teams[3].row}} row
+            p(style='margin-bottom: 0px;') in
+            div(style='padding-bottom: 10px;')
+              input.slider#r1i1games(type="text")
 
-    div(ng-if="state == 'west3'")
-      div.card.bg-light(style='text-align: center;')
-        div.card-body(style='display: inline-block; color: black;')
-          div.btn-group-vertical.top-group#r2i0winner
-            span.bmd-form-group.is-filled
-              input(type='text' style='display:none;' name='r2i0winner' value='team')
-            button.btn.btn-raised.btn-secondary(type='button') {{round2teams[0].name}}
-            p.mx-auto v.
-            button.btn.btn-raised.btn-secondary(type='button') {{round2teams[1].name}}
-          div
-            input.slider(type="text" name='r2i0games')
-            p games
-      br
-      div.card.bg-light(style='text-align: center;')
-        div.card-body(style='display: inline-block; color: black;')
-          div.btn-group-vertical.bottom-group#r2i1winner
-            span.bmd-form-group.is-filled
-              input(type='text' style='display:none;' name='r2i1winner' value='team')
-            button.btn.btn-raised.btn-secondary(type='button') {{round2teams[2].name}}
-            p.mx-auto v.
-            button.btn.btn-raised.btn-secondary(type='button') {{round2teams[3].name}}
-          div
-            input.slider(type="text" name='r2i1games')
-            p games
-      br
-      a.btn.btn-primary.btn-raised.float-left(ng-click="back('conf_1')") Back
-      a.btn.btn-primary.btn-raised.float-right.buttontooltip(ng-click="next('west3', 'east3')" data-toggle='tooltip' title='Please fill in your guesses for both winning teams.' style='opacity: 0.4;') Next
-
-    div(ng-if="state == 'east3'")
-      div.card.bg-light(style='text-align: center;')
-        div.card-body(style='display: inline-block; color: black;')
-          div.btn-group-vertical.top-group#r2i2winner
-            span.bmd-form-group.is-filled
-              input(type='text' style='display:none;' name='r2i2winner' value='team')
-            button.btn.btn-raised.btn-secondary(type='button') {{round2teams[4].name}}
-            p.mx-auto v.
-            button.btn.btn-raised.btn-secondary(type='button') {{round2teams[5].name}}
-          div
-            input.slider(type="text" name='r2i2games')
-            p games
-      br
-      div.card.bg-light(style='text-align: center;')
-        div.card-body(style='display: inline-block; color: black;')
-          div.btn-group-vertical.bottom-group#r2i3winner
-            span.bmd-form-group.is-filled
-              input(type='text' style='display:none;' name='r2i3winner' value='team')
-            button.btn.btn-raised.btn-secondary(type='button') {{round2teams[6].name}}
-            p.mx-auto v.
-            button.btn.btn-raised.btn-secondary(type='button') {{round2teams[7].name}}
-          div
-            input.slider(type="text" name='r2i3games')
-            p games
-      br
-      a.btn.btn-primary.btn-raised.float-left(ng-click="back('west3')") Back
-      a.btn.btn-primary.btn-raised.float-right.buttontooltip(ng-click="next('east3', 'conf_2')" data-toggle='tooltip' title='Please fill in your guesses for both winning teams.' style='opacity: 0.4;') Next
-
-    div(ng-if="state == 'conf_2'" style='text-align: center;')
-      div(style='display: inline-block;')
-        h4 Teams going into Conference Finals
-        ol.list-group.list-group-flush
-          li.list-group-item(ng-repeat="item in round3teams") {{item.name}} in {{item.games}} games
+      div(ng-if="state === 'west2'")
+        div.card.bg-light(style='text-align: center;')
+          div.card-body.top-group#r1i2(style='display: inline-block; color: black;')
+            h5.card-title Central Quarter-final 1
+            div.btn-group-vertical
+              span.bmd-form-group.is-filled(style="display: none;")
+                input#r1i2winner(type='text')
+                input#r1i2loser(type='text')
+              button.btn.btn-raised.btn-secondary(type='button') {{teams[4][0]}}
+              p.mx-auto v.
+              button.btn.btn-raised.btn-secondary(type='button') {{teams[5][0]}}
+            div
+              input.slider#r1i2games(type="text")
+              p games
         br
-        a.btn.btn-primary.btn-raised.float-left(ng-click="back('east3')") Back
-        a.btn.btn-primary.btn-raised.float-right(ng-click="next('conf_2', 'both1')") Next
-
-    div(ng-if="state == 'both1'")
-      div.card.bg-light(style='text-align: center;')
-        div.card-body(style='display: inline-block; color: black;')
-          div.btn-group-vertical.top-group#r3i0winner
-            span.bmd-form-group.is-filled
-              input(type='text' style='display:none;' name='r3i0winner' value='team')
-            button.btn.btn-raised.btn-secondary(type='button') {{round3teams[0].name}}
-            p.mx-auto v.
-            button.btn.btn-raised.btn-secondary(type='button') {{round3teams[1].name}}
-          div
-            input.slider(type="text" name='r3i0games')
-            p games
-      br
-      div.card.bg-light(style='text-align: center;')
-        div.card-body(style='display: inline-block; color: black;')
-          div.btn-group-vertical.bottom-group#r3i1winner
-            span.bmd-form-group.is-filled
-              input(type='text' style='display:none;' name='r3i1winner' value='team')
-            button.btn.btn-raised.btn-secondary(type='button') {{round3teams[2].name}}
-            p.mx-auto v.
-            button.btn.btn-raised.btn-secondary(type='button') {{round3teams[3].name}}
-          div
-            input.slider(type="text" name='r3i1games')
-            p games
-      br
-      a.btn.btn-primary.btn-raised.float-left(ng-click="back('conf_2')") Back
-      a.btn.btn-primary.btn-raised.float-right.buttontooltip(ng-click="next('both1', 'conf_3')" data-toggle='tooltip' title='Please fill in your guesses for both winning teams.' style='opacity: 0.4;') Next
-
-    div(ng-if="state == 'conf_3'" style='text-align: center;')
-      div(style='display: inline-block;')
-        h4 Teams going into Stanley Cup Finals
-        ol.list-group.list-group-flush
-          li.list-group-item(ng-repeat="item in round4teams") {{item.name}} in {{item.games}} games
+        div.card.bg-light(style='text-align: center;')
+          div.card-body.bottom-group#r1i3(style='display: inline-block; color: black;')
+            h5.card-title Central Quarter-final 2
+            div.btn-group-vertical
+              span.bmd-form-group.is-filled(style="display: none;")
+                input#r1i3winner(type='text')
+                input#r1i3loser(type='text')
+              button.btn.btn-raised.btn-secondary(type='button') {{teams[6][0]}}
+              p.mx-auto v.
+              button.btn.btn-raised.btn-secondary(type='button') {{teams[7][0]}}
+            div
+              input.slider#r1i3games(type="text")
+              p games
         br
-        a.btn.btn-primary.btn-raised.float-left(ng-click="back('both1')") Back
-        a.btn.btn-primary.btn-raised.float-right(ng-click="next('conf_3', 'both2')") Next
+        a.btn.btn-primary.btn-raised.float-left(ng-click="back('west1')") Back
+        a.btn.btn-primary.btn-raised.float-right.buttontooltip(ng-click="next('west2', 'east1')" data-toggle='tooltip' title='Please fill in your guesses for both winning teams.' style='opacity: 0.4;') Next
 
-    div(ng-if="state == 'both2'")
-      div.card.bg-light(style='text-align: center;')
-        div.card-body(style='display: inline-block; color: black;')
-          div.btn-group-vertical.finals-group#r4i0winner
-            span.bmd-form-group.is-filled
-              input(type='text' style='display:none;' name='r4i0winner' value='team')
-            button.btn.btn-raised.btn-secondary(type='button') {{round4teams[0].name}}
-            p.mx-auto v.
-            button.btn.btn-raised.btn-secondary(type='button') {{round4teams[1].name}}
-          div
-            input.slider(type="text" name='r4i0games')
-            p games
-          div
-            input.final-slider(type="text" name='r4i0goals')
-            span#finalsGoals(style="padding-left: 10px;") 10
-            p goals
-      br
-      a.btn.btn-primary.btn-raised.float-left(ng-click="back('conf_3')") Back
-      a.btn.btn-primary.btn-raised.float-right.buttontooltip(ng-click="next('both2', 'conf_4')" data-toggle='tooltip' title='Please fill in your guesses for both winning teams.' style='opacity: 0.4;') Finish
+      div(ng-if="state === 'east1'")
+        div.card.bg-light(style='text-align: center;')
+          div.card-body.top-group#r1i4(style='display: inline-block; color: black;')
+            h5.card-title Atlantic Quarter-final 1
+            div.btn-group-vertical
+              span.bmd-form-group.is-filled(style="display: none;")
+                input#r1i4winner(type='text')
+                input#r1i4loser(type='text')
+              button.btn.btn-raised.btn-secondary(type='button') {{teams[8][0]}}
+              p.mx-auto v.
+              button.btn.btn-raised.btn-secondary(type='button') {{teams[9][0]}}
+            div
+              input.slider#r1i4games(type="text")
+              p games
+        br
+        div.card.bg-light(style='text-align: center;')
+          div.card-body.bottom-group#r1i5(style='display: inline-block; color: black;')
+            h5.card-title Atlantic Quarter-final 2
+            div.btn-group-vertical
+              span.bmd-form-group.is-filled(style="display: none;")
+                input#r1i5winner(type='text')
+                input#r1i5loser(type='text')
+              button.btn.btn-raised.btn-secondary(type='button') {{teams[10][0]}}
+              p.mx-auto v.
+              button.btn.btn-raised.btn-secondary(type='button') {{teams[11][0]}}
+            div
+              input.slider#r1i5games(type="text")
+              p games
+        br
+        a.btn.btn-primary.btn-raised.float-left(ng-click="back('west2')") Back
+        a.btn.btn-primary.btn-raised.float-right.buttontooltip(ng-click="next('east1', 'east2')" data-toggle='tooltip' title='Please fill in your guesses for both winning teams.' style='opacity: 0.4;') Next
 
-    div(ng-if="state == 'conf_4'")
-      h4.text-center Confirmation
-      p.lead Round 1 Winners
-      ol.list-group.list-group-flush
-        li.list-group-item(ng-repeat="item in round2teams") {{item.name}} in {{item.games}} games
-      hr.my-4
-      p.lead Round 2 Winners
-      ol.list-group.list-group-flush
-        li.list-group-item(ng-repeat="item in round3teams") {{item.name}} in {{item.games}} games
-      hr.my-4
-      p.lead Conference Winners
-      ol.list-group.list-group-flush
-        li.list-group-item(ng-repeat="item in round4teams") {{item.name}} in {{item.games}} games
-      hr.my-4
-      p.lead Stanley Cup Winner
-      ol.list-group.list-group-flush
-        li.list-group-item(ng-repeat="item in finalteam") {{item.name}} in {{item.games}} games; {{item.goals}} goals
-      br
-      hr.my-4
-      div.input-group.mb-3
-        input(type='text' name='name' id='loginName' class='form-control' placeholder='Name')
-      div.input-group.mb-3
-        input(type='text' name='email' id='loginEmail' class='form-control' placeholder='Email')
-      div.input-group.mb-3
-        input(type='text' name='screen' id='loginScreen' class='form-control' placeholder='Screen Name')
-      div.input-group.mb-3
-        input(type='text' name='key' id='loginKey' class='form-control' placeholder='Key')
-      br
-      a.btn.btn-primary.btn-raised.float-left(ng-click="back('both2')") Back
-      a.btn.btn-primary.btn-raised.float-right(ng-click="submit()") Submit
+      div(ng-if="state === 'east2'")
+        div.card.bg-light(style='text-align: center;')
+          h5.card-title Metro Quarter-final 1
+          div.card-body.top-group#r1i6(style='display: inline-block; color: black;')
+            div.btn-group-vertical
+              span.bmd-form-group.is-filled(style="display: none;")
+                input#r1i6winner(type='text')
+                input#r1i6loser(type='text')
+              button.btn.btn-raised.btn-secondary(type='button') {{teams[12][0]}}
+              p.mx-auto v.
+              button.btn.btn-raised.btn-secondary(type='button') {{teams[13][0]}}
+            div
+              input.slider#r1i6games(type="text")
+              p games
+        br
+        div.card.bg-light(style='text-align: center;')
+          div.card-body.bottom-group#r1i7(style='display: inline-block; color: black;')
+            h5.card-title Metro Quarter-final 2
+            div.btn-group-vertical
+              span.bmd-form-group.is-filled(style="display: none;")
+                input#r1i7winner(type='text')
+                input#r1i7loser(type='text')
+              button.btn.btn-raised.btn-secondary(type='button') {{teams[14][0]}}
+              p.mx-auto v.
+              button.btn.btn-raised.btn-secondary(type='button') {{teams[15][0]}}
+            div
+              input.slider#r1i7games(type="text")
+              p games
+        br
+        a.btn.btn-primary.btn-raised.float-left(ng-click="back('east1')") Back
+        a.btn.btn-primary.btn-raised.float-right.buttontooltip(ng-click="next('east2', 'conf_1')" data-toggle='tooltip' title='Please fill in your guesses for both winning teams.' style='opacity: 0.4;') Next
+
+      div(ng-if="state == 'conf_1'" style='text-align: center;')
+        div(style='display: inline-block;')
+          h4 Round 1 Predictions
+          ol.list-group.list-group-flush
+            li.list-group-item.small-list(ng-repeat="item in results.round1") {{item.winner}} over {{item.loser}} in {{item.games}} games
+          br
+          a.btn.btn-primary.btn-raised.float-left(ng-click="back('east2')") Back
+          a.btn.btn-primary.btn-raised.float-right(ng-click="next('conf_1', 'west3')") Next
+          div.demo
+
+      div(ng-if="state == 'west3'")
+        div.card.bg-light(style='text-align: center;')
+          div.card-body.top-group#r2i0(style='display: inline-block; color: black;')
+            h5.card-title Pacific Semi-final
+            div.btn-group-vertical
+              span.bmd-form-group.is-filled(style="display: none;")
+                input#r2i0winner(type='text')
+                input#r2i0loser(type='text')
+              button.btn.btn-raised.btn-secondary(type='button') {{teams[0][0]}}
+              p.mx-auto v.
+              button.btn.btn-raised.btn-secondary(type='button') {{teams[1][0]}}
+            div
+              input.slider#r2i0games(type="text")
+              p games
+        br
+        div.card.bg-light(style='text-align: center;')
+          div.card-body.bottom-group#r2i1(style='display: inline-block; color: black;')
+            h5.card-title Central Semi-final
+            div.btn-group-vertical
+              span.bmd-form-group.is-filled(style="display: none;")
+                input#r2i1winner(type='text')
+                input#r2i1loser(type='text')
+              button.btn.btn-raised.btn-secondary(type='button') {{teams[2][0]}}
+              p.mx-auto v.
+              button.btn.btn-raised.btn-secondary(type='button') {{teams[3][0]}}
+            div
+              input.slider#r2i1games(type="text")
+              p games
+        br
+        a.btn.btn-primary.btn-raised.float-left(ng-click="back('conf_1')") Back
+        a.btn.btn-primary.btn-raised.float-right.buttontooltip(ng-click="next('west3', 'east3')" data-toggle='tooltip' title='Please fill in your guesses for both winning teams.' style='opacity: 0.4;') Next
+
+      div(ng-if="state == 'east3'")
+        div.card.bg-light(style='text-align: center;')
+          div.card-body.top-group#r2i2(style='display: inline-block; color: black;')
+            h5.card-title Atlantic Semi-final
+            div.btn-group-vertical
+              span.bmd-form-group.is-filled(style="display: none;")
+                input#r2i2winner(type='text')
+                input#r2i2loser(type='text')
+              button.btn.btn-raised.btn-secondary(type='button') {{teams[4][0]}}
+              p.mx-auto v.
+              button.btn.btn-raised.btn-secondary(type='button') {{teams[5][0]}}
+            div
+              input.slider#r2i2games(type="text")
+              p games
+        br
+        div.card.bg-light(style='text-align: center;')
+          div.card-body.bottom-group#r2i3(style='display: inline-block; color: black;')
+            h5.card-title Metro Semi-final
+            div.btn-group-vertical
+              span.bmd-form-group.is-filled(style="display: none;")
+                input#r2i3winner(type='text')
+                input#r2i3loser(type='text')
+              button.btn.btn-raised.btn-secondary(type='button') {{teams[6][0]}}
+              p.mx-auto v.
+              button.btn.btn-raised.btn-secondary(type='button') {{teams[7][0]}}
+            div
+              input.slider#r2i3games(type="text")
+              p games
+        br
+        a.btn.btn-primary.btn-raised.float-left(ng-click="back('west3')") Back
+        a.btn.btn-primary.btn-raised.float-right.buttontooltip(ng-click="next('east3', 'conf_2')" data-toggle='tooltip' title='Please fill in your guesses for both winning teams.' style='opacity: 0.4;') Next
+
+      div(ng-if="state == 'conf_2'" style='text-align: center;')
+        div(style='display: inline-block;')
+          h4 Round 2 Predictions
+          ol.list-group.list-group-flush
+            li.list-group-item.small-list(ng-repeat="item in results.round2") {{item.winner}} over {{item.loser}} in {{item.games}} games
+          br
+          a.btn.btn-primary.btn-raised.float-left(ng-click="back('east3')") Back
+          a.btn.btn-primary.btn-raised.float-right(ng-click="next('conf_2', 'both1')") Next
+
+      div(ng-if="state == 'both1'")
+        div.card.bg-light(style='text-align: center;')
+          div.card-body.top-group#r3i0(style='display: inline-block; color: black;')
+            h5.card-title Western Conference Finals
+            div.btn-group-vertical
+              span.bmd-form-group.is-filled(style="display: none;")
+                input#r3i0winner(type='text')
+                input#r3i0loser(type='text')
+              button.btn.btn-raised.btn-secondary(type='button') {{teams[0][0]}}
+              p.mx-auto v.
+              button.btn.btn-raised.btn-secondary(type='button') {{teams[1][0]}}
+            div
+              input.slider#r3i0games(type="text")
+              p games
+        br
+        div.card.bg-light(style='text-align: center;')
+          div.card-body.bottom-group#r3i1(style='display: inline-block; color: black;')
+            h5.card-title Eastern Conference Finals
+            div.btn-group-vertical
+              span.bmd-form-group.is-filled(style="display: none;")
+                input#r3i1winner(type='text')
+                input#r3i1loser(type='text')
+              button.btn.btn-raised.btn-secondary(type='button') {{teams[2][0]}}
+              p.mx-auto v.
+              button.btn.btn-raised.btn-secondary(type='button') {{teams[3][0]}}
+            div
+              input.slider#r3i1games(type="text")
+              p games
+        br
+        a.btn.btn-primary.btn-raised.float-left(ng-click="back('conf_2')") Back
+        a.btn.btn-primary.btn-raised.float-right.buttontooltip(ng-click="next('both1', 'conf_3')" data-toggle='tooltip' title='Please fill in your guesses for both winning teams.' style='opacity: 0.4;') Next
+
+      div(ng-if="state == 'conf_3'" style='text-align: center;')
+        div(style='display: inline-block;')
+          h4 Round 3 Predictions
+          ol.list-group.list-group-flush
+            li.list-group-item.small-list(ng-repeat="item in results.round3") {{item.winner}} over {{item.loser}} in {{item.games}} games
+          br
+          a.btn.btn-primary.btn-raised.float-left(ng-click="back('both1')") Back
+          a.btn.btn-primary.btn-raised.float-right(ng-click="next('conf_3', 'both2')") Next
+
+      div(ng-if="state == 'both2'")
+        div.card.bg-light(style='text-align: center;')
+          div.card-body.finals-group#r4i0(style='display: inline-block; color: black;')
+            h5.card-title Stanley Cup Final
+            div.btn-group-vertical
+              span.bmd-form-group.is-filled(style="display: none;")
+                input#r4i0winner(type='text')
+                input#r4i0loser(type='text')
+              button.btn.btn-raised.btn-secondary(type='button') {{teams[0][0]}}
+              p.mx-auto v.
+              button.btn.btn-raised.btn-secondary(type='button') {{teams[1][0]}}
+            div
+              input.slider#r4i0games(type="text")
+              p games
+            div
+              input.final-slider#r4i0goals(type="text")
+              span#finalsGoals(style="padding-left: 10px;") 10
+              p goals
+        br
+        a.btn.btn-primary.btn-raised.float-left(ng-click="back('conf_3')") Back
+        a.btn.btn-primary.btn-raised.float-right.buttontooltip(ng-click="next('both2', 'conf_4')" data-toggle='tooltip' title='Please fill in your guesses for both winning teams.' style='opacity: 0.4;') Finish
+
+      div(ng-if="state == 'conf_4'")
+        h4.text-center Confirmation
+        p.lead Round 1 Predictions
+        ol.list-group.list-group-flush
+          li.list-group-item.small-list(ng-repeat="item in results.round1") {{item.winner}} over {{item.loser}} in {{item.games}} games
+        hr.my-4
+        p.lead Round 2 Predictions
+        ol.list-group.list-group-flush
+          li.list-group-item.small-list(ng-repeat="item in results.round2") {{item.winner}} over {{item.loser}} in {{item.games}} games
+        hr.my-4
+        p.lead Conference Finals Prediction
+        ol.list-group.list-group-flush
+          li.list-group-item.small-list(ng-repeat="item in results.round3") {{item.winner}} over {{item.loser}} in {{item.games}} games
+        hr.my-4
+        p.lead Stanley Cup Prediction
+        ol.list-group.list-group-flush
+          li.list-group-item.small-list(ng-repeat="item in results.finals") {{item.winner}} over {{item.loser}} in {{item.games}} games ({{item.goals}} goals)
+        br
+        hr.my-4
+        div.input-group.mb-3
+          input(type='text' name='name' id='loginName' class='form-control' placeholder='Name')
+        div.input-group.mb-3
+          input(type='text' name='email' id='loginEmail' class='form-control' placeholder='Email')
+        br
+        a.btn.btn-primary.btn-raised.float-left(ng-click="back('both2')") Back
+        a.btn.btn-primary.btn-raised.float-right(ng-click="submit()") Submit
+  nav.navbar.fixed-bottom
+    a.btn.btn-primary.btn-raised.float-left(ng-click="back('instructions')") Back
+    a.btn.btn-primary.btn-raised.float-right.buttontooltip(ng-click="next('west1', 'west2')" data-toggle='tooltip' title='Please fill in your guesses for both winning teams.' style='opacity: 0.4;') Next
