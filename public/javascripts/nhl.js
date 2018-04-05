@@ -124,6 +124,7 @@ angular.module('nhl', [])
 
         $scope.next = function() {
 
+            $('.buttontooltip').tooltip('hide');
             var currState = $scope.state;
             var nextState = states[states.indexOf($scope.state) + 1];
             // If we are going to a interstitial page
@@ -258,7 +259,7 @@ angular.module('nhl', [])
             }
             $scope.topComplete = $scope.bottomComplete = false;
             $scope.state = nextState;
-            $('.buttontooltip').tooltip('hide');
+
             setTimeout(function() {
                 addClickListeners();
                 setSliders();
