@@ -1,10 +1,11 @@
 extends layout
 
 block content
-  h4.text-center(ng-if="round == 1 && state.substr(0, 4) != 'conf'") Quarter-finals
-  h4.text-center(ng-if="round == 2 && state.substr(0, 4) != 'conf'") Semi-finals
-  h4.text-center(ng-if="round == 3 && state.substr(0, 4) != 'conf'") Conference Finals
-  h4.text-center(ng-if="round == 4 && state.substr(0, 4) != 'conf'") Finals
+  nav.navbar.fixed-top.justify-content-center
+    h4(ng-if="round == 1 && state.substr(0, 4) != 'conf'") Quarter-finals
+    h4(ng-if="round == 2 && state.substr(0, 4) != 'conf'") Semi-finals
+    h4(ng-if="round == 3 && state.substr(0, 4) != 'conf'") Conference Finals
+    h4(ng-if="round == 4 && state.substr(0, 4) != 'conf'") Finals
   div.main-container
     form(id='bracketForm' action='/submit' method='post')
       div(ng-if="state === 'west1'")
