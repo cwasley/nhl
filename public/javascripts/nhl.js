@@ -128,15 +128,19 @@ angular.module('nhl', [])
             var nextState = states[states.indexOf($scope.state) + 1];
             // If we are going to a interstitial page
             if (nextState.substr(0, 4) === "conf") {
+                $('.buttontooltip').attr('style', '');
                 setTimeout(function() {
                     generateBracket();
                 }, 1);
+            } else {
+                $('.buttontooltip').attr('style', 'opacity: 0.4;');
             }
 
             // Coming from a confirmation page; we want to up the round count & not add anything to results
             // Also filter teams by the teams that are still alive
             if (currState.substr(0, 4) === "conf") {
                 $scope.round++;
+                $('.buttontooltip').attr('style', 'opacity: 0.4;');
                 $scope.teams = $scope.teams.filter(function(a) {
                     return a.alive;
                 });
@@ -145,7 +149,6 @@ angular.module('nhl', [])
             } else if ($scope.topComplete && $scope.bottomComplete) {
 
                 // We know we need to push our results into their respective arrays
-                $scope.topComplete = $scope.bottomComplete = false;
                 var match1 = {}, match2 = {};
 
                 // Grab all user data from their inputs
@@ -253,6 +256,7 @@ angular.module('nhl', [])
                 $('.buttontooltip').tooltip('show');
                 return;
             }
+            $scope.topComplete = $scope.bottomComplete = false;
             $scope.state = nextState;
             $('.buttontooltip').tooltip('hide');
             setTimeout(function() {
