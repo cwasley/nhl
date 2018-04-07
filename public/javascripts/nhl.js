@@ -1,7 +1,7 @@
 angular.module('nhl', [])
     .controller('NHLBracketController', ['$scope', '$http', function($scope, $http) {
 
-        const states = ['instructions', 'west1', 'west2', 'east1', 'east2', 'conf_1', 'west3', 'east3', 'conf_2', 'both1', 'conf_3', 'both2', 'conf_4'];
+        const states = ['instructions', 'west1', 'west2', 'west3', 'west4', 'east1', 'east2', 'east3', 'east4', 'conf_1', 'west5', 'west6', 'east5', 'east6', 'conf_2', 'both1', 'both2', 'conf_3', 'both3', 'conf_4'];
 
         $('body').bootstrapMaterialDesign();
         $scope.round = 1;
@@ -37,8 +37,15 @@ angular.module('nhl', [])
 
                 // Styling: change button classes to show that the user has selected a specific one
                 var roundGroup = this.parentElement.parentElement;
-                $("#" + roundGroup.id + " button").removeClass('btn-primary').addClass('btn-secondary');
-                $(this).removeClass('btn-secondary').addClass('btn-primary');
+                var pos = this.name, otherPos;
+                if (pos == 'first') {
+                    otherPos = 'second';
+                } else {
+                    otherPos = 'first';
+                }
+                // Set clicked button to display the team color and the other to revert to btn-secondary default
+                $("button[name='" + pos + "']").css('background-color', $scope.teams[this.id.replace('team', '')].color);
+                $("button[name='" + otherPos + "']").css('background-color', '#6c757d');
 
                 // Set the winner and loser in both attributes
                 $("#" + roundGroup.id + "winner").attr('value', $(this).val());
@@ -46,9 +53,9 @@ angular.module('nhl', [])
 
                 // Determine if the user has input a value for both bracket entries
                 if (roundGroup.classList[1].substring(0,3) == "top") {
-                    $scope.topComplete = true;
+                    $scope.topComplete = $scope.bottomComplete = true;
                 } else if (roundGroup.classList[1].substring(0,3) == "bot") {
-                    $scope.bottomComplete = true;
+                    $scope.topComplete = $scope.bottomComplete = true;
                 } else if (roundGroup.classList[1].substring(0,3) == "fin") {
                     $scope.topComplete = $scope.bottomComplete = true;
                 }
@@ -88,8 +95,28 @@ angular.module('nhl', [])
             $('.buttontooltip').tooltip('enable');
             $('.buttontooltip').tooltip('hide');
 
+            // Check if this is the last state and submit
+            if ($scope.state == 'conf_4') {
+                var data = {
+                    predictions: JSON.stringify($scope.results),
+                    name: $('input[name=name]').val(),
+                    email: $('input[name=email]').val()
+                };
+                $.ajax({
+                    type        : 'POST',
+                    url         : '/submit',
+                    data        : data,
+                    dataType    : 'json',
+                    success     : function(data) {
+                        window.location = "/confirmation";
+                    }
+                });
+                return;
+            }
+
             var currState = $scope.state;
             var nextState = states[states.indexOf($scope.state) + 1];
+
             // If we are going to a interstitial page
             if (nextState.substr(0, 4) === "conf") {
                 $('.buttontooltip').attr('style', '');
@@ -128,22 +155,15 @@ angular.module('nhl', [])
                         var team = $scope.teams[i];
                         if (team.city === winners[0].value) {
                             match1.winner = team.city;
-                        } else if (team.city === winners[1].value) {
-                            match2.winner = team.city;
                         } else if (team.city === losers[0].value) {
                             team.alive = false;
                             match1.loser = team.city;
-                        } else if (team.city === losers[1].value) {
-                            team.alive = false;
-                            match2.loser = team.city;
                         }
                     }
                     match1.games = games[0].value;
-                    match2.games = games[1].value;
 
                     // Push all four teams to the round 1 array so we know what happened
                     $scope.results.round1.push(match1);
-                    $scope.results.round1.push(match2);
 
                 } else if ($scope.round === 2) {
 
@@ -152,23 +172,16 @@ angular.module('nhl', [])
                         var team = $scope.teams[i];
                         if (team.city === winners[0].value) {
                             match1.winner = team.city;
-                        } else if (team.city === winners[1].value) {
-                            match2.winner = team.city;
                         } else if (team.city === losers[0].value) {
                             team.alive = false;
                             match1.loser = team.city;
-                        } else if (team.city === losers[1].value) {
-                            team.alive = false;
-                            match2.loser = team.city;
                         }
                     }
                     match1.games = games[0].value;
-                    match2.games = games[1].value;
 
                     // TODO this is probably the easiest thing to extract so we keep teh same for-loop logic above
                     // Push all four teams to the round 1 array so we know what happened
                     $scope.results.round2.push(match1);
-                    $scope.results.round2.push(match2);
 
                 } else if ($scope.round === 3) {
 
@@ -177,23 +190,16 @@ angular.module('nhl', [])
                         var team = $scope.teams[i];
                         if (team.city === winners[0].value) {
                             match1.winner = team.city;
-                        } else if (team.city === winners[1].value) {
-                            match2.winner = team.city;
                         } else if (team.city === losers[0].value) {
                             team.alive = false;
                             match1.loser = team.city;
-                        } else if (team.city === losers[1].value) {
-                            team.alive = false;
-                            match2.loser = team.city;
                         }
                     }
                     match1.games = games[0].value;
-                    match2.games = games[1].value;
 
-                    // TODO this is probably the easiest thing to extract so we keep teh same for-loop logic above
+                    // TODO this is probably the easiest thing to extract so we keep the same for-loop logic above
                     // Push all four teams to the round 1 array so we know what happened
                     $scope.results.round3.push(match1);
-                    $scope.results.round3.push(match2);
 
                 } else if ($scope.round === 4) {
 
@@ -241,23 +247,17 @@ angular.module('nhl', [])
                 var result1, result2;
                 if ($scope.round == 1) {
                     result1 = $scope.results.round1.pop();
-                    result2 = $scope.results.round1.pop();
 
                 } else if ($scope.round == 2) {
                     result1 = $scope.results.round2.pop();
-                    result2 = $scope.results.round2.pop();
                 } else if ($scope.round == 3) {
                     result1 = $scope.results.round3.pop();
-                    result2 = $scope.results.round3.pop();
                 } else {
                     result1 = $scope.results.finals.pop();
-                    result2 = null;
                 }
                 for (var i = 0; i < $scope.teams.length; i++) {
                     var team = $scope.teams[i];
                     if (team.city === result1.loser) {
-                        team.alive = true;
-                    } else if (result2 && team.city === result2.loser) {
                         team.alive = true;
                     }
                 }
