@@ -125,15 +125,37 @@ angular.module('nhl', [])
             }
 
             // Coming from a confirmation page; we want to up the round count & not add anything to results
-            // Also filter teams by the teams that are still alive
+            // Also filter teams by the teams that are still alive & sort by home v away alg
             if (currState.substr(0, 4) === "conf") {
+
                 $scope.round++;
                 $('.buttontooltip').attr('style', 'opacity: 0.4;');
-                var backup = angular.copy($scope.teams)
+                var backup = angular.copy($scope.teams);
                 $scope.teamBackups.push(backup);
+
+                // Filter teams by those that are still in the running
                 $scope.teams = $scope.teams.filter(function(a) {
                     return a.alive;
                 });
+
+                // Sort teams (in groups of 2) by their points (optionally ROW for a tie breaker)
+                for (var i = 0; i < $scope.teams.length; i+=2) {
+                    var firstTeam = $scope.teams[i];
+                    var secondTeam = $scope.teams[i+1];
+
+                    // Second team has more points so it becomes the home team
+                    if (firstTeam.pts < secondTeam.pts) {
+                        $scope.teams[i+1] = firstTeam;
+                        $scope.teams[i] = secondTeam;
+                    } else if (firstTeam.pts == secondTeam.pts) {
+
+                        // sort by row instead
+                        if (firstTeam.row < secondTeam.row) {
+                            $scope.teams[i+1] = firstTeam;
+                            $scope.teams[i] = secondTeam;
+                        }
+                    }
+                }
 
                 // TODO we now want to sort by either PTS or ROW
             } else if ($scope.topComplete && $scope.bottomComplete) {
