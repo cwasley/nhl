@@ -329,10 +329,10 @@ block content
     form
       div.form-group.bmd-form-group(style='text-align: left;')
         label.bmd-label-floating(for="loginName" style='color:#009587;') Name
-        input.form-control#loginName(type='text' style='color:white;' ng-click="triggerChange('#loginName')")
+        input.form-control#loginName(type='text' style='color:white;')
       div.form-group.bmd-form-group(style='text-align: left;')
         label.bmd-label-floating(for="loginEmail" style='color:#009587;') Email Address
-        input.form-control#loginEmail(type='text' style='color:white;' ng-click="triggerChange('#loginEmail')")
+        input.form-control#loginEmail(type='text' style='color:white;')
   nav.navbar.fixed-bottom
     a.btn.btn-primary.btn-raised.float-left(ng-click="back()") Back
     a.btn.btn-primary.btn-raised.float-right.buttontooltip(ng-if="state !== 'conf_4'" ng-click="next()" title='Please fill in your guesses for both winning teams.' style='opacity: 0.4;') Next
