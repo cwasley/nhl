@@ -90,6 +90,10 @@ angular.module('nhl', [])
             });
         }
 
+        $scope.triggerChange = function(id) {
+            $(id).trigger("change");
+        };
+
         $scope.next = function() {
 
             $('.buttontooltip').tooltip('enable');
