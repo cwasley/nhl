@@ -95,25 +95,6 @@ angular.module('nhl', [])
             $('.buttontooltip').tooltip('enable');
             $('.buttontooltip').tooltip('hide');
 
-            // Check if this is the last state and submit
-            if ($scope.state == 'conf_4') {
-                var data = {
-                    predictions: JSON.stringify($scope.results),
-                    name: $('input[name=name]').val(),
-                    email: $('input[name=email]').val()
-                };
-                $.ajax({
-                    type        : 'POST',
-                    url         : '/submit',
-                    data        : data,
-                    dataType    : 'json',
-                    success     : function(data) {
-                        window.location = "/confirmation";
-                    }
-                });
-                return;
-            }
-
             var currState = $scope.state;
             var nextState = states[states.indexOf($scope.state) + 1];
 
@@ -295,10 +276,26 @@ angular.module('nhl', [])
             $scope.topComplete = $scope.bottomComplete = false;
         };
 
-
-
-        // TODO make this submit ajax call
         $scope.submit = function() {
-            document.getElementById('bracketForm').submit()
+
+            if ($('#loginName').val() == '' || $('#loginEmail').val() == '') {
+                $('.buttontooltip').tooltip('show');
+            } else {
+                $('.buttontooltip').tooltip('hide');
+                var data = {
+                    predictions: JSON.stringify($scope.results),
+                    name: $('#loginName').val(),
+                    email: $('#loginEmail').val()
+                };
+                $.ajax({
+                    type: 'POST',
+                    url: '/submit',
+                    data: data,
+                    dataType: 'json',
+                    success: function (data) {
+                        window.location = "/confirmation";
+                    }
+                });
+            }
         }
 }]);
