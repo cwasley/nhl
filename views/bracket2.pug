@@ -304,10 +304,11 @@ block content
             div(style='padding-bottom: 10px;')
               input.slider#r4i0games(type="text")
             div.input-group.mb-3(style="justify-content: center;")
-              input.form-control#r4i0goals(type="text" style="max-width: 50px; text-align: right;")
+              input.form-control#r4i0goals(type="text" style="max-width: 50px; text-align: right;" placeholder="10")
               div.input-group-append
                 span.input-group-text(style='margin-left: 10px;') goals
   div(ng-if="state == 'conf_4'" style="padding-bottom: 60px")
+    div(style='display: inline-block;')
     h4.text-center Confirmation
     p.lead Please enter your name and email below so we can assign the bracket to you.
     form
