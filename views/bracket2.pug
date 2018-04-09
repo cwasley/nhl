@@ -2,16 +2,16 @@ extends layout
 
 block content
   nav.navbar.fixed-top.justify-content-center(ng-if="state.substr(0,4) != 'conf'")
-    h4(ng-if="round == 1 && state.substr(0, 4) != 'conf'") Quarter-finals
-    h4(ng-if="round == 2 && state.substr(0, 4) != 'conf'") Semi-finals
+    h4(ng-if="round == 1 && state.substr(0, 4) != 'conf'") Quarter Finals
+    h4(ng-if="round == 2 && state.substr(0, 4) != 'conf'") Semi Finals
     h4(ng-if="round == 3 && state.substr(0, 4) != 'conf'") Conference Finals
-    h4(ng-if="round == 4 && state.substr(0, 4) != 'conf'") Finals
+    h4(ng-if="round == 4 && state.substr(0, 4) != 'conf'") Stanley Cup
   div.main-container(ng-if="state != 'conf_4'")
     form
       div(ng-if="state === 'west1'")
         div.card.bg-light(style='text-align: center;')
           div.card-body.top-group#r1i0(style='display: inline-block; color: black;')
-            p(style='padding-top: 10px; margin-bottom: 0px;') Central Quarter-final 1
+            p(style='padding-top: 10px; margin-bottom: 0px;') Central Quarter Final 1
             hr(style='margin-top: 4px; margin-bottom: 0px;')
             div.btn-group-vertical(style='width: 80%')
               span.bmd-form-group.is-filled(style="display: none;")
@@ -29,7 +29,7 @@ block content
       div(ng-if="state === 'west2'")
         div.card.bg-light(style='text-align: center;')
           div.card-body.bottom-group#r1i1(style='display: inline-block; color: black;')
-            p(style='padding-top: 10px; margin-bottom: 0px;') Central Quarter-final 2
+            p(style='padding-top: 10px; margin-bottom: 0px;') Central Quarter Final 2
             hr(style='margin-top: 4px; margin-bottom: 0px;')
             div.btn-group-vertical(style='width: 80%')
               span.bmd-form-group.is-filled(style="display: none;")
@@ -48,7 +48,7 @@ block content
       div(ng-if="state === 'west3'")
         div.card.bg-light(style='text-align: center;')
           div.card-body.top-group#r1i2(style='display: inline-block; color: black;')
-            p(style='padding-top: 10px; margin-bottom: 0px;') Pacific Quarter-final 1
+            p(style='padding-top: 10px; margin-bottom: 0px;') Pacific Quarter Final 1
             hr(style='margin-top: 4px; margin-bottom: 0px;')
             div.btn-group-vertical(style='width: 80%')
               span.bmd-form-group.is-filled(style="display: none;")
@@ -66,7 +66,7 @@ block content
       div(ng-if="state === 'west4'")
         div.card.bg-light(style='text-align: center;')
           div.card-body.bottom-group#r1i3(style='display: inline-block; color: black;')
-            p(style='padding-top: 10px; margin-bottom: 0px;') Pacific Quarter-final 2
+            p(style='padding-top: 10px; margin-bottom: 0px;') Pacific Quarter Final 2
             hr(style='margin-top: 4px; margin-bottom: 0px;')
             div.btn-group-vertical(style='width: 80%')
               span.bmd-form-group.is-filled(style="display: none;")
@@ -85,7 +85,7 @@ block content
       div(ng-if="state === 'east1'")
         div.card.bg-light(style='text-align: center;')
           div.card-body.top-group#r1i4(style='display: inline-block; color: black;')
-            p(style='padding-top: 10px; margin-bottom: 0px;') Atlantic Quarter-final 1
+            p(style='padding-top: 10px; margin-bottom: 0px;') Atlantic Quarter Final 1
             hr(style='margin-top: 4px; margin-bottom: 0px;')
             div.btn-group-vertical(style='width: 80%')
               span.bmd-form-group.is-filled(style="display: none;")
@@ -103,7 +103,7 @@ block content
       div(ng-if="state === 'east2'")
         div.card.bg-light(style='text-align: center;')
           div.card-body.bottom-group#r1i5(style='display: inline-block; color: black;')
-            p(style='padding-top: 10px; margin-bottom: 0px;') Atlantic Quarter-final 2
+            p(style='padding-top: 10px; margin-bottom: 0px;') Atlantic Quarter Final 2
             hr(style='margin-top: 4px; margin-bottom: 0px;')
             div.btn-group-vertical(style='width: 80%')
               span.bmd-form-group.is-filled(style="display: none;")
@@ -122,7 +122,7 @@ block content
       div(ng-if="state === 'east3'")
         div.card.bg-light(style='text-align: center;')
           div.card-body.top-group#r1i6(style='display: inline-block; color: black;')
-            p(style='padding-top: 10px; margin-bottom: 0px;') Metro Quarter-final 1
+            p(style='padding-top: 10px; margin-bottom: 0px;') Metro Quarter Final 1
             hr(style='margin-top: 4px; margin-bottom: 0px;')
             div.btn-group-vertical(style='width: 80%')
               span.bmd-form-group.is-filled(style="display: none;")
@@ -140,7 +140,7 @@ block content
       div(ng-if="state === 'east4'")
         div.card.bg-light(style='text-align: center;')
           div.card-body.bottom-group#r1i7(style='display: inline-block; color: black;')
-            p(style='padding-top: 10px; margin-bottom: 0px;') Metro Quarter-final 2
+            p(style='padding-top: 10px; margin-bottom: 0px;') Metro Quarter Final 2
             hr(style='margin-top: 4px; margin-bottom: 0px;')
             div.btn-group-vertical(style='width: 80%')
               span.bmd-form-group.is-filled(style="display: none;")
@@ -158,14 +158,14 @@ block content
 
       div(ng-if="state == 'conf_1'" style='text-align: center;')
         div(style='display: inline-block;')
-          h4 Quarter-finals Prediction
+          h4 Here are your Quarter Finals picks:
           ol.list-group.list-group-flush
             li.list-group-item.small-list(ng-repeat="item in results.round1") {{item.winner}} over {{item.loser}} in {{item.games}} games
 
       div(ng-if="state == 'west5'")
         div.card.bg-light(style='text-align: center;')
           div.card-body.top-group#r2i0(style='display: inline-block; color: black;')
-            p(style='padding-top: 10px; margin-bottom: 0px;') Central Semi-final
+            p(style='padding-top: 10px; margin-bottom: 0px;') Central Semi Final
             hr(style='margin-top: 4px; margin-bottom: 0px;')
             div.btn-group-vertical(style='width: 80%')
               span.bmd-form-group.is-filled(style="display: none;")
@@ -183,7 +183,7 @@ block content
       div(ng-if="state == 'west6'")
         div.card.bg-light(style='text-align: center;')
           div.card-body.bottom-group#r2i1(style='display: inline-block; color: black;')
-            p(style='padding-top: 10px; margin-bottom: 0px;') Pacific Semi-final
+            p(style='padding-top: 10px; margin-bottom: 0px;') Pacific Semi Final
             hr(style='margin-top: 4px; margin-bottom: 0px;')
             div.btn-group-vertical(style='width: 80%')
               span.bmd-form-group.is-filled(style="display: none;")
@@ -202,7 +202,7 @@ block content
       div(ng-if="state == 'east5'")
         div.card.bg-light(style='text-align: center;')
           div.card-body.top-group#r2i2(style='display: inline-block; color: black;')
-            p(style='padding-top: 10px; margin-bottom: 0px;') Atlantic Semi-final
+            p(style='padding-top: 10px; margin-bottom: 0px;') Atlantic Semi Final
             hr(style='margin-top: 4px; margin-bottom: 0px;')
             div.btn-group-vertical(style='width: 80%')
               span.bmd-form-group.is-filled(style="display: none;")
@@ -220,7 +220,7 @@ block content
       div(ng-if="state == 'east6'")
         div.card.bg-light(style='text-align: center;')
           div.card-body.bottom-group#r2i3(style='display: inline-block; color: black;')
-            p(style='padding-top: 10px; margin-bottom: 0px;') Metro Semi-final
+            p(style='padding-top: 10px; margin-bottom: 0px;') Metro Semi Final
             hr(style='margin-top: 4px; margin-bottom: 0px;')
             div.btn-group-vertical(style='width: 80%')
               span.bmd-form-group.is-filled(style="display: none;")
@@ -238,7 +238,7 @@ block content
 
       div(ng-if="state == 'conf_2'" style='text-align: center;')
         div(style='display: inline-block;')
-          h4 Semi-finals Prediction
+          h4 Here are your Semi Finals picks:
           ol.list-group.list-group-flush
             li.list-group-item.small-list(ng-repeat="item in results.round2") {{item.winner}} over {{item.loser}} in {{item.games}} games
 
@@ -281,7 +281,7 @@ block content
 
       div(ng-if="state == 'conf_3'" style='text-align: center;')
         div(style='display: inline-block;')
-          h4 Conference Finals Prediction
+          h4 Here are your Conference Finals picks:
           ol.list-group.list-group-flush
             li.list-group-item.small-list(ng-repeat="item in results.round3") {{item.winner}} over {{item.loser}} in {{item.games}} games
 
@@ -303,29 +303,13 @@ block content
             p(style='margin-bottom: 0px;') in
             div(style='padding-bottom: 10px;')
               input.slider#r4i0games(type="text")
-            div
-              input.final-slider#r4i0goals(type="text")
-              span#finalsGoals(style="padding-left: 10px;") 10
-              p goals
+            div.input-group.mb-3(style="justify-content: center;")
+              input.form-control#r4i0goals(type="text" style="max-width: 50px; text-align: right;")
+              div.input-group-append
+                span.input-group-text(style='margin-left: 10px;') goals
   div(ng-if="state == 'conf_4'" style="padding-bottom: 60px")
     h4.text-center Confirmation
-    p.lead Quarter-finals Prediction
-    ol.list-group.list-group-flush
-      li.list-group-item.small-list(ng-repeat="item in results.round1") {{item.winner}} over {{item.loser}} in {{item.games}} games
-    hr.my-4
-    p.lead Semi-finals Prediction
-    ol.list-group.list-group-flush
-      li.list-group-item.small-list(ng-repeat="item in results.round2") {{item.winner}} over {{item.loser}} in {{item.games}} games
-    hr.my-4
-    p.lead Conference Finals Prediction
-    ol.list-group.list-group-flush
-      li.list-group-item.small-list(ng-repeat="item in results.round3") {{item.winner}} over {{item.loser}} in {{item.games}} games
-    hr.my-4
-    p.lead Finals Prediction
-    ol.list-group.list-group-flush
-      li.list-group-item.small-list(ng-repeat="item in results.finals") {{item.winner}} over {{item.loser}} in {{item.games}} games ({{item.goals}} goals)
-    br
-    hr.my-4
+    p.lead Please enter your name and email below so we can assign the bracket to you.
     form
       div.form-group.bmd-form-group(style='text-align: left;')
         label.bmd-label-floating(for="loginName" style='color:#009587;') Name
@@ -333,6 +317,23 @@ block content
       div.form-group.bmd-form-group(style='text-align: left;')
         label.bmd-label-floating(for="loginEmail" style='color:#009587;') Email Address
         input.form-control#loginEmail(type='text' style='color:white;')
+    p.lead Quarter Finals Picks
+    ol.list-group.list-group-flush
+      li.list-group-item.small-list(ng-repeat="item in results.round1") {{item.winner}} over {{item.loser}} in {{item.games}} games
+    hr.my-4
+    p.lead Semi Finals Picks
+    ol.list-group.list-group-flush
+      li.list-group-item.small-list(ng-repeat="item in results.round2") {{item.winner}} over {{item.loser}} in {{item.games}} games
+    hr.my-4
+    p.lead Conference Finals Picks
+    ol.list-group.list-group-flush
+      li.list-group-item.small-list(ng-repeat="item in results.round3") {{item.winner}} over {{item.loser}} in {{item.games}} games
+    hr.my-4
+    p.lead Finals Picks
+    ol.list-group.list-group-flush
+      li.list-group-item.small-list(ng-repeat="item in results.finals") {{item.winner}} over {{item.loser}} in {{item.games}} games ({{item.goals}} goals)
+    br
+    hr.my-4
   nav.navbar.fixed-bottom
     a.btn.btn-primary.btn-raised.float-left(ng-click="back()") Back
     a.btn.btn-primary.btn-raised.float-right.buttontooltip(ng-if="state !== 'conf_4'" ng-click="next()" title='Please fill in your guesses for both winning teams.' style='opacity: 0.4;') Next
