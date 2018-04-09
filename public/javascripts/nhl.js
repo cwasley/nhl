@@ -1,7 +1,7 @@
 angular.module('nhl', [])
     .controller('NHLBracketController', ['$scope', '$http', function($scope, $http) {
 
-        const states = ['instructions', 'west1', 'west2', 'west3', 'west4', 'east1', 'east2', 'east3', 'east4', 'conf_1', 'west5', 'west6', 'east5', 'east6', 'conf_2', 'both1', 'both2', 'conf_3', 'both3', 'conf_4'];
+        const states = ['rules', 'west1', 'west2', 'west3', 'west4', 'east1', 'east2', 'east3', 'east4', 'conf_1', 'west5', 'west6', 'east5', 'east6', 'conf_2', 'both1', 'both2', 'conf_3', 'both3', 'conf_4'];
 
         $('body').bootstrapMaterialDesign();
         $scope.round = 1;
@@ -245,6 +245,10 @@ angular.module('nhl', [])
         $scope.back = function() {
 
             var backState = states[states.indexOf($scope.state) - 1];
+            if (backState == 'rules') {
+                window.location = '/rules';
+                return;
+            }
             // TODO check if we need to change opacity of next button and/or tooltip
             if (backState.substr(0, 4) === "conf") {
                 $scope.teams = $scope.teamBackups.pop();
@@ -267,8 +271,8 @@ angular.module('nhl', [])
                         team.alive = true;
                     }
                 }
-                if (backState == 'instructions') {
-                    window.location = '/instructions';
+                if (backState == 'rules') {
+                    window.location = '/rules';
                 }
             }
             $scope.state = backState;

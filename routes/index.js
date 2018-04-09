@@ -168,11 +168,11 @@ var data = {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('landing', { title: 'NHL 2018' });
+  res.render('rules', { title: 'NHL 2018' });
 });
 
-router.get('/instructions', function(req, res, next) {
-  res.render('instructions', { title: 'NHL 2018' });
+router.get('/rules', function(req, res, next) {
+  res.render('rules', { title: 'NHL 2018' });
 });
 
 router.get('/bracket', function(req, res, next) {
