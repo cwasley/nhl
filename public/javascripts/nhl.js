@@ -58,7 +58,7 @@ angular.module('nhl', [])
                     $scope.topComplete = $scope.bottomComplete = true;
                 } else if (roundGroup.classList[1].substring(0,3) == "fin") {
                     if ($(this).val() == "San Jose") {
-                        alert("Are you sure you want to say the sharks are going to win it all? This is probably not a wise choice");
+                        alert("Are you sure you about the sharks winning here? This is probably not a wise choice");
                     }
                     $scope.topComplete = $scope.bottomComplete = true;
                 }

@@ -318,23 +318,23 @@ block content
       div.form-group.bmd-form-group(style='text-align: left;')
         label.bmd-label-floating(for="loginEmail" style='color:#009587;') Email Address
         input.form-control#loginEmail(type='text' style='color:white;')
-    p.lead Quarter Finals Picks
-    ol.list-group.list-group-flush
-      li.list-group-item.small-list(ng-repeat="item in results.round1") {{item.winner}} over {{item.loser}} in {{item.games}} games
-    hr.my-4
-    p.lead Semi Finals Picks
-    ol.list-group.list-group-flush
-      li.list-group-item.small-list(ng-repeat="item in results.round2") {{item.winner}} over {{item.loser}} in {{item.games}} games
-    hr.my-4
-    p.lead Conference Finals Picks
-    ol.list-group.list-group-flush
-      li.list-group-item.small-list(ng-repeat="item in results.round3") {{item.winner}} over {{item.loser}} in {{item.games}} games
-    hr.my-4
-    p.lead Finals Picks
-    ol.list-group.list-group-flush
-      li.list-group-item.small-list(ng-repeat="item in results.finals") {{item.winner}} over {{item.loser}} in {{item.games}} games ({{item.goals}} goals)
-    br
-    hr.my-4
+    //p.lead Quarter Finals Picks
+    //ol.list-group.list-group-flush
+    //  li.list-group-item.small-list(ng-repeat="item in results.round1") {{item.winner}} over {{item.loser}} in {{item.games}} games
+    //hr.my-4
+    //p.lead Semi Finals Picks
+    //ol.list-group.list-group-flush
+    //  li.list-group-item.small-list(ng-repeat="item in results.round2") {{item.winner}} over {{item.loser}} in {{item.games}} games
+    //hr.my-4
+    //p.lead Conference Finals Picks
+    //ol.list-group.list-group-flush
+    //  li.list-group-item.small-list(ng-repeat="item in results.round3") {{item.winner}} over {{item.loser}} in {{item.games}} games
+    //hr.my-4
+    //p.lead Finals Picks
+    //ol.list-group.list-group-flush
+    //  li.list-group-item.small-list(ng-repeat="item in results.finals") {{item.winner}} over {{item.loser}} in {{item.games}} games ({{item.goals}} goals)
+    //br
+    //hr.my-4
   nav.navbar.fixed-bottom
     a.btn.btn-primary.btn-raised.float-left(ng-click="back()") Back
     a.btn.btn-primary.btn-raised.float-right.buttontooltip(ng-if="state !== 'conf_4'" ng-click="next()" title='Please fill in your guesses for both winning teams.' style='opacity: 0.4;') Next
