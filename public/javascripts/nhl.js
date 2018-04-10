@@ -144,6 +144,10 @@ angular.module('nhl', [])
                 // TODO we now want to sort by either PTS or ROW
             } else if ($scope.topComplete && $scope.bottomComplete) {
 
+                if ($('#r4i0goals').val() == '') {
+                    $('.buttontooltip').tooltip('show');
+                    return;
+                }
                 // We know we need to push our results into their respective arrays
                 var match1 = {}, match2 = {};
 
