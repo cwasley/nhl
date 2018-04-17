@@ -316,6 +316,125 @@ angular.module('nhl', [])
         $scope.brackets = brackets;
         $scope.predictions = predictions;
         $scope.games = games;
+
+        $(function() {
+            var nodeData = {
+                "name": "SJS", "color": "#006272", "children": [{
+                    "name": "TOR", "color": "#00205B", "children": [{
+                        "name": "TOR", "color": "#00205B", "children": [{
+                            "name": "TBL", "color": "#00205B", "children": [
+                                { "name": "TBL", "color": "#00205B", "size": 5},
+                                { "name": "NJD", "color": "#C8102E", "size": 5}]
+                        },
+                        {
+                            "name": "TOR", "color": "#00205B", "children": [
+                                { "name": "BOS", "color": "#FFB81C", "size": 5},
+                                { "name": "TOR", "color": "#00205B", "size": 5}]
+                        }]
+                    },
+                    {
+                        "name": "WSH", "color": "#C8102E", "children": [{
+                            "name": "WSH", "color": "#C8102E", "children": [
+                                { "name": "WSH", "color": "#C8102E", "size": 5},
+                                { "name": "CBJ", "color": "#041E42", "size": 5}]
+                        },
+                        {
+                            "name": "PHI", "color": "#FA4616", "children": [
+                            { "name": "PIT", "color": "#FFB81C", "size": 5},
+                            { "name": "PHI", "color": "#FA4616", "size": 5}]
+                        }]
+                    }]
+                },
+                {
+                    "name": "SJS", "color": "#006272", "children": [{
+                        "name": "SJS", "color": "#006272", "children": [{
+                            "name": "SJS", "color": "#006272", "children": [
+                                { "name": "SJS", "color": "#006272", "size": 5},
+                                { "name": "ANA", "color": "#FC4C02", "size": 5}]
+                        },
+                            {
+                                "name": "LAK", "color": "#000000", "children": [
+                                { "name": "LAK", "color": "#000000", "size": 5},
+                                { "name": "VGK", "color": "#B9975B", "size": 5}]
+                            }]
+                    },
+                    {
+                        "name": "WPG", "color": "#041E42", "children": [{
+                            "name": "WPG", "color": "#041E42", "children": [
+                                { "name": "MIN", "color": "#154734", "size": 5},
+                                { "name": "WPG", "color": "#041E42", "size": 5}]
+                        },
+                        {
+                            "name": "NSH", "color": "#FFB81C", "children": [
+                            { "name": "COL", "color": "#6F263D", "size": 5},
+                            { "name": "NSH", "color": "#FFB81C", "size": 5}]
+                        }]
+                    }]
+                }]
+            };
+
+            // Variables
+            var width = 400;
+            var height = 400;
+            var radius = Math.min(width, height) / 2;
+
+            // Create primary <g> element
+            var g = d3.select('svg')
+                .attr('width', width)
+                .attr('height', height)
+                .append('g')
+                .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
+
+            // Data strucure
+            var partition = d3.partition()
+                .size([2 * Math.PI, radius]);
+
+            // Find data root
+            var root = d3.hierarchy(nodeData)
+                .sum(function (d) { return d.size});
+
+            // Size arcs
+            partition(root);
+            var arc = d3.arc()
+                .startAngle(function (d) { return d.x0 })
+                .endAngle(function (d) { return d.x1 })
+                .innerRadius(function (d) { return d.y0 })
+                .outerRadius(function (d) { return d.y1 });
+
+            // Put it all together
+            g.selectAll('g')
+                .data(root.descendants())
+                .enter().append('g').attr("class", "node").append('path')
+                .attr("d", arc)
+                .style('stroke', '#fff')
+                .style("fill", function (d) {
+                    return d.data.color;
+                });
+
+            g.selectAll(".node")
+                .append("text")
+                .attr("transform", function(d) {
+                    if (d.parent) {
+                        return "translate(" + arc.centroid(d) + ")rotate(" + computeTextRotation(d) + ")";
+                    } else {
+                        return "translate(" + arc.centroid(d) + ")";
+                    }
+                })
+                .attr("dx", "-20") // radius margin
+                .attr("dy", ".5em") // rotation align
+                .style("fill", function (d) {
+                    return "#fff";
+                })
+                .text(function(d) { return d.data.name});
+        });
+
+        function computeTextRotation(d) {
+            var angle = (d.x0 + d.x1) / Math.PI * 90;
+
+            // Avoid upside-down labels
+            return (angle < 100 || angle > 270) ? angle : angle + 180;  // labels as rims
+            //return (angle < 180) ? angle - 90 : angle + 90;  // labels as spokes
+        }
     }])
     .controller('StandingsController', ['$scope', '$http', function($scope, $http) {
 

@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+const Sequelize = require('sequelize');
 
 const bracketsController = require('../server/controllers/brackets.js');
 const models = require('../server/models');
@@ -186,7 +187,9 @@ router.get('/confirmation', function(req, res, next) {
 });
 
 router.get('/', async function(req, res, next) {
-    var brackets = await models.Bracket.findAll();
+    var brackets = await models.Bracket.findAll({
+        order: Sequelize.col('name')
+    });
     var teams = await models.Team.findAll();
     var games = await models.Game.findAll();
     var bracketPredictions = [];

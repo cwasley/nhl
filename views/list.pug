@@ -12,23 +12,23 @@ block content
         li.nav-item
           a.nav-link(href='/standings') Standings
   div.container-fluid(style="padding-top:60px;" ng-controller='ListController')
+    //svg
     div.row
       div.col(ng-repeat='bracket in brackets track by $index')
         h3 {{bracket.name}}
         table.table.table-bordered
           thead
             tr
-              th Game
+              th Series
               th Winner
               th Loser
-              th Games
+              th Games (Goals)
           tbody
             tr(ng-repeat='game in predictions[$index]')
               td {{game.game_id}}
               td {{game.winner_id}}
               td {{game.loser_id}}
-              td {{game.num_games}}
-
+              td {{game.num_games}} {{game.num_goals ? '(' + game.num_goals + ')' : '' }}
   script.
     var teams = !{JSON.stringify(teams)};
     var brackets = !{JSON.stringify(brackets)};
