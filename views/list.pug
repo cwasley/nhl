@@ -1,0 +1,36 @@
+extends layout
+
+block content
+  nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.fixed-top.justify-content-between
+    a.navbar-brand(style='color: #fff') NHL Playoffs 2018
+    button.navbar-toggler(type='button' data-toggle='collapse' data-target='#navbar')
+      span.navbar-toggler-icon
+    div.collapse.navbar-collapse#navbar
+      ul.navbar-nav.ml-auto
+        li.nav-item.active
+          a.nav-link(href='/') Brackets
+        li.nav-item
+          a.nav-link(href='/standings') Standings
+  div.container-fluid(style="padding-top:60px;" ng-controller='ListController')
+    div.row
+      div.col(ng-repeat='bracket in brackets track by $index')
+        h3 {{bracket.name}}
+        table.table.table-bordered
+          thead
+            tr
+              th Game
+              th Winner
+              th Loser
+              th Games
+          tbody
+            tr(ng-repeat='game in predictions[$index]')
+              td {{game.game_id}}
+              td {{game.winner_id}}
+              td {{game.loser_id}}
+              td {{game.num_games}}
+
+  script.
+    var teams = !{JSON.stringify(teams)};
+    var brackets = !{JSON.stringify(brackets)};
+    var games = !{JSON.stringify(games)};
+    var predictions = !{JSON.stringify(predictions)};

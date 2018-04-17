@@ -309,4 +309,15 @@ angular.module('nhl', [])
                 });
             }
         }
+    }])
+    .controller('ListController', ['$scope', '$http', function($scope, $http) {
+
+        $scope.teams = teams;
+        $scope.brackets = brackets;
+        $scope.predictions = predictions;
+        $scope.games = games;
+    }])
+    .controller('StandingsController', ['$scope', '$http', function($scope, $http) {
+
+        $scope.brackets = brackets;
 }]);

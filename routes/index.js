@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 const bracketsController = require('../server/controllers/brackets.js');
+const models = require('../server/models');
 
 var data = {
     0: {
@@ -166,11 +167,6 @@ var data = {
     }
 };
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('rules', { title: 'NHL 2018' });
-});
-
 router.get('/rules', function(req, res, next) {
   res.render('rules', { title: 'NHL 2018' });
 });
@@ -187,6 +183,55 @@ router.get('/data', function(req, res, next) {
 
 router.get('/confirmation', function(req, res, next) {
     res.render('confirmation', {title: 'NHL 2018' });
+});
+
+router.get('/', async function(req, res, next) {
+    var brackets = await models.Bracket.findAll();
+    var teams = await models.Team.findAll();
+    var games = await models.Game.findAll();
+    var bracketPredictions = [];
+    for (var i = 0; i < brackets.length; i++) {
+        var predictions = await models.Prediction.findAll({
+            where: {
+                bracket_id: brackets[i].dataValues.id
+            }
+        });
+        bracketPredictions.push(predictions);
+    }
+    res.render('list', {
+        title: 'NHL 2018',
+        teams: teams,
+        brackets: brackets,
+        games: games,
+        predictions: bracketPredictions
+    });
+});
+
+router.get('/standings', async function(req, res, next) {
+    var brackets = await models.Bracket.findAll();
+    res.render('standings', {
+        title: 'NHL 2018',
+        brackets: brackets
+    });
+})
+
+router.get('/getbrackets', async function(req, res, next) {
+    var brackets = await models.Bracket.findAll();
+    for (var i = 0; i < brackets.length; i++) {
+        var id = brackets[i].dataValues.id;
+        var predictions = brackets[i].dataValues.predictions;
+        for (var j = 0; j < 8; j++) {
+            await models.Prediction.create({winner_id: predictions.round1[j].winner, loser_id: predictions.round1[j].loser, num_games: predictions.round1[j].games, game_id: j+1, bracket_id: id});
+        }
+        for (j = 0; j < 4; j++) {
+            await models.Prediction.create({winner_id: predictions.round2[j].winner, loser_id: predictions.round2[j].loser, num_games: predictions.round2[j].games, game_id: j+9, bracket_id: id});
+        }
+        for (j = 0; j < 2; j++) {
+            await models.Prediction.create({winner_id: predictions.round3[j].winner, loser_id: predictions.round3[j].loser, num_games: predictions.round3[j].games, game_id: j+13, bracket_id: id});
+        }
+        await models.Prediction.create({winner_id: predictions.finals[0].winner, loser_id: predictions.finals[0].loser, num_games: predictions.finals[0].games, num_goals: predictions.finals[0].goals, game_id: 15, bracket_id: id});
+
+    }
 });
 
 module.exports = router;

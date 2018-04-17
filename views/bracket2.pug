@@ -1,339 +1,323 @@
 extends layout
 
 block content
-  nav.navbar.fixed-top.justify-content-center(ng-if="state.substr(0,4) != 'conf'")
-    h4(ng-if="round == 1 && state.substr(0, 4) != 'conf'") Quarter Finals
-    h4(ng-if="round == 2 && state.substr(0, 4) != 'conf'") Semi Finals
-    h4(ng-if="round == 3 && state.substr(0, 4) != 'conf'") Conference Finals
-    h4(ng-if="round == 4 && state.substr(0, 4) != 'conf'") Stanley Cup
-  div.main-container(ng-if="state != 'conf_4'")
-    form
-      div(ng-if="state === 'west1'")
-        div.card.bg-light(style='text-align: center;')
-          div.card-body.top-group#r1i0(style='display: inline-block; color: black;')
-            p(style='padding-top: 10px; margin-bottom: 0px;') Central Quarter Final 1
-            hr(style='margin-top: 4px; margin-bottom: 0px;')
-            div.btn-group-vertical(style='width: 80%')
-              span.bmd-form-group.is-filled(style="display: none;")
-                input#r1i0winner(type='text')
-                input#r1i0loser(type='text')
-              button.btn.btn-raised.btn-secondary#team0(name='first' type='button' value='{{teams[0].city}}')
-                p(style='margin-bottom: 0px;') {{teams[0].city}} {{teams[0].mascot}} {{teams[0].seed}}
-                p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[0].pts}} pts, {{teams[0].row}} row
-              button.btn.btn-raised.btn-secondary#team1(name='second' type='button' value='{{teams[1].city}}')
-                p(style='margin-bottom: 0px;') {{teams[1].city}} {{teams[1].mascot}} {{teams[1].seed}}
-                p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[1].pts}} pts, {{teams[1].row}} row
-            p(style='margin-bottom: 0px;') in
-            div(style='padding-bottom: 10px;')
-              input.slider#r1i0games(type="text")
-      div(ng-if="state === 'west2'")
-        div.card.bg-light(style='text-align: center;')
-          div.card-body.bottom-group#r1i1(style='display: inline-block; color: black;')
-            p(style='padding-top: 10px; margin-bottom: 0px;') Central Quarter Final 2
-            hr(style='margin-top: 4px; margin-bottom: 0px;')
-            div.btn-group-vertical(style='width: 80%')
-              span.bmd-form-group.is-filled(style="display: none;")
-                input#r1i1winner(type='text')
-                input#r1i1loser(type='text')
-              button.btn.btn-raised.btn-secondary#team2(name='first' type='button' value='{{teams[2].city}}')
-                p(style='margin-bottom: 0px;') {{teams[2].city}} {{teams[2].mascot}} {{teams[2].seed}}
-                p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[2].pts}} pts, {{teams[2].row}} row
-              button.btn.btn-raised.btn-secondary#team3(name='second' type='button' value='{{teams[3].city}}')
-                p(style='margin-bottom: 0px;') {{teams[3].city}} {{teams[3].mascot}} {{teams[3].seed}}
-                p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[3].pts}} pts, {{teams[3].row}} row
-            p(style='margin-bottom: 0px;') in
-            div(style='padding-bottom: 10px;')
-              input.slider#r1i1games(type="text")
+  div(ng-controller='NHLBracketController')
+    nav.navbar.fixed-top.justify-content-center(ng-if="state.substr(0,4) != 'conf'")
+      h4(ng-if="round == 1 && state.substr(0, 4) != 'conf'") Quarter Finals
+      h4(ng-if="round == 2 && state.substr(0, 4) != 'conf'") Semi Finals
+      h4(ng-if="round == 3 && state.substr(0, 4) != 'conf'") Conference Finals
+      h4(ng-if="round == 4 && state.substr(0, 4) != 'conf'") Stanley Cup
+    div.main-container(ng-if="state != 'conf_4'")
+      form
+        div(ng-if="state === 'west1'")
+          div.card.bg-light(style='text-align: center;')
+            div.card-body.top-group#r1i0(style='display: inline-block; color: black;')
+              p(style='padding-top: 10px; margin-bottom: 0px;') Central Quarter Final 1
+              hr(style='margin-top: 4px; margin-bottom: 0px;')
+              div.btn-group-vertical(style='width: 80%')
+                span.bmd-form-group.is-filled(style="display: none;")
+                  input#r1i0winner(type='text')
+                  input#r1i0loser(type='text')
+                button.btn.btn-raised.btn-secondary#team0(name='first' type='button' value='{{teams[0].city}}')
+                  p(style='margin-bottom: 0px;') {{teams[0].city}} {{teams[0].mascot}} {{teams[0].seed}}
+                  p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[0].pts}} pts, {{teams[0].row}} row
+                button.btn.btn-raised.btn-secondary#team1(name='second' type='button' value='{{teams[1].city}}')
+                  p(style='margin-bottom: 0px;') {{teams[1].city}} {{teams[1].mascot}} {{teams[1].seed}}
+                  p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[1].pts}} pts, {{teams[1].row}} row
+              p(style='margin-bottom: 0px;') in
+              div(style='padding-bottom: 10px;')
+                input.slider#r1i0games(type="text")
+        div(ng-if="state === 'west2'")
+          div.card.bg-light(style='text-align: center;')
+            div.card-body.bottom-group#r1i1(style='display: inline-block; color: black;')
+              p(style='padding-top: 10px; margin-bottom: 0px;') Central Quarter Final 2
+              hr(style='margin-top: 4px; margin-bottom: 0px;')
+              div.btn-group-vertical(style='width: 80%')
+                span.bmd-form-group.is-filled(style="display: none;")
+                  input#r1i1winner(type='text')
+                  input#r1i1loser(type='text')
+                button.btn.btn-raised.btn-secondary#team2(name='first' type='button' value='{{teams[2].city}}')
+                  p(style='margin-bottom: 0px;') {{teams[2].city}} {{teams[2].mascot}} {{teams[2].seed}}
+                  p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[2].pts}} pts, {{teams[2].row}} row
+                button.btn.btn-raised.btn-secondary#team3(name='second' type='button' value='{{teams[3].city}}')
+                  p(style='margin-bottom: 0px;') {{teams[3].city}} {{teams[3].mascot}} {{teams[3].seed}}
+                  p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[3].pts}} pts, {{teams[3].row}} row
+              p(style='margin-bottom: 0px;') in
+              div(style='padding-bottom: 10px;')
+                input.slider#r1i1games(type="text")
 
-      div(ng-if="state === 'west3'")
-        div.card.bg-light(style='text-align: center;')
-          div.card-body.top-group#r1i2(style='display: inline-block; color: black;')
-            p(style='padding-top: 10px; margin-bottom: 0px;') Pacific Quarter Final 1
-            hr(style='margin-top: 4px; margin-bottom: 0px;')
-            div.btn-group-vertical(style='width: 80%')
-              span.bmd-form-group.is-filled(style="display: none;")
-                input#r1i2winner(type='text')
-                input#r1i2loser(type='text')
-              button.btn.btn-raised.btn-secondary#team4(name='first' type='button' value='{{teams[4].city}}')
-                p(style='margin-bottom: 0px;') {{teams[4].city}} {{teams[4].mascot}} {{teams[4].seed}}
-                p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[4].pts}} pts, {{teams[4].row}} row
-              button.btn.btn-raised.btn-secondary#team5(name='second' type='button' value='{{teams[5].city}}')
-                p(style='margin-bottom: 0px;') {{teams[5].city}} {{teams[5].mascot}} {{teams[5].seed}}
-                p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[5].pts}} pts, {{teams[5].row}} row
-            p(style='margin-bottom: 0px;') in
-            div(style='padding-bottom: 10px;')
-              input.slider#r1i2games(type="text")
-      div(ng-if="state === 'west4'")
-        div.card.bg-light(style='text-align: center;')
-          div.card-body.bottom-group#r1i3(style='display: inline-block; color: black;')
-            p(style='padding-top: 10px; margin-bottom: 0px;') Pacific Quarter Final 2
-            hr(style='margin-top: 4px; margin-bottom: 0px;')
-            div.btn-group-vertical(style='width: 80%')
-              span.bmd-form-group.is-filled(style="display: none;")
-                input#r1i3winner(type='text')
-                input#r1i3loser(type='text')
-              button.btn.btn-raised.btn-secondary#team6(name='first' type='button' value='{{teams[6].city}}')
-                p(style='margin-bottom: 0px;') {{teams[6].city}} {{teams[6].mascot}} {{teams[6].seed}}
-                p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[6].pts}} pts, {{teams[6].row}} row
-              button.btn.btn-raised.btn-secondary#team7(name='second' type='button' value='{{teams[7].city}}')
-                p(style='margin-bottom: 0px;') {{teams[7].city}} {{teams[7].mascot}} {{teams[7].seed}}
-                p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[7].pts}} pts, {{teams[7].row}} row
-            p(style='margin-bottom: 0px;') in
-            div(style='padding-bottom: 10px;')
-              input.slider#r1i3games(type="text")
+        div(ng-if="state === 'west3'")
+          div.card.bg-light(style='text-align: center;')
+            div.card-body.top-group#r1i2(style='display: inline-block; color: black;')
+              p(style='padding-top: 10px; margin-bottom: 0px;') Pacific Quarter Final 1
+              hr(style='margin-top: 4px; margin-bottom: 0px;')
+              div.btn-group-vertical(style='width: 80%')
+                span.bmd-form-group.is-filled(style="display: none;")
+                  input#r1i2winner(type='text')
+                  input#r1i2loser(type='text')
+                button.btn.btn-raised.btn-secondary#team4(name='first' type='button' value='{{teams[4].city}}')
+                  p(style='margin-bottom: 0px;') {{teams[4].city}} {{teams[4].mascot}} {{teams[4].seed}}
+                  p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[4].pts}} pts, {{teams[4].row}} row
+                button.btn.btn-raised.btn-secondary#team5(name='second' type='button' value='{{teams[5].city}}')
+                  p(style='margin-bottom: 0px;') {{teams[5].city}} {{teams[5].mascot}} {{teams[5].seed}}
+                  p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[5].pts}} pts, {{teams[5].row}} row
+              p(style='margin-bottom: 0px;') in
+              div(style='padding-bottom: 10px;')
+                input.slider#r1i2games(type="text")
+        div(ng-if="state === 'west4'")
+          div.card.bg-light(style='text-align: center;')
+            div.card-body.bottom-group#r1i3(style='display: inline-block; color: black;')
+              p(style='padding-top: 10px; margin-bottom: 0px;') Pacific Quarter Final 2
+              hr(style='margin-top: 4px; margin-bottom: 0px;')
+              div.btn-group-vertical(style='width: 80%')
+                span.bmd-form-group.is-filled(style="display: none;")
+                  input#r1i3winner(type='text')
+                  input#r1i3loser(type='text')
+                button.btn.btn-raised.btn-secondary#team6(name='first' type='button' value='{{teams[6].city}}')
+                  p(style='margin-bottom: 0px;') {{teams[6].city}} {{teams[6].mascot}} {{teams[6].seed}}
+                  p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[6].pts}} pts, {{teams[6].row}} row
+                button.btn.btn-raised.btn-secondary#team7(name='second' type='button' value='{{teams[7].city}}')
+                  p(style='margin-bottom: 0px;') {{teams[7].city}} {{teams[7].mascot}} {{teams[7].seed}}
+                  p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[7].pts}} pts, {{teams[7].row}} row
+              p(style='margin-bottom: 0px;') in
+              div(style='padding-bottom: 10px;')
+                input.slider#r1i3games(type="text")
 
-      div(ng-if="state === 'east1'")
-        div.card.bg-light(style='text-align: center;')
-          div.card-body.top-group#r1i4(style='display: inline-block; color: black;')
-            p(style='padding-top: 10px; margin-bottom: 0px;') Atlantic Quarter Final 1
-            hr(style='margin-top: 4px; margin-bottom: 0px;')
-            div.btn-group-vertical(style='width: 80%')
-              span.bmd-form-group.is-filled(style="display: none;")
-                input#r1i4winner(type='text')
-                input#r1i4loser(type='text')
-              button.btn.btn-raised.btn-secondary#team8(name='first' type='button' value='{{teams[8].city}}')
-                p(style='margin-bottom: 0px;') {{teams[8].city}} {{teams[8].mascot}} {{teams[8].seed}}
-                p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[8].pts}} pts, {{teams[8].row}} row
-              button.btn.btn-raised.btn-secondary#team9(name='second' type='button' value='{{teams[9].city}}')
-                p(style='margin-bottom: 0px;') {{teams[9].city}} {{teams[9].mascot}} {{teams[9].seed}}
-                p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[9].pts}} pts, {{teams[9].row}} row
-            p(style='margin-bottom: 0px;') in
-            div(style='padding-bottom: 10px;')
-              input.slider#r1i4games(type="text")
-      div(ng-if="state === 'east2'")
-        div.card.bg-light(style='text-align: center;')
-          div.card-body.bottom-group#r1i5(style='display: inline-block; color: black;')
-            p(style='padding-top: 10px; margin-bottom: 0px;') Atlantic Quarter Final 2
-            hr(style='margin-top: 4px; margin-bottom: 0px;')
-            div.btn-group-vertical(style='width: 80%')
-              span.bmd-form-group.is-filled(style="display: none;")
-                input#r1i5winner(type='text')
-                input#r1i5loser(type='text')
-              button.btn.btn-raised.btn-secondary#team10(name='first' type='button' value='{{teams[10].city}}')
-                p(style='margin-bottom: 0px;') {{teams[10].city}} {{teams[10].mascot}} {{teams[10].seed}}
-                p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[10].pts}} pts, {{teams[10].row}} row
-              button.btn.btn-raised.btn-secondary#team11(name='second' type='button' value='{{teams[11].city}}')
-                p(style='margin-bottom: 0px;') {{teams[11].city}} {{teams[11].mascot}} {{teams[11].seed}}
-                p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[11].pts}} pts, {{teams[11].row}} row
-            p(style='margin-bottom: 0px;') in
-            div(style='padding-bottom: 10px;')
-              input.slider#r1i5games(type="text")
+        div(ng-if="state === 'east1'")
+          div.card.bg-light(style='text-align: center;')
+            div.card-body.top-group#r1i4(style='display: inline-block; color: black;')
+              p(style='padding-top: 10px; margin-bottom: 0px;') Atlantic Quarter Final 1
+              hr(style='margin-top: 4px; margin-bottom: 0px;')
+              div.btn-group-vertical(style='width: 80%')
+                span.bmd-form-group.is-filled(style="display: none;")
+                  input#r1i4winner(type='text')
+                  input#r1i4loser(type='text')
+                button.btn.btn-raised.btn-secondary#team8(name='first' type='button' value='{{teams[8].city}}')
+                  p(style='margin-bottom: 0px;') {{teams[8].city}} {{teams[8].mascot}} {{teams[8].seed}}
+                  p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[8].pts}} pts, {{teams[8].row}} row
+                button.btn.btn-raised.btn-secondary#team9(name='second' type='button' value='{{teams[9].city}}')
+                  p(style='margin-bottom: 0px;') {{teams[9].city}} {{teams[9].mascot}} {{teams[9].seed}}
+                  p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[9].pts}} pts, {{teams[9].row}} row
+              p(style='margin-bottom: 0px;') in
+              div(style='padding-bottom: 10px;')
+                input.slider#r1i4games(type="text")
+        div(ng-if="state === 'east2'")
+          div.card.bg-light(style='text-align: center;')
+            div.card-body.bottom-group#r1i5(style='display: inline-block; color: black;')
+              p(style='padding-top: 10px; margin-bottom: 0px;') Atlantic Quarter Final 2
+              hr(style='margin-top: 4px; margin-bottom: 0px;')
+              div.btn-group-vertical(style='width: 80%')
+                span.bmd-form-group.is-filled(style="display: none;")
+                  input#r1i5winner(type='text')
+                  input#r1i5loser(type='text')
+                button.btn.btn-raised.btn-secondary#team10(name='first' type='button' value='{{teams[10].city}}')
+                  p(style='margin-bottom: 0px;') {{teams[10].city}} {{teams[10].mascot}} {{teams[10].seed}}
+                  p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[10].pts}} pts, {{teams[10].row}} row
+                button.btn.btn-raised.btn-secondary#team11(name='second' type='button' value='{{teams[11].city}}')
+                  p(style='margin-bottom: 0px;') {{teams[11].city}} {{teams[11].mascot}} {{teams[11].seed}}
+                  p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[11].pts}} pts, {{teams[11].row}} row
+              p(style='margin-bottom: 0px;') in
+              div(style='padding-bottom: 10px;')
+                input.slider#r1i5games(type="text")
 
-      div(ng-if="state === 'east3'")
-        div.card.bg-light(style='text-align: center;')
-          div.card-body.top-group#r1i6(style='display: inline-block; color: black;')
-            p(style='padding-top: 10px; margin-bottom: 0px;') Metro Quarter Final 1
-            hr(style='margin-top: 4px; margin-bottom: 0px;')
-            div.btn-group-vertical(style='width: 80%')
-              span.bmd-form-group.is-filled(style="display: none;")
-                input#r1i6winner(type='text')
-                input#r1i6loser(type='text')
-              button.btn.btn-raised.btn-secondary#team12(name='first' type='button' value='{{teams[12].city}}')
-                p(style='margin-bottom: 0px;') {{teams[12].city}} {{teams[12].mascot}} {{teams[12].seed}}
-                p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[12].pts}} pts, {{teams[12].row}} row
-              button.btn.btn-raised.btn-secondary#team13(name='second' type='button' value='{{teams[13].city}}')
-                p(style='margin-bottom: 0px;') {{teams[13].city}} {{teams[13].mascot}} {{teams[13].seed}}
-                p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[13].pts}} pts, {{teams[13].row}} row
-            p(style='margin-bottom: 0px;') in
-            div(style='padding-bottom: 10px;')
-              input.slider#r1i6games(type="text")
-      div(ng-if="state === 'east4'")
-        div.card.bg-light(style='text-align: center;')
-          div.card-body.bottom-group#r1i7(style='display: inline-block; color: black;')
-            p(style='padding-top: 10px; margin-bottom: 0px;') Metro Quarter Final 2
-            hr(style='margin-top: 4px; margin-bottom: 0px;')
-            div.btn-group-vertical(style='width: 80%')
-              span.bmd-form-group.is-filled(style="display: none;")
-                input#r1i7winner(type='text')
-                input#r1i7loser(type='text')
-              button.btn.btn-raised.btn-secondary#team14(name='first' type='button' value='{{teams[14].city}}')
-                p(style='margin-bottom: 0px;') {{teams[14].city}} {{teams[14].mascot}} {{teams[14].seed}}
-                p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[14].pts}} pts, {{teams[14].row}} row
-              button.btn.btn-raised.btn-secondary#team15(name='second' type='button' value='{{teams[15].city}}')
-                p(style='margin-bottom: 0px;') {{teams[15].city}} {{teams[15].mascot}} {{teams[15].seed}}
-                p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[15].pts}} pts, {{teams[15].row}} row
-            p(style='margin-bottom: 0px;') in
-            div(style='padding-bottom: 10px;')
-              input.slider#r1i7games(type="text")
+        div(ng-if="state === 'east3'")
+          div.card.bg-light(style='text-align: center;')
+            div.card-body.top-group#r1i6(style='display: inline-block; color: black;')
+              p(style='padding-top: 10px; margin-bottom: 0px;') Metro Quarter Final 1
+              hr(style='margin-top: 4px; margin-bottom: 0px;')
+              div.btn-group-vertical(style='width: 80%')
+                span.bmd-form-group.is-filled(style="display: none;")
+                  input#r1i6winner(type='text')
+                  input#r1i6loser(type='text')
+                button.btn.btn-raised.btn-secondary#team12(name='first' type='button' value='{{teams[12].city}}')
+                  p(style='margin-bottom: 0px;') {{teams[12].city}} {{teams[12].mascot}} {{teams[12].seed}}
+                  p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[12].pts}} pts, {{teams[12].row}} row
+                button.btn.btn-raised.btn-secondary#team13(name='second' type='button' value='{{teams[13].city}}')
+                  p(style='margin-bottom: 0px;') {{teams[13].city}} {{teams[13].mascot}} {{teams[13].seed}}
+                  p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[13].pts}} pts, {{teams[13].row}} row
+              p(style='margin-bottom: 0px;') in
+              div(style='padding-bottom: 10px;')
+                input.slider#r1i6games(type="text")
+        div(ng-if="state === 'east4'")
+          div.card.bg-light(style='text-align: center;')
+            div.card-body.bottom-group#r1i7(style='display: inline-block; color: black;')
+              p(style='padding-top: 10px; margin-bottom: 0px;') Metro Quarter Final 2
+              hr(style='margin-top: 4px; margin-bottom: 0px;')
+              div.btn-group-vertical(style='width: 80%')
+                span.bmd-form-group.is-filled(style="display: none;")
+                  input#r1i7winner(type='text')
+                  input#r1i7loser(type='text')
+                button.btn.btn-raised.btn-secondary#team14(name='first' type='button' value='{{teams[14].city}}')
+                  p(style='margin-bottom: 0px;') {{teams[14].city}} {{teams[14].mascot}} {{teams[14].seed}}
+                  p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[14].pts}} pts, {{teams[14].row}} row
+                button.btn.btn-raised.btn-secondary#team15(name='second' type='button' value='{{teams[15].city}}')
+                  p(style='margin-bottom: 0px;') {{teams[15].city}} {{teams[15].mascot}} {{teams[15].seed}}
+                  p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[15].pts}} pts, {{teams[15].row}} row
+              p(style='margin-bottom: 0px;') in
+              div(style='padding-bottom: 10px;')
+                input.slider#r1i7games(type="text")
 
-      div(ng-if="state == 'conf_1'" style='text-align: center;')
-        div(style='display: inline-block;')
-          h4 Here are your Quarter Finals picks:
-          ol.list-group.list-group-flush
-            li.list-group-item.small-list(ng-repeat="item in results.round1") {{item.winner}} over {{item.loser}} in {{item.games}} games
+        div(ng-if="state == 'conf_1'" style='text-align: center;')
+          div(style='display: inline-block;')
+            h4 Here are your Quarter Finals picks:
+            ol.list-group.list-group-flush
+              li.list-group-item.small-list(ng-repeat="item in results.round1") {{item.winner}} over {{item.loser}} in {{item.games}} games
 
-      div(ng-if="state == 'west5'")
-        div.card.bg-light(style='text-align: center;')
-          div.card-body.top-group#r2i0(style='display: inline-block; color: black;')
-            p(style='padding-top: 10px; margin-bottom: 0px;') Central Semi Final
-            hr(style='margin-top: 4px; margin-bottom: 0px;')
-            div.btn-group-vertical(style='width: 80%')
-              span.bmd-form-group.is-filled(style="display: none;")
-                input#r2i0winner(type='text')
-                input#r2i0loser(type='text')
-              button.btn.btn-raised.btn-secondary#team0(name='first' type='button' value='{{teams[0].city}}')
-                p(style='margin-bottom: 0px;') {{teams[0].city}} {{teams[0].mascot}} {{teams[0].seed}}
-                p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[0].pts}} pts, {{teams[0].row}} row
-              button.btn.btn-raised.btn-secondary#team1(name='second' type='button' value='{{teams[1].city}}')
-                p(style='margin-bottom: 0px;') {{teams[1].city}} {{teams[1].mascot}} {{teams[1].seed}}
-                p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[1].pts}} pts, {{teams[1].row}} row
-            p(style='margin-bottom: 0px;') in
-            div(style='padding-bottom: 10px;')
-              input.slider#r2i0games(type="text")
-      div(ng-if="state == 'west6'")
-        div.card.bg-light(style='text-align: center;')
-          div.card-body.bottom-group#r2i1(style='display: inline-block; color: black;')
-            p(style='padding-top: 10px; margin-bottom: 0px;') Pacific Semi Final
-            hr(style='margin-top: 4px; margin-bottom: 0px;')
-            div.btn-group-vertical(style='width: 80%')
-              span.bmd-form-group.is-filled(style="display: none;")
-                input#r2i1winner(type='text')
-                input#r2i1loser(type='text')
-              button.btn.btn-raised.btn-secondary#team2(name='first' type='button' value='{{teams[2].city}}')
-                p(style='margin-bottom: 0px;') {{teams[2].city}} {{teams[2].mascot}} {{teams[2].seed}}
-                p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[2].pts}} pts, {{teams[2].row}} row
-              button.btn.btn-raised.btn-secondary#team3(name='second' type='button' value='{{teams[3].city}}')
-                p(style='margin-bottom: 0px;') {{teams[3].city}} {{teams[3].mascot}} {{teams[3].seed}}
-                p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[3].pts}} pts, {{teams[3].row}} row
-            p(style='margin-bottom: 0px;') in
-            div(style='padding-bottom: 10px;')
-              input.slider#r2i1games(type="text")
+        div(ng-if="state == 'west5'")
+          div.card.bg-light(style='text-align: center;')
+            div.card-body.top-group#r2i0(style='display: inline-block; color: black;')
+              p(style='padding-top: 10px; margin-bottom: 0px;') Central Semi Final
+              hr(style='margin-top: 4px; margin-bottom: 0px;')
+              div.btn-group-vertical(style='width: 80%')
+                span.bmd-form-group.is-filled(style="display: none;")
+                  input#r2i0winner(type='text')
+                  input#r2i0loser(type='text')
+                button.btn.btn-raised.btn-secondary#team0(name='first' type='button' value='{{teams[0].city}}')
+                  p(style='margin-bottom: 0px;') {{teams[0].city}} {{teams[0].mascot}} {{teams[0].seed}}
+                  p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[0].pts}} pts, {{teams[0].row}} row
+                button.btn.btn-raised.btn-secondary#team1(name='second' type='button' value='{{teams[1].city}}')
+                  p(style='margin-bottom: 0px;') {{teams[1].city}} {{teams[1].mascot}} {{teams[1].seed}}
+                  p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[1].pts}} pts, {{teams[1].row}} row
+              p(style='margin-bottom: 0px;') in
+              div(style='padding-bottom: 10px;')
+                input.slider#r2i0games(type="text")
+        div(ng-if="state == 'west6'")
+          div.card.bg-light(style='text-align: center;')
+            div.card-body.bottom-group#r2i1(style='display: inline-block; color: black;')
+              p(style='padding-top: 10px; margin-bottom: 0px;') Pacific Semi Final
+              hr(style='margin-top: 4px; margin-bottom: 0px;')
+              div.btn-group-vertical(style='width: 80%')
+                span.bmd-form-group.is-filled(style="display: none;")
+                  input#r2i1winner(type='text')
+                  input#r2i1loser(type='text')
+                button.btn.btn-raised.btn-secondary#team2(name='first' type='button' value='{{teams[2].city}}')
+                  p(style='margin-bottom: 0px;') {{teams[2].city}} {{teams[2].mascot}} {{teams[2].seed}}
+                  p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[2].pts}} pts, {{teams[2].row}} row
+                button.btn.btn-raised.btn-secondary#team3(name='second' type='button' value='{{teams[3].city}}')
+                  p(style='margin-bottom: 0px;') {{teams[3].city}} {{teams[3].mascot}} {{teams[3].seed}}
+                  p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[3].pts}} pts, {{teams[3].row}} row
+              p(style='margin-bottom: 0px;') in
+              div(style='padding-bottom: 10px;')
+                input.slider#r2i1games(type="text")
 
-      div(ng-if="state == 'east5'")
-        div.card.bg-light(style='text-align: center;')
-          div.card-body.top-group#r2i2(style='display: inline-block; color: black;')
-            p(style='padding-top: 10px; margin-bottom: 0px;') Atlantic Semi Final
-            hr(style='margin-top: 4px; margin-bottom: 0px;')
-            div.btn-group-vertical(style='width: 80%')
-              span.bmd-form-group.is-filled(style="display: none;")
-                input#r2i2winner(type='text')
-                input#r2i2loser(type='text')
-              button.btn.btn-raised.btn-secondary#team4(name='first' type='button' value='{{teams[4].city}}')
-                p(style='margin-bottom: 0px;') {{teams[4].city}} {{teams[4].mascot}} {{teams[4].seed}}
-                p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[4].pts}} pts, {{teams[4].row}} row
-              button.btn.btn-raised.btn-secondary#team5(name='second' type='button' value='{{teams[5].city}}')
-                p(style='margin-bottom: 0px;') {{teams[5].city}} {{teams[5].mascot}} {{teams[5].seed}}
-                p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[5].pts}} pts, {{teams[5].row}} row
-            p(style='margin-bottom: 0px;') in
-            div(style='padding-bottom: 10px;')
-              input.slider#r2i2games(type="text")
-      div(ng-if="state == 'east6'")
-        div.card.bg-light(style='text-align: center;')
-          div.card-body.bottom-group#r2i3(style='display: inline-block; color: black;')
-            p(style='padding-top: 10px; margin-bottom: 0px;') Metro Semi Final
-            hr(style='margin-top: 4px; margin-bottom: 0px;')
-            div.btn-group-vertical(style='width: 80%')
-              span.bmd-form-group.is-filled(style="display: none;")
-                input#r2i3winner(type='text')
-                input#r2i3loser(type='text')
-              button.btn.btn-raised.btn-secondary#team6(name='first' type='button' value='{{teams[6].city}}')
-                p(style='margin-bottom: 0px;') {{teams[6].city}} {{teams[6].mascot}} {{teams[6].seed}}
-                p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[6].pts}} pts, {{teams[6].row}} row
-              button.btn.btn-raised.btn-secondary#team7(name='second' type='button' value='{{teams[7].city}}')
-                p(style='margin-bottom: 0px;') {{teams[7].city}} {{teams[7].mascot}} {{teams[7].seed}}
-                p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[7].pts}} pts, {{teams[7].row}} row
-            p(style='margin-bottom: 0px;') in
-            div(style='padding-bottom: 10px;')
-              input.slider#r2i3games(type="text")
+        div(ng-if="state == 'east5'")
+          div.card.bg-light(style='text-align: center;')
+            div.card-body.top-group#r2i2(style='display: inline-block; color: black;')
+              p(style='padding-top: 10px; margin-bottom: 0px;') Atlantic Semi Final
+              hr(style='margin-top: 4px; margin-bottom: 0px;')
+              div.btn-group-vertical(style='width: 80%')
+                span.bmd-form-group.is-filled(style="display: none;")
+                  input#r2i2winner(type='text')
+                  input#r2i2loser(type='text')
+                button.btn.btn-raised.btn-secondary#team4(name='first' type='button' value='{{teams[4].city}}')
+                  p(style='margin-bottom: 0px;') {{teams[4].city}} {{teams[4].mascot}} {{teams[4].seed}}
+                  p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[4].pts}} pts, {{teams[4].row}} row
+                button.btn.btn-raised.btn-secondary#team5(name='second' type='button' value='{{teams[5].city}}')
+                  p(style='margin-bottom: 0px;') {{teams[5].city}} {{teams[5].mascot}} {{teams[5].seed}}
+                  p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[5].pts}} pts, {{teams[5].row}} row
+              p(style='margin-bottom: 0px;') in
+              div(style='padding-bottom: 10px;')
+                input.slider#r2i2games(type="text")
+        div(ng-if="state == 'east6'")
+          div.card.bg-light(style='text-align: center;')
+            div.card-body.bottom-group#r2i3(style='display: inline-block; color: black;')
+              p(style='padding-top: 10px; margin-bottom: 0px;') Metro Semi Final
+              hr(style='margin-top: 4px; margin-bottom: 0px;')
+              div.btn-group-vertical(style='width: 80%')
+                span.bmd-form-group.is-filled(style="display: none;")
+                  input#r2i3winner(type='text')
+                  input#r2i3loser(type='text')
+                button.btn.btn-raised.btn-secondary#team6(name='first' type='button' value='{{teams[6].city}}')
+                  p(style='margin-bottom: 0px;') {{teams[6].city}} {{teams[6].mascot}} {{teams[6].seed}}
+                  p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[6].pts}} pts, {{teams[6].row}} row
+                button.btn.btn-raised.btn-secondary#team7(name='second' type='button' value='{{teams[7].city}}')
+                  p(style='margin-bottom: 0px;') {{teams[7].city}} {{teams[7].mascot}} {{teams[7].seed}}
+                  p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[7].pts}} pts, {{teams[7].row}} row
+              p(style='margin-bottom: 0px;') in
+              div(style='padding-bottom: 10px;')
+                input.slider#r2i3games(type="text")
 
-      div(ng-if="state == 'conf_2'" style='text-align: center;')
-        div(style='display: inline-block;')
-          h4 Here are your Semi Finals picks:
-          ol.list-group.list-group-flush
-            li.list-group-item.small-list(ng-repeat="item in results.round2") {{item.winner}} over {{item.loser}} in {{item.games}} games
+        div(ng-if="state == 'conf_2'" style='text-align: center;')
+          div(style='display: inline-block;')
+            h4 Here are your Semi Finals picks:
+            ol.list-group.list-group-flush
+              li.list-group-item.small-list(ng-repeat="item in results.round2") {{item.winner}} over {{item.loser}} in {{item.games}} games
 
-      div(ng-if="state == 'both1'")
-        div.card.bg-light(style='text-align: center;')
-          div.card-body.top-group#r3i0(style='display: inline-block; color: black;')
-            p(style='padding-top: 10px; margin-bottom: 0px;') Western Conference Final
-            hr(style='margin-top: 4px; margin-bottom: 0px;')
-            div.btn-group-vertical(style='width: 80%')
-              span.bmd-form-group.is-filled(style="display: none;")
-                input#r3i0winner(type='text')
-                input#r3i0loser(type='text')
-              button.btn.btn-raised.btn-secondary#team0(name='first' type='button' value='{{teams[0].city}}')
-                p(style='margin-bottom: 0px;') {{teams[0].city}} {{teams[0].mascot}} {{teams[0].seed}}
-                p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[0].pts}} pts, {{teams[0].row}} row
-              button.btn.btn-raised.btn-secondary#team1(name='second' type='button' value='{{teams[1].city}}')
-                p(style='margin-bottom: 0px;') {{teams[1].city}} {{teams[1].mascot}} {{teams[1].seed}}
-                p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[1].pts}} pts, {{teams[1].row}} row
-            p(style='margin-bottom: 0px;') in
-            div(style='padding-bottom: 10px;')
-              input.slider#r3i0games(type="text")
-      div(ng-if="state == 'both2'")
-        div.card.bg-light(style='text-align: center;')
-          div.card-body.bottom-group#r3i1(style='display: inline-block; color: black;')
-            p(style='padding-top: 10px; margin-bottom: 0px;') Eastern Conference Final
-            hr(style='margin-top: 4px; margin-bottom: 0px;')
-            div.btn-group-vertical(style='width: 80%')
-              span.bmd-form-group.is-filled(style="display: none;")
-                input#r3i1winner(type='text')
-                input#r3i1loser(type='text')
-              button.btn.btn-raised.btn-secondary#team2(name='first' type='button' value='{{teams[2].city}}')
-                p(style='margin-bottom: 0px;') {{teams[2].city}} {{teams[2].mascot}} {{teams[2].seed}}
-                p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[2].pts}} pts, {{teams[2].row}} row
-              button.btn.btn-raised.btn-secondary#team3(name='second' type='button' value='{{teams[3].city}}')
-                p(style='margin-bottom: 0px;') {{teams[3].city}} {{teams[3].mascot}} {{teams[3].seed}}
-                p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[3].pts}} pts, {{teams[3].row}} row
-            p(style='margin-bottom: 0px;') in
-            div(style='padding-bottom: 10px;')
-              input.slider#r3i1games(type="text")
+        div(ng-if="state == 'both1'")
+          div.card.bg-light(style='text-align: center;')
+            div.card-body.top-group#r3i0(style='display: inline-block; color: black;')
+              p(style='padding-top: 10px; margin-bottom: 0px;') Western Conference Final
+              hr(style='margin-top: 4px; margin-bottom: 0px;')
+              div.btn-group-vertical(style='width: 80%')
+                span.bmd-form-group.is-filled(style="display: none;")
+                  input#r3i0winner(type='text')
+                  input#r3i0loser(type='text')
+                button.btn.btn-raised.btn-secondary#team0(name='first' type='button' value='{{teams[0].city}}')
+                  p(style='margin-bottom: 0px;') {{teams[0].city}} {{teams[0].mascot}} {{teams[0].seed}}
+                  p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[0].pts}} pts, {{teams[0].row}} row
+                button.btn.btn-raised.btn-secondary#team1(name='second' type='button' value='{{teams[1].city}}')
+                  p(style='margin-bottom: 0px;') {{teams[1].city}} {{teams[1].mascot}} {{teams[1].seed}}
+                  p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[1].pts}} pts, {{teams[1].row}} row
+              p(style='margin-bottom: 0px;') in
+              div(style='padding-bottom: 10px;')
+                input.slider#r3i0games(type="text")
+        div(ng-if="state == 'both2'")
+          div.card.bg-light(style='text-align: center;')
+            div.card-body.bottom-group#r3i1(style='display: inline-block; color: black;')
+              p(style='padding-top: 10px; margin-bottom: 0px;') Eastern Conference Final
+              hr(style='margin-top: 4px; margin-bottom: 0px;')
+              div.btn-group-vertical(style='width: 80%')
+                span.bmd-form-group.is-filled(style="display: none;")
+                  input#r3i1winner(type='text')
+                  input#r3i1loser(type='text')
+                button.btn.btn-raised.btn-secondary#team2(name='first' type='button' value='{{teams[2].city}}')
+                  p(style='margin-bottom: 0px;') {{teams[2].city}} {{teams[2].mascot}} {{teams[2].seed}}
+                  p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[2].pts}} pts, {{teams[2].row}} row
+                button.btn.btn-raised.btn-secondary#team3(name='second' type='button' value='{{teams[3].city}}')
+                  p(style='margin-bottom: 0px;') {{teams[3].city}} {{teams[3].mascot}} {{teams[3].seed}}
+                  p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[3].pts}} pts, {{teams[3].row}} row
+              p(style='margin-bottom: 0px;') in
+              div(style='padding-bottom: 10px;')
+                input.slider#r3i1games(type="text")
 
-      div(ng-if="state == 'conf_3'" style='text-align: center;')
-        div(style='display: inline-block;')
-          h4 Here are your Conference Finals picks:
-          ol.list-group.list-group-flush
-            li.list-group-item.small-list(ng-repeat="item in results.round3") {{item.winner}} over {{item.loser}} in {{item.games}} games
+        div(ng-if="state == 'conf_3'" style='text-align: center;')
+          div(style='display: inline-block;')
+            h4 Here are your Conference Finals picks:
+            ol.list-group.list-group-flush
+              li.list-group-item.small-list(ng-repeat="item in results.round3") {{item.winner}} over {{item.loser}} in {{item.games}} games
 
-      div(ng-if="state == 'both3'")
-        div.card.bg-light(style='text-align: center;')
-          div.card-body.finals-group#r4i0(style='display: inline-block; color: black;')
-            p(style='padding-top: 10px; margin-bottom: 0px;') Stanley Cup Finals
-            hr(style='margin-top: 4px; margin-bottom: 0px;')
-            div.btn-group-vertical(style='width: 80%')
-              span.bmd-form-group.is-filled(style="display: none;")
-                input#r4i0winner(type='text')
-                input#r4i0loser(type='text')
-              button.btn.btn-raised.btn-secondary#team0(name='first' type='button' value='{{teams[0].city}}')
-                p(style='margin-bottom: 0px;') {{teams[0].city}} {{teams[0].mascot}} {{teams[0].seed}}
-                p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[0].pts}} pts, {{teams[0].row}} row
-              button.btn.btn-raised.btn-secondary#team1(name='second' type='button' value='{{teams[1].city}}')
-                p(style='margin-bottom: 0px;') {{teams[1].city}} {{teams[1].mascot}} {{teams[1].seed}}
-                p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[1].pts}} pts, {{teams[1].row}} row
-            p(style='margin-bottom: 0px;') in
-            div(style='padding-bottom: 10px;')
-              input.slider#r4i0games(type="text")
-            div.input-group.mb-3(style="justify-content: center;")
-              input.form-control#r4i0goals(type="text" style="max-width: 50px; text-align: right;" placeholder="10")
-              div.input-group-append
-                span.input-group-text(style='margin-left: 10px;') goals
-  div(ng-if="state == 'conf_4'" style="padding-bottom: 60px")
-    p.lead Please enter your name and email below so we can assign the bracket to you.
-    form
-      div.form-group.bmd-form-group(style='text-align: left;')
-        label.bmd-label-floating(for="loginName" style='color:#009587;') Name
-        input.form-control#loginName(type='text' style='color:white;')
-      div.form-group.bmd-form-group(style='text-align: left;')
-        label.bmd-label-floating(for="loginEmail" style='color:#009587;') Email Address
-        input.form-control#loginEmail(type='text' style='color:white;')
-    //p.lead Quarter Finals Picks
-    //ol.list-group.list-group-flush
-    //  li.list-group-item.small-list(ng-repeat="item in results.round1") {{item.winner}} over {{item.loser}} in {{item.games}} games
-    //hr.my-4
-    //p.lead Semi Finals Picks
-    //ol.list-group.list-group-flush
-    //  li.list-group-item.small-list(ng-repeat="item in results.round2") {{item.winner}} over {{item.loser}} in {{item.games}} games
-    //hr.my-4
-    //p.lead Conference Finals Picks
-    //ol.list-group.list-group-flush
-    //  li.list-group-item.small-list(ng-repeat="item in results.round3") {{item.winner}} over {{item.loser}} in {{item.games}} games
-    //hr.my-4
-    //p.lead Finals Picks
-    //ol.list-group.list-group-flush
-    //  li.list-group-item.small-list(ng-repeat="item in results.finals") {{item.winner}} over {{item.loser}} in {{item.games}} games ({{item.goals}} goals)
-    //br
-    //hr.my-4
-  nav.navbar.fixed-bottom
-    a.btn.btn-primary.btn-raised.float-left(ng-click="back()") Back
-    a.btn.btn-primary.btn-raised.float-right.buttontooltip(ng-if="state !== 'conf_4'" ng-click="next()" title='Please fill in your guesses for the winning team, number of games, and goals (for the Stanley Cup.) If this message pops up twice on mobile just hit next one more time.' style='opacity: 0.4;') Next
-    a.btn.btn-primary.btn-raised.float-right.buttontooltip(ng-if="state === 'conf_4'" ng-click="submit()" title='Please fill in your name and email address.') Submit
+        div(ng-if="state == 'both3'")
+          div.card.bg-light(style='text-align: center;')
+            div.card-body.finals-group#r4i0(style='display: inline-block; color: black;')
+              p(style='padding-top: 10px; margin-bottom: 0px;') Stanley Cup Finals
+              hr(style='margin-top: 4px; margin-bottom: 0px;')
+              div.btn-group-vertical(style='width: 80%')
+                span.bmd-form-group.is-filled(style="display: none;")
+                  input#r4i0winner(type='text')
+                  input#r4i0loser(type='text')
+                button.btn.btn-raised.btn-secondary#team0(name='first' type='button' value='{{teams[0].city}}')
+                  p(style='margin-bottom: 0px;') {{teams[0].city}} {{teams[0].mascot}} {{teams[0].seed}}
+                  p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[0].pts}} pts, {{teams[0].row}} row
+                button.btn.btn-raised.btn-secondary#team1(name='second' type='button' value='{{teams[1].city}}')
+                  p(style='margin-bottom: 0px;') {{teams[1].city}} {{teams[1].mascot}} {{teams[1].seed}}
+                  p(style='margin-bottom: 0px; font-size: 8pt;') {{teams[1].pts}} pts, {{teams[1].row}} row
+              p(style='margin-bottom: 0px;') in
+              div(style='padding-bottom: 10px;')
+                input.slider#r4i0games(type="text")
+              div.input-group.mb-3(style="justify-content: center;")
+                input.form-control#r4i0goals(type="text" style="max-width: 50px; text-align: right;" placeholder="10")
+                div.input-group-append
+                  span.input-group-text(style='margin-left: 10px;') goals
+    div(ng-if="state == 'conf_4'" style="padding-bottom: 60px")
+      p.lead Please enter your name and email below so we can assign the bracket to you.
+      form
+        div.form-group.bmd-form-group(style='text-align: left;')
+          label.bmd-label-floating(for="loginName" style='color:#009587;') Name
+          input.form-control#loginName(type='text' style='color:white;')
+        div.form-group.bmd-form-group(style='text-align: left;')
+          label.bmd-label-floating(for="loginEmail" style='color:#009587;') Email Address
+          input.form-control#loginEmail(type='text' style='color:white;')
+    nav.navbar.fixed-bottom
+      a.btn.btn-primary.btn-raised.float-left(ng-click="back()") Back
+      a.btn.btn-primary.btn-raised.float-right.buttontooltip(ng-if="state !== 'conf_4'" ng-click="next()" title='Please fill in your guesses for the winning team, number of games, and goals (for the Stanley Cup.) If this message pops up twice on mobile just hit next one more time.' style='opacity: 0.4;') Next
+      a.btn.btn-primary.btn-raised.float-right.buttontooltip(ng-if="state === 'conf_4'" ng-click="submit()" title='Please fill in your name and email address.') Submit
