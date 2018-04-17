@@ -215,23 +215,23 @@ router.get('/standings', async function(req, res, next) {
     });
 })
 
-router.get('/getbrackets', async function(req, res, next) {
-    var brackets = await models.Bracket.findAll();
-    for (var i = 0; i < brackets.length; i++) {
-        var id = brackets[i].dataValues.id;
-        var predictions = brackets[i].dataValues.predictions;
-        for (var j = 0; j < 8; j++) {
-            await models.Prediction.create({winner_id: predictions.round1[j].winner, loser_id: predictions.round1[j].loser, num_games: predictions.round1[j].games, game_id: j+1, bracket_id: id});
-        }
-        for (j = 0; j < 4; j++) {
-            await models.Prediction.create({winner_id: predictions.round2[j].winner, loser_id: predictions.round2[j].loser, num_games: predictions.round2[j].games, game_id: j+9, bracket_id: id});
-        }
-        for (j = 0; j < 2; j++) {
-            await models.Prediction.create({winner_id: predictions.round3[j].winner, loser_id: predictions.round3[j].loser, num_games: predictions.round3[j].games, game_id: j+13, bracket_id: id});
-        }
-        await models.Prediction.create({winner_id: predictions.finals[0].winner, loser_id: predictions.finals[0].loser, num_games: predictions.finals[0].games, num_goals: predictions.finals[0].goals, game_id: 15, bracket_id: id});
-
-    }
-});
+// router.get('/getbrackets', async function(req, res, next) {
+//     var brackets = await models.Bracket.findAll();
+//     for (var i = 0; i < brackets.length; i++) {
+//         var id = brackets[i].dataValues.id;
+//         var predictions = brackets[i].dataValues.predictions;
+//         for (var j = 0; j < 8; j++) {
+//             await models.Prediction.create({winner_id: predictions.round1[j].winner, loser_id: predictions.round1[j].loser, num_games: predictions.round1[j].games, game_id: j+1, bracket_id: id});
+//         }
+//         for (j = 0; j < 4; j++) {
+//             await models.Prediction.create({winner_id: predictions.round2[j].winner, loser_id: predictions.round2[j].loser, num_games: predictions.round2[j].games, game_id: j+9, bracket_id: id});
+//         }
+//         for (j = 0; j < 2; j++) {
+//             await models.Prediction.create({winner_id: predictions.round3[j].winner, loser_id: predictions.round3[j].loser, num_games: predictions.round3[j].games, game_id: j+13, bracket_id: id});
+//         }
+//         await models.Prediction.create({winner_id: predictions.finals[0].winner, loser_id: predictions.finals[0].loser, num_games: predictions.finals[0].games, num_goals: predictions.finals[0].goals, game_id: 15, bracket_id: id});
+//
+//     }
+// });
 
 module.exports = router;
