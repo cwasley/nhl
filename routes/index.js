@@ -190,7 +190,10 @@ router.get('/', async function(req, res, next) {
     var brackets = await models.Bracket.findAll({
         order: Sequelize.col('name')
     });
-    var teams = await models.Team.findAll();
+    var teams = await models.Team.findAll({
+        order: Sequelize.col('original_id')
+    });
+    teams = teams.reverse();
     var games = await models.Game.findAll({
         order: Sequelize.col('id')
     });
@@ -231,44 +234,7 @@ router.get('/standings', async function(req, res, next) {
         title: 'NHL 2018',
         brackets: brackets
     });
-})
+});
 
-var abbrev_dict = {};
-abbrev_dict['Nashville'] = 'NSH';
-abbrev_dict['Colorado'] = 'COL';
-abbrev_dict['Philadelphia'] = 'PHI';
-abbrev_dict['Pittsburgh'] = 'PIT';
-abbrev_dict['Columbus'] = 'CBJ';
-abbrev_dict['Washington'] = 'WSH';
-abbrev_dict['Toronto'] = 'TOR';
-abbrev_dict['Boston'] = 'BOS';
-abbrev_dict['New Jersey'] = 'NJD';
-abbrev_dict['Tampa Bay'] = 'TBL';
-abbrev_dict['San Jose'] = 'SJS';
-abbrev_dict['Anaheim'] = 'ANA';
-abbrev_dict['LA'] = 'LAK';
-abbrev_dict['Vegas'] = 'VGK';
-abbrev_dict['Minnesota'] = 'MIN';
-abbrev_dict['Winnipeg'] = 'WPG';
-
-
-// router.get('/getbrackets', async function(req, res, next) {
-//     var brackets = await models.Bracket.findAll();
-//     for (var i = 0; i < brackets.length; i++) {
-//         var id = brackets[i].dataValues.id;
-//         var predictions = brackets[i].dataValues.predictions;
-//         for (var j = 0; j < 8; j++) {
-//             await models.Prediction.create({winner_id: abbrev_dict[predictions.round1[j].winner], loser_id: abbrev_dict[predictions.round1[j].loser], num_games: predictions.round1[j].games, game_id: j+1, bracket_id: id});
-//         }
-//         for (j = 0; j < 4; j++) {
-//             await models.Prediction.create({winner_id: abbrev_dict[predictions.round2[j].winner], loser_id: abbrev_dict[predictions.round2[j].loser], num_games: predictions.round2[j].games, game_id: j+9, bracket_id: id});
-//         }
-//         for (j = 0; j < 2; j++) {
-//             await models.Prediction.create({winner_id: abbrev_dict[predictions.round3[j].winner], loser_id: abbrev_dict[predictions.round3[j].loser], num_games: predictions.round3[j].games, game_id: j+13, bracket_id: id});
-//         }
-//         await models.Prediction.create({winner_id: abbrev_dict[predictions.finals[0].winner], loser_id: abbrev_dict[predictions.finals[0].loser], num_games: predictions.finals[0].games, num_goals: predictions.finals[0].goals, game_id: 15, bracket_id: id});
-//
-//     }
-// });
 
 module.exports = router;

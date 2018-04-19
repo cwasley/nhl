@@ -7,7 +7,8 @@ module.exports = (sequelize, DataTypes) => {
     row: DataTypes.INTEGER,
     division: DataTypes.STRING,
     conference: DataTypes.STRING,
-    seed: DataTypes.STRING
+    seed: DataTypes.STRING,
+    original_id: DataTypes.INTEGER
   },{});
   Team.associate = function(models) {
     // associations can be defined here
