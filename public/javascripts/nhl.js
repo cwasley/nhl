@@ -312,74 +312,147 @@ angular.module('nhl', [])
     }])
     .controller('ListController', ['$scope', '$http', function($scope, $http) {
 
+        $('body').bootstrapMaterialDesign();
         $scope.teams = teams;
         $scope.brackets = brackets;
         $scope.predictions = predictions;
         $scope.games = games;
 
+        $scope.nodeDataArray = [];
         $(function() {
+
+            $('.tip').tooltip({
+                placement: "top"
+            });
+            for (var i = 0; i < $scope.predictions.length; i++) {
+
+
+                $scope.updateBracket($scope.predictions[i], i)
+            }
+        });
+
+        $scope.updateBracket = function(predictions, index) {
+
+            var predictionsCopy = angular.copy(predictions);
+
+            for (var i = 0; i < predictionsCopy.length; i++) {
+                var prediction = predictionsCopy[i];
+
+                // Original Picks
+                if ($scope.games[i].next_game_id && predictionsCopy[$scope.games[i].next_game_id - 1].winner_id !== prediction.winner_id) {
+                    prediction.color = 'gray';
+                    for (var j = i; j < predictionsCopy.length; j++) {
+                        if (predictionsCopy[j].winner_id === predictionsCopy[i].loser_id) {
+                            predictionsCopy[j].color = 'gray';
+                        }
+                    }
+
+                    // Removing displaying games for those that are lost
+                }
+
+                // Check for actual games & propogate losses forward
+                for (var j = 0; j < $scope.games.length; j++) {
+                    if ($scope.games[j].winner) {
+                        if (prediction.winner_id === $scope.games[j].team1_id || prediction.winner_id === $scope.games[j].team2_id) {
+                            if (prediction.winner_id !== $scope.games[j].winner) {
+                                prediction.color = 'gray';
+                            }
+                        }
+                    }
+                }
+
+
+                // Updating to include actual series results
+
+                // if (nextGame && nextGame.winner && nextGame.winner !== prediction.winner_id) {
+                //     predictionsCopy[i].color = 'gray';
+                //     for (var j = i; j < predictionsCopy.length; j++) {
+                //         if (predictionsCopy[j].winner_id === predictionsCopy[i].winner_id) {
+                //             predictionsCopy[j].color = 'gray';
+                //
+                //         }
+                //     }
+                // }
+            }
+
+            var nodeData = calculateBracket(predictionsCopy);
+            generateBracket(nodeData, index);
+        };
+
+        function computeTextRotation(d) {
+            var angle = (d.x0 + d.x1) / Math.PI * 90;
+
+            // Avoid upside-down labels
+            return (angle < 100 || angle > 260) ? angle : angle + 180;  // labels as rims
+            //return (angle < 180) ? angle - 90 : angle + 90;  // labels as spokes
+        }
+        function calculateBracket(bracket) {
+
             var nodeData = {
-                "name": "SJS", "color": "#006272", "children": [{
-                    "name": "TOR", "color": "#00205B", "children": [{
-                        "name": "TOR", "color": "#00205B", "children": [{
-                            "name": "TBL", "color": "#00205B", "children": [
-                                { "name": "TBL", "color": "#00205B", "size": 5},
-                                { "name": "NJD", "color": "#C8102E", "size": 5}]
-                        },
-                        {
-                            "name": "TOR", "color": "#00205B", "children": [
-                                { "name": "BOS", "color": "#FFB81C", "size": 5},
-                                { "name": "TOR", "color": "#00205B", "size": 5}]
-                        }]
-                    },
-                    {
-                        "name": "WSH", "color": "#C8102E", "children": [{
-                            "name": "WSH", "color": "#C8102E", "children": [
-                                { "name": "WSH", "color": "#C8102E", "size": 5},
-                                { "name": "CBJ", "color": "#041E42", "size": 5}]
-                        },
-                        {
-                            "name": "PHI", "color": "#FA4616", "children": [
-                            { "name": "PIT", "color": "#FFB81C", "size": 5},
-                            { "name": "PHI", "color": "#FA4616", "size": 5}]
-                        }]
-                    }]
-                },
-                {
-                    "name": "SJS", "color": "#006272", "children": [{
-                        "name": "SJS", "color": "#006272", "children": [{
-                            "name": "SJS", "color": "#006272", "children": [
-                                { "name": "SJS", "color": "#006272", "size": 5},
-                                { "name": "ANA", "color": "#FC4C02", "size": 5}]
+                "name": bracket[14].winner_id, "games": 0, "goals": bracket[14].num_goals,"color": bracket[14].color, "children": [{
+                    "name": bracket[13].winner_id, "color": bracket[13].color, "games": bracket[14].num_games, "children": [{
+                        "name": bracket[10].winner_id, "color": bracket[10].color, "games": bracket[13].num_games, "children": [{
+                            "name": bracket[4].winner_id, "color": bracket[4].color, "games": bracket[10].num_games, "children": [
+                                { "name": "TBL", "color": ($scope.games[4].winner === null || $scope.games[4].winner === bracket[4].winner_id) && bracket[4].winner_id === 'TBL' ? "#00205B" : 'gray', "games": bracket[4].winner_id === 'TBL' ? bracket[4].num_games : 0, "size": 5},
+                                { "name": "NJD", "color": ($scope.games[4].winner === null || $scope.games[4].winner === bracket[4].winner_id) && bracket[4].winner_id === 'NJD' ? "#C8102E" : 'gray', "games": bracket[4].winner_id === 'NJD' ? bracket[4].num_games : 0, "size": 5}]
                         },
                             {
-                                "name": "LAK", "color": "#000000", "children": [
-                                { "name": "LAK", "color": "#000000", "size": 5},
-                                { "name": "VGK", "color": "#B9975B", "size": 5}]
+                                "name": bracket[5].winner_id, "color": bracket[5].color, "games": bracket[10].num_games, "children": [
+                                    { "name": "BOS", "color": ($scope.games[5].winner === null || $scope.games[5].winner === bracket[5].winner_id) && bracket[5].winner_id === 'BOS' ? "#FFB81C" : 'gray', "games": bracket[5].winner_id === 'BOS' ? bracket[5].num_games : 0, "size": 5},
+                                    { "name": "TOR", "color": ($scope.games[5].winner === null || $scope.games[5].winner === bracket[5].winner_id) && bracket[5].winner_id === 'TOR' ? "#00205B" : 'gray', "games": bracket[5].winner_id === 'TOR' ? bracket[5].num_games : 0, "size": 5}]
                             }]
                     },
-                    {
-                        "name": "WPG", "color": "#041E42", "children": [{
-                            "name": "WPG", "color": "#041E42", "children": [
-                                { "name": "MIN", "color": "#154734", "size": 5},
-                                { "name": "WPG", "color": "#041E42", "size": 5}]
-                        },
                         {
-                            "name": "NSH", "color": "#FFB81C", "children": [
-                            { "name": "COL", "color": "#6F263D", "size": 5},
-                            { "name": "NSH", "color": "#FFB81C", "size": 5}]
+                            "name": bracket[11].winner_id, "color": bracket[11].color, "games": bracket[13].num_games, "children": [{
+                            "name": bracket[6].winner_id, "color": bracket[6].color, "games": bracket[11].num_games, "children": [
+                                { "name": "WSH", "color": ($scope.games[6].winner === null || $scope.games[6].winner === bracket[6].winner_id) && bracket[6].winner_id === 'WSH' ? "#C8102E" : 'gray', "games": bracket[6].winner_id === 'WSH' ? bracket[6].num_games : 0, "size": 5},
+                                { "name": "CBJ", "color": ($scope.games[6].winner === null || $scope.games[6].winner === bracket[6].winner_id) && bracket[6].winner_id === 'CBJ' ? "#041E42" : 'gray', "games": bracket[6].winner_id === 'CBJ' ? bracket[6].num_games : 0, "size": 5}]
+                        },
+                            {
+                                "name": bracket[7].winner_id, "color":bracket[7].color, "games": bracket[11].num_games, "children": [
+                                { "name": "PIT", "color": ($scope.games[7].winner === null || $scope.games[7].winner === bracket[7].winner_id) && bracket[7].winner_id === 'PIT' ? "#FFB81C" : 'gray', "games": bracket[7].winner_id === 'PIT' ? bracket[7].num_games : 0, "size": 5},
+                                { "name": "PHI", "color": ($scope.games[7].winner === null || $scope.games[7].winner === bracket[7].winner_id) && bracket[7].winner_id === 'PHI' ? "#FA4616" : 'gray', "games": bracket[7].winner_id === 'PHI' ? bracket[7].num_games : 0, "size": 5}]
+                            }]
+                        }]
+                },
+                    {
+                        "name": bracket[12].winner_id, "color": bracket[12].color, "games": bracket[14].num_games, "children": [{
+                        "name": bracket[9].winner_id, "color": bracket[9].color, "games": bracket[12].num_games, "children": [{
+                            "name": bracket[3].winner_id, "color": bracket[3].color, "games": bracket[9].num_games, "children": [
+                                { "name": "SJS", "color": ($scope.games[3].winner === null || $scope.games[3].winner === bracket[3].winner_id) && bracket[3].winner_id === 'SJS' ? "#006272" : 'gray', "games": bracket[3].winner_id === 'SJS' ? bracket[3].num_games : 0, "size": 5},
+                                { "name": "ANA", "color": ($scope.games[3].winner === null || $scope.games[3].winner === bracket[3].winner_id) && bracket[3].winner_id === 'ANA' ? "#FC4C02" : 'gray', "games": bracket[3].winner_id === 'ANA' ? bracket[3].num_games : 0, "size": 5}]
+                        },
+                            {
+                                "name": bracket[2].winner_id, "color": bracket[2].color, "games": bracket[9].num_games, "children": [
+                                { "name": "LAK", "color": ($scope.games[2].winner === null || $scope.games[2].winner === bracket[2].winner_id) && bracket[2].winner_id === 'LAK' ? "#000000" : 'gray', "games": bracket[2].winner_id === 'LAK' ? bracket[2].num_games : 0, "size": 5},
+                                { "name": "VGK", "color": ($scope.games[2].winner === null || $scope.games[2].winner === bracket[2].winner_id) && bracket[2].winner_id === 'VGK' ? "#B9975B" : 'gray', "games": bracket[2].winner_id === 'VGK' ? bracket[2].num_games : 0, "size": 5}]
+                            }]
+                    },
+                        {
+                            "name": bracket[8].winner_id, "color": bracket[8].color, "games": bracket[12].num_games, "children": [{
+                            "name": bracket[1].winner_id, "color": bracket[1].color, "games": bracket[8].num_games, "children": [
+                                { "name": "MIN", "color": ($scope.games[1].winner === null || $scope.games[1].winner === bracket[1].winner_id) && bracket[1].winner_id === 'MIN' ? "#154734" : 'gray', "games": bracket[1].winner_id === 'MIN' ? bracket[1].num_games : 0, "size": 5},
+                                { "name": "WPG", "color": ($scope.games[1].winner === null || $scope.games[1].winner === bracket[1].winner_id) && bracket[1].winner_id === 'WPG' ? "#041E42" : 'gray', "games": bracket[1].winner_id === 'WPG' ? bracket[1].num_games : 0, "size": 5}]
+                        },
+                            {
+                                "name": bracket[0].winner_id, "color": bracket[0].color, "games": bracket[8].num_games, "children": [
+                                { "name": "COL", "color": ($scope.games[0].winner === null || $scope.games[0].winner === bracket[0].winner_id) && bracket[0].winner_id === 'COL' ? "#6F263D" : 'gray', "games": bracket[0].winner_id === 'COL' ? bracket[0].num_games : 0, "size": 5},
+                                { "name": "NSH", "color": ($scope.games[0].winner === null || $scope.games[0].winner === bracket[0].winner_id) && bracket[0].winner_id === 'NSH' ? "#FFB81C" : 'gray', "games": bracket[0].winner_id === 'NSH' ? bracket[0].num_games : 0, "size": 5}]
+                            }]
                         }]
                     }]
-                }]
             };
+            return nodeData;
+        }
 
+        function generateBracket(nodeData, i) {
             // Variables
-            var width = 400;
-            var height = 400;
+            var width = 360;
+            var height = 360;
             var radius = Math.min(width, height) / 2;
 
             // Create primary <g> element
-            var g = d3.select('svg')
+            var g = d3.select('#radial-bracket-' + i)
                 .attr('width', width)
                 .attr('height', height)
                 .append('g')
@@ -391,15 +464,25 @@ angular.module('nhl', [])
 
             // Find data root
             var root = d3.hierarchy(nodeData)
-                .sum(function (d) { return d.size});
+                .sum(function (d) {
+                    return d.size
+                });
 
             // Size arcs
             partition(root);
             var arc = d3.arc()
-                .startAngle(function (d) { return d.x0 })
-                .endAngle(function (d) { return d.x1 })
-                .innerRadius(function (d) { return d.y0 })
-                .outerRadius(function (d) { return d.y1 });
+                .startAngle(function (d) {
+                    return d.x0
+                })
+                .endAngle(function (d) {
+                    return d.x1
+                })
+                .innerRadius(function (d) {
+                    return d.y0
+                })
+                .outerRadius(function (d) {
+                    return d.y1
+                });
 
             // Put it all together
             g.selectAll('g')
@@ -413,30 +496,43 @@ angular.module('nhl', [])
 
             g.selectAll(".node")
                 .append("text")
-                .attr("transform", function(d) {
+                .attr("transform", function (d) {
                     if (d.parent) {
                         return "translate(" + arc.centroid(d) + ")rotate(" + computeTextRotation(d) + ")";
                     } else {
-                        return "translate(" + arc.centroid(d) + ")";
+                        return "";
                     }
                 })
-                .attr("dx", "-20") // radius margin
+                .attr("dx", function (d) {
+                    if (d.parent && (d.data.games === 0 || d.data.color === 'gray')) {
+                        return "-20";
+                    } else if (d.parent) {
+                        return "-28";
+                    } else {
+                        return "-13";
+                    }
+                })
                 .attr("dy", ".5em") // rotation align
                 .style("fill", function (d) {
                     return "#fff";
                 })
-                .text(function(d) { return d.data.name});
-        });
-
-        function computeTextRotation(d) {
-            var angle = (d.x0 + d.x1) / Math.PI * 90;
-
-            // Avoid upside-down labels
-            return (angle < 100 || angle > 270) ? angle : angle + 180;  // labels as rims
-            //return (angle < 180) ? angle - 90 : angle + 90;  // labels as spokes
+                .text(function (d) {
+                    return (d.data.games === 0 || d.data.color === 'gray') ? d.data.name : d.data.name + ' in ' + d.data.games;
+                })
         }
+
     }])
     .controller('StandingsController', ['$scope', '$http', function($scope, $http) {
 
+        var uniqueStandings = [...new Set(brackets.map(item => item.points))];
+        for (var i = 0; i < brackets.length; i++) {
+            for (var j = 0; j < uniqueStandings.length; j++) {
+                if (brackets[i].points === uniqueStandings[j]) {
+                    brackets[i].place = j + 1;
+                    break;
+                }
+            }
+        }
         $scope.brackets = brackets;
+
 }]);

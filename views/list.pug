@@ -12,23 +12,16 @@ block content
         li.nav-item
           a.nav-link(href='/standings') Standings
   div.container-fluid(style="padding-top:60px;" ng-controller='ListController')
-    //svg
     div.row
-      div.col(ng-repeat='bracket in brackets track by $index')
-        h3 {{bracket.name}}
-        table.table.table-bordered
-          thead
-            tr
-              th Series
-              th Winner
-              th Loser
-              th Games (Goals)
-          tbody
-            tr(ng-repeat='game in predictions[$index]')
-              td {{game.game_id}}
-              td {{game.winner_id}}
-              td {{game.loser_id}}
-              td {{game.num_games}} {{game.num_goals ? '(' + game.num_goals + ')' : '' }}
+      div.col-3(ng-repeat='entry in predictions track by $index' style="min-width:400px;")
+        div.card(style="min-width:350px;")
+          div.card-body(style='padding-bottom:10px; padding-left:10px; padding-right:10px;')
+            p.lead(style='display:inline;') {{brackets[$index].name}}
+            p(style='display:inline; margin:auto; float:right;') Points: {{brackets[$index].points}}
+          svg(id="radial-bracket-{{$index}}" style="display:block; margin:auto;")
+          div.card-body(style='padding-left:10px; padding-right:10px;')
+            i.material-icons(class="tip" title="{{brackets[$index].paid ? '' : 'Hasnt paid Chris yet'}}" style="{{brackets[$index].paid ? 'color:green;' : 'color:red;'}}") attach_money
+            p(style='display:inline; margin:auto; float:right;') Stanley cup goals: {{entry[14].num_goals}}
   script.
     var teams = !{JSON.stringify(teams)};
     var brackets = !{JSON.stringify(brackets)};

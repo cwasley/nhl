@@ -6,13 +6,13 @@
 }
 
 body {
-  padding: 20px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
   height: 100%;
+  padding-top:20px;
+  padding-bottom: 20px;
   /*background-color: #333;*/
   /*color: #fff;*/
   /*text-shadow: 0 .05rem .1rem rgba(0, 0, 0, .5);*/
-  text-align: center;
 }
 
 /* TODO move this into main container css & make sure it works*/
@@ -171,4 +171,11 @@ button {
   list-style-position: inside;
   display: list-item;
   text-align: left;
+}
+
+.card {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }

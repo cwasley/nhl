@@ -11,7 +11,7 @@ block content
           a.nav-link(href='/') Brackets
         li.nav-item.active
           a.nav-link(href='/standings') Standings
-  div.container-fluid(style="padding-top:60px;" ng-controller='StandingsController')
+  div.container(style="padding-top:60px;" ng-controller='StandingsController')
     div.row.justify-content-center
       h3.text-center Standings
       table.table
@@ -22,9 +22,9 @@ block content
             th Points
         tbody
           tr(ng-repeat='bracket in brackets track by $index')
-            td 1
+            td {{bracket.place}}
             td {{bracket.name}}
-            td 0
+            td {{bracket.points}}
 
   script.
     var brackets = !{JSON.stringify(brackets)};
