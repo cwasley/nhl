@@ -194,7 +194,7 @@ router.get('/', async function(req, res, next) {
         order: Sequelize.col('original_id')
     });
     teams = teams.reverse();
-    var games = await models.Game.findAll({
+    var series = await models.Series.findAll({
         order: Sequelize.col('id')
     });
     var bracketPredictions = [];
@@ -220,7 +220,7 @@ router.get('/', async function(req, res, next) {
         title: 'NHL 2018',
         teams: teams,
         brackets: brackets,
-        games: games,
+        series: series,
         predictions: bracketPredictions
     });
 });
@@ -233,6 +233,61 @@ router.get('/standings', async function(req, res, next) {
     res.render('standings', {
         title: 'NHL 2018',
         brackets: brackets
+    });
+});
+
+router.get('/payment', async function(req, res, next) {
+    var brackets = await models.Bracket.findAll({
+       order: Sequelize.col('name')
+    });
+    res.render('payment', {
+        title: 'NHL 2018',
+        brackets: brackets
+    });
+});
+
+router.post('/update', async function(req, res, next) {
+    var change = req.body.change;
+    var id = req.body.id;
+    var type = req.body.type;
+    var value = req.body.value;
+
+    if (change === "paid" && type === "user") {
+        var user = await models.Bracket.update({
+            paid: value === "true"
+        }, {
+            where: {
+                id: parseInt(id)
+            }
+        });
+    } else if (type === "series") {
+
+        var model = await models.Series.findAll({
+            where: {
+                id: parseInt(id)
+            }
+        });
+        if (change === 1) {
+            await model.update({
+                game1: value
+            });
+        }
+    }
+    res.send(true);
+
+});
+
+router.get('/series', async function(req, res, next) {
+    var brackets = await models.Bracket.findAll({
+        order: Sequelize.col('name')
+    });
+    var series = await models.Series.findAll({
+        order: Sequelize.col('id')
+    });
+    res.render('series', {
+        title: 'NHL 2018',
+        brackets: brackets,
+        series: series
     });
 });
 

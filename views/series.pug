@@ -1,0 +1,43 @@
+extends layout
+
+block content
+  nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.fixed-top.justify-content-between
+    a.navbar-brand(style='color: #fff') NHL Playoffs 2018
+    button.navbar-toggler(type='button' data-toggle='collapse' data-target='#navbar')
+      span.navbar-toggler-icon
+    div.collapse.navbar-collapse#navbar
+      ul.navbar-nav.ml-auto
+        li.nav-item
+          a.nav-link(href='/') Brackets
+        li.nav-item
+          a.nav-link(href='/standings') Standings
+  div.container-fluid(style="padding-top:60px;" ng-controller='SeriesController')
+    div.row.justify-content-center
+      h3.text-center Series
+    div.row(style='width:75%; margin:auto;')
+      table.table
+        thead
+          tr
+            th #
+            th Game 1
+            th Game 2
+            th Game 3
+            th Game 4
+            th Game 5
+            th Game 6
+            th Game 7
+        tbody
+          tr(ng-repeat="member in series track by $index")
+            td {{member.id}}
+            - var i = 1;
+            while i < 8
+              td
+                - var model = "member['game" + (i) + "']";
+                div.btn-group(style="border:1px solid gray;")
+                  button.btn.btn-secondary(type="button" ng-disabled="!member.enabled" ng-class="{active: " + model + "== member.team1_id}" ng-click="updateDB(member.id, " + i + ", member.team1_id)") {{member.team1_id ? member.team1_id : 'TBD'}}
+                  button.btn.btn-secondary(type="button" ng-disabled="!member.enabled" ng-class="{active: " + model + "== member.team2_id}" ng-click="updateDB(member.id, " + i + ", member.team2_id)") {{member.team2_id ? member.team2_id : 'TBD'}}
+                  button.btn.btn-secondary(type="button" ng-disabled="!member.enabled" ng-class="{active: " + model + "== 'TBD'}" ng-click="updateDB(member.id, " + i + ", 'TBD')") TBD
+                - i++;
+  script.
+      var brackets = !{JSON.stringify(brackets)};
+      var series = !{JSON.stringify(series)};

@@ -17,10 +17,10 @@ module.exports = (sequelize, DataTypes) => {
     },
     num_games: DataTypes.INTEGER,
     num_goals: DataTypes.INTEGER,
-    game_id: {
+    series_id: {
         type: DataTypes.INTEGER,
         references: {
-            model: 'Games',
+            model: 'Series',
             key: 'id'
         }
     },

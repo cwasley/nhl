@@ -1,0 +1,28 @@
+extends layout
+
+block content
+  nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.fixed-top.justify-content-between
+    a.navbar-brand(style='color: #fff') NHL Playoffs 2018
+    button.navbar-toggler(type='button' data-toggle='collapse' data-target='#navbar')
+      span.navbar-toggler-icon
+    div.collapse.navbar-collapse#navbar
+      ul.navbar-nav.ml-auto
+        li.nav-item
+          a.nav-link(href='/') Brackets
+        li.nav-item
+          a.nav-link(href='/standings') Standings
+  div.container(style="padding-top:60px;" ng-controller='StandingsController')
+    div.row.justify-content-center
+      h3.text-center Payment
+    div.row(style='width:75%; margin:auto;')
+      ul.list-group
+        div.list-group-item.justify-content-between(ng-repeat='bracket in brackets track by $index')
+          div.bmd-list-group-col
+            p.list-group-item-heading {{bracket.name}}
+          div.bmd-list-group-col(style="display:inline; color:{{bracket.paid ? 'green' : 'red'}}; padding-bottom:20px;")
+            p(style='display:inline; margin-right:5px; vertical-align:super;') {{bracket.paid ? 'Paid' : 'Not paid'}}
+            div.switch
+              label
+                input(type="checkbox" ng-model="bracket.paid" ng-change="updateDB(bracket)" ng-disabled="updating")
+  script.
+      var brackets = !{JSON.stringify(brackets)};

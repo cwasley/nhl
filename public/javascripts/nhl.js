@@ -316,7 +316,7 @@ angular.module('nhl', [])
         $scope.teams = teams;
         $scope.brackets = brackets;
         $scope.predictions = predictions;
-        $scope.games = games;
+        $scope.series = series;
 
         $scope.nodeDataArray = [];
         $(function() {
@@ -329,6 +329,8 @@ angular.module('nhl', [])
             }
         });
 
+        // TODO in the future this should be moved into the backend along with pretty much everything else; the page is mostly static so we can just send the
+        // node data in and generate the brackets one time
         $scope.updateBracket = function(predictions, index) {
 
             // var predictionsCopy = angular.copy(predictions);
@@ -348,12 +350,12 @@ angular.module('nhl', [])
                     var branchNode = {};
                     branchNode.name = predictions[j].winner_id;
                     branchNode.color = predictions[j].color;
-                    var nextGame = $scope.games[$scope.games[j].next_game_id - 1];
+                    var nextGame = $scope.series[$scope.series[j].next_series_id - 1];
                     var gameFinished = nextGame.winner;
-                    if (gameFinished && nextGame.winner === predictions[$scope.games[j].next_game_id - 1].winner_id && nextGame.winner === predictions[j].winner_id) {
+                    if (gameFinished && nextGame.winner === predictions[$scope.series[j].next_series_id - 1].winner_id && nextGame.winner === predictions[j].winner_id) {
                         // Correct Prediction
                         // TODO make this dynamic per round
-                        branchNode.status = 8 - Math.abs(predictions[$scope.games[j].next_game_id - 1].num_games - nextGame.num_games);
+                        branchNode.status = 8 - Math.abs(predictions[$scope.series[j].next_series_id - 1].num_games - nextGame.num_games);
                     } else if (gameFinished && nextGame.winner !== predictions[j].winner_id) {
                         // Incorrect Prediction
                         branchNode.status = -1;
@@ -364,10 +366,10 @@ angular.module('nhl', [])
                                 nodeArray[i].status = -1;
                             }
                         }
-                    } else if (predictions[$scope.games[j].next_game_id - 1].winner_id !== predictions[j].winner_id){
+                    } else if (predictions[$scope.series[j].next_series_id - 1].winner_id !== predictions[j].winner_id){
                         branchNode.status = -1;
                     } else {
-                        branchNode.games = predictions[$scope.games[j].next_game_id - 1].num_games;
+                        branchNode.games = predictions[$scope.series[j].next_series_id - 1].num_games;
                         branchNode.status = 1;
                     }
                     branchNode.lowerGames = predictions[j].num_games;
@@ -386,9 +388,9 @@ angular.module('nhl', [])
                     leafNode2.color = $scope.teams[j * 2 + 1].color;
                     leafNode2.games = nodeArray[j].lowerGames;
                     if (nodeArray[j].name === $scope.teams[j * 2].id) {
-                        if ($scope.games[j].winner) {
-                            if ($scope.games[j].winner === nodeArray[j].name) {
-                                leafNode1.status = 8 - Math.abs($scope.games[j].num_games - nodeArray[j].lowerGames);
+                        if ($scope.series[j].winner) {
+                            if ($scope.series[j].winner === nodeArray[j].name) {
+                                leafNode1.status = 8 - Math.abs($scope.series[j].num_games - nodeArray[j].lowerGames);
                             } else {
                                 leafNode1.status = -1;
 
@@ -407,9 +409,9 @@ angular.module('nhl', [])
                     }
 
                     if (nodeArray[j].name === $scope.teams[j * 2 + 1].id) {
-                        if ($scope.games[j].winner) {
-                            if ($scope.games[j].winner === nodeArray[j].name) {
-                                leafNode2.status = 8 - Math.abs($scope.games[j].num_games - nodeArray[j].lowerGames);
+                        if ($scope.series[j].winner) {
+                            if ($scope.series[j].winner === nodeArray[j].name) {
+                                leafNode2.status = 8 - Math.abs($scope.series[j].num_games - nodeArray[j].lowerGames);
                             } else {
                                 leafNode2.status = -1;
 
@@ -604,6 +606,8 @@ angular.module('nhl', [])
     }])
     .controller('StandingsController', ['$scope', '$http', function($scope, $http) {
 
+        $('body').bootstrapMaterialDesign();
+        $scope.updating = false;
         var uniqueStandings = [...new Set(brackets.map(item => item.points))];
         for (var i = 0; i < brackets.length; i++) {
             for (var j = 0; j < uniqueStandings.length; j++) {
@@ -614,5 +618,69 @@ angular.module('nhl', [])
             }
         }
         $scope.brackets = brackets;
+        $(function() {
+            $('body').bootstrapMaterialDesign();
+        });
 
-}]);
+        $scope.updateDB = function(bracket) {
+            $scope.updating = true;
+            var data = {
+                type: 'user',
+                change: 'paid',
+                id: bracket.id,
+                value: bracket.paid
+            };
+            $.ajax({
+                type: 'POST',
+                url: '/update',
+                data: data,
+                dataType: 'json',
+                success: function (data) {
+                    $scope.updating = false;
+                    $scope.$apply();
+                }
+            });
+        }
+
+    }])
+    .controller('SeriesController', ['$scope', '$http', function($scope, $http) {
+
+        $('body').bootstrapMaterialDesign();
+        $scope.brackets = brackets;
+        $scope.series = series;
+
+        $scope.updateDB = function(series, game, newValue) {
+            $scope.series[series - 1]['game' + game] = newValue;
+
+            var team1count = 0, team2count = 0;
+            for (var i = 1; i < 8; i++) {
+                if ($scope.series[series-1]['game' + i] === $scope.series.team1_id) {
+                    team1count++;
+                } else if ($scope.series[series-1]['game' + i] === $scope.series.team2_id) {
+                    team2count++;
+                }
+                if (team1count > 3) {
+
+                }
+            }
+
+            var data = {
+                type: 'series',
+                change: game,
+                id: series,
+                value: newValue
+            };
+            $.ajax({
+                type: 'POST',
+                url: '/update',
+                data: data,
+                dataType: 'json',
+                success: function( data ) {
+                    console.log("successful request");
+                }
+            })
+        }
+
+
+
+    }]);

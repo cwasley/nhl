@@ -1,7 +1,7 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  var Game = sequelize.define('Game', {
-      next_game_id: {
+  var Series = sequelize.define('Series', {
+      next_series_id: {
           type: DataTypes.INTEGER
       },
       team1_id: {
@@ -33,9 +33,33 @@ module.exports = (sequelize, DataTypes) => {
       },
       round: {
           type: DataTypes.INTEGER
+      },
+      game1: {
+          type: DataTypes.STRING
+      },
+      game2: {
+          type: DataTypes.STRING
+      },
+      game3: {
+          type: DataTypes.STRING
+      },
+      game4: {
+          type: DataTypes.STRING
+      },
+      game5: {
+          type: DataTypes.STRING
+      },
+      game6: {
+          type: DataTypes.STRING
+      },
+      game7: {
+          type: DataTypes.STRING
+      },
+      enabled: {
+          type: DataTypes.BOOLEAN
       }
   }, {});
-  Game.associate = function(models) {
+  Series.associate = function(models) {
   };
-  return Game;
+  return Series;
 };
