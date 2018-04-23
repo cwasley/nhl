@@ -25,4 +25,4 @@ block content
               label
                 input(type="checkbox" ng-model="bracket.paid" ng-change="updateDB(bracket)" ng-disabled="updating")
   script.
-      var brackets = !{JSON.stringify(brackets)};
+      const BRACKETS = !{JSON.stringify(brackets)};

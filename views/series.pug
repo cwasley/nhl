@@ -33,11 +33,22 @@ block content
             while i < 8
               td
                 - var model = "member['game" + (i) + "']";
-                div.btn-group(style="border:1px solid gray;")
-                  button.btn.btn-secondary(type="button" ng-disabled="!member.enabled" ng-class="{active: " + model + "== member.team1_id}" ng-click="updateDB(member.id, " + i + ", member.team1_id)") {{member.team1_id ? member.team1_id : 'TBD'}}
-                  button.btn.btn-secondary(type="button" ng-disabled="!member.enabled" ng-class="{active: " + model + "== member.team2_id}" ng-click="updateDB(member.id, " + i + ", member.team2_id)") {{member.team2_id ? member.team2_id : 'TBD'}}
-                  button.btn.btn-secondary(type="button" ng-disabled="!member.enabled" ng-class="{active: " + model + "== 'TBD'}" ng-click="updateDB(member.id, " + i + ", 'TBD')") TBD
+                div.btn-group-vertical.selection-buttons(style="box-shadow: none; background-color: transparent;")
+                  button.btn.btn-secondary.btn-outline(type="button" ng-disabled="!member.enabled || !member['game" + i + "_enabled']" ng-class="{active: " + model + "== null}" ng-click="updateDB(member.id, " + i + ", null)") —
+                  button.btn.btn-secondary.btn-outline(type="button" ng-style="{'background-color': " + model + "== member.team1_id || (member['game" + i + "_enabled'] && member.enabled) ? member.team1_color : ''}" ng-disabled="!member.enabled || !member['game" + i + "_enabled']" ng-class="{active: " + model + "== member.team1_id, bg_color: member.team1_id && " + model + "== member.team1_id || (member['game" + i + "_enabled'] && member.enabled)}" ng-click="updateDB(member.id, " + i + ", member.team1_id)") {{member.team1_id ? member.team1_id : 'TBD'}}
+                  button.btn.btn-secondary.btn-outline(type="button" ng-style="{'background-color': " + model + "== member.team2_id || (member['game" + i + "_enabled'] && member.enabled) ? member.team2_color : ''}" ng-disabled="!member.enabled || !member['game" + i + "_enabled']" ng-class="{active: " + model + "== member.team2_id, bg_color: member.team2_id && " + model + "== member.team2_id || (member['game" + i + "_enabled'] && member.enabled)}" ng-click="updateDB(member.id, " + i + ", member.team2_id)") {{member.team2_id ? member.team2_id : 'TBD'}}
                 - i++;
+    div.modal.fade#winnerModal(tabindex="-1")
+      div.modal-dialog.modal-sm.modal-dialog-centered
+        div.modal-content
+          div.modal-header
+            h5.modal-title Winner!
+          div.modal-body
+            p#winningText -
+          div.modal-footer
+            button.btn.btn-secondary(type="button" data-dismiss="modal" ng-click="ignoreLast()") Cancel
+            button.btn.btn-primary(type="button" data-dismiss="modal" ng-click="closeOut()") Confirm
   script.
-      var brackets = !{JSON.stringify(brackets)};
-      var series = !{JSON.stringify(series)};
+      const SERIES = !{JSON.stringify(series)};
+      const BRACKETS = !{JSON.stringify(brackets)};
+      const TEAMS = !{JSON.stringify(teams)};

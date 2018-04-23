@@ -313,10 +313,24 @@ angular.module('nhl', [])
     .controller('ListController', ['$scope', '$http', function($scope, $http) {
 
         $('body').bootstrapMaterialDesign();
-        $scope.teams = teams;
-        $scope.brackets = brackets;
-        $scope.predictions = predictions;
-        $scope.series = series;
+        $scope.teams = TEAMS;
+        $scope.brackets = BRACKETS;
+        var tempBrackets = angular.copy($scope.brackets);
+        tempBrackets = tempBrackets.sort(function(a, b) {
+            return a.points > b.points;
+        });
+        tempBrackets = tempBrackets.reverse();
+        var uniqueStandings = [...new Set(tempBrackets.map(item => item.points))];
+        for (var i = 0; i < $scope.brackets.length; i++) {
+            for (var j = 0; j < uniqueStandings.length; j++) {
+                if ($scope.brackets[i].points === uniqueStandings[j]) {
+                    $scope.brackets[i].place = j + 1;
+                    break;
+                }
+            }
+        }
+        $scope.predictions = PREDICTIONS;
+        $scope.series = SERIES;
 
         $scope.nodeDataArray = [];
         $(function() {
@@ -608,16 +622,16 @@ angular.module('nhl', [])
 
         $('body').bootstrapMaterialDesign();
         $scope.updating = false;
-        var uniqueStandings = [...new Set(brackets.map(item => item.points))];
-        for (var i = 0; i < brackets.length; i++) {
+        $scope.brackets = BRACKETS;
+        var uniqueStandings = [...new Set($scope.brackets.map(item => item.points))];
+        for (var i = 0; i < $scope.brackets.length; i++) {
             for (var j = 0; j < uniqueStandings.length; j++) {
-                if (brackets[i].points === uniqueStandings[j]) {
-                    brackets[i].place = j + 1;
+                if ($scope.brackets[i].points === uniqueStandings[j]) {
+                    $scope.brackets[i].place = j + 1;
                     break;
                 }
             }
         }
-        $scope.brackets = brackets;
         $(function() {
             $('body').bootstrapMaterialDesign();
         });
@@ -646,21 +660,56 @@ angular.module('nhl', [])
     .controller('SeriesController', ['$scope', '$http', function($scope, $http) {
 
         $('body').bootstrapMaterialDesign();
-        $scope.brackets = brackets;
-        $scope.series = series;
+        $scope.brackets = BRACKETS;
+        $scope.series = SERIES;
+        $scope.teams = TEAMS;
+
+        // Make a color mapping for buttons
+        var colors = {};
+        for (var i = 0; i < $scope.teams.length; i++) {
+            colors[$scope.teams[i].id] = $scope.teams[i].color;
+        }
+
+        for (var i = 0; i < $scope.series.length; i++) {
+            var series = $scope.series[i];
+            series.team1_color = colors[series.team1_id];
+            series.team2_color = colors[series.team2_id];
+        }
+
+        $scope.currSeriesNum = -1;
+        $scope.score = -1;
+        $scope.winningTeam = '';
+        $scope.losingTeam = '';
+
+        $scope.series = disableButtons($scope.series);
 
         $scope.updateDB = function(series, game, newValue) {
-            $scope.series[series - 1]['game' + game] = newValue;
 
+            $scope.series[series - 1]['game' + game] = newValue;
+            $scope.series = disableButtons($scope.series);
+            if (newValue === null) {
+                $scope.series[series - 1]['game' + (game-1) + '_enabled'] = true;
+            }
+
+            // Check to see if anyone should be moving on
             var team1count = 0, team2count = 0;
             for (var i = 1; i < 8; i++) {
-                if ($scope.series[series-1]['game' + i] === $scope.series.team1_id) {
+                if ($scope.series[series-1]['game' + i] === $scope.series[series-1].team1_id) {
+                    $scope.winningTeam = $scope.series[series-1].team1_id;
+                    $scope.losingTeam = $scope.series[series-1].team2_id;
                     team1count++;
-                } else if ($scope.series[series-1]['game' + i] === $scope.series.team2_id) {
+                } else if ($scope.series[series-1]['game' + i] === $scope.series[series-1].team2_id) {
+                    $scope.winningTeam = $scope.series[series-1].team2_id;
+                    $scope.losingTeam = $scope.series[series-1].team1_id;
                     team2count++;
                 }
-                if (team1count > 3) {
-
+                if (team1count > 3 || team2count > 3) {
+                    $scope.currSeriesNum = series;
+                    $scope.score = i - 4;
+                    $("#winnerModal").modal({
+                        backdrop: 'static'
+                    });
+                    break;
                 }
             }
 
@@ -677,6 +726,98 @@ angular.module('nhl', [])
                 dataType: 'json',
                 success: function( data ) {
                     console.log("successful request");
+                }
+            })
+        };
+
+        // Disable/Enable games to be picked throughout a series
+        function disableButtons(seriesArray, undoApplied) {
+            for (var i = 0; i < seriesArray.length; i++) {
+                var lastEntry = false;
+
+                // Enable/disable individual buttons
+                for (var j = 1; j < 8; j++) {
+                    var currentGame = seriesArray[i]['game' + j];
+                    seriesArray[i]['game' + j + '_enabled'] = false;
+                    if (currentGame === null && !lastEntry) {
+
+                        // We found the current game that we are on; enable it
+                        lastEntry = true;
+                        seriesArray[i]['game' + (j) + '_enabled'] = true;
+                    }
+                }
+            }
+            return seriesArray;
+        }
+
+        $('#winnerModal').on('show.bs.modal', function (event) {
+            var modal = $(this);
+
+            modal.find('.modal-body p').text('Looks like ' + $scope.winningTeam + ' beat ' + $scope.losingTeam + ' with a final score of 4-' + $scope.score + '. Is this correct?');
+        });
+
+        $scope.ignoreLast = function() {
+            $scope.series[$scope.currSeriesNum - 1]['game' + ($scope.score + 4)] = null;
+            $scope.series = disableButtons($scope.series);
+            var data = {
+                type: 'series',
+                change: $scope.score + 4,
+                id: $scope.currSeriesNum,
+                value: ""
+            };
+            $.ajax({
+                type: 'POST',
+                url: '/update',
+                data: data,
+                dataType: 'json',
+                success: function( data ) {
+                    console.log("successful request");
+                }
+            })
+        };
+
+        $scope.closeOut = function() {
+            var currSeries = $scope.series[$scope.currSeriesNum - 1];
+            currSeries.enabled = false;
+            var team1 = false;
+            var toEnable = "false";
+            if (currSeries.next_series_id) {
+
+                var futureSeries = $scope.series[currSeries.next_series_id - 1];
+                // Assign team to future series
+                if (currSeries.id % 2 === 1) {
+                    futureSeries.team1_id = $scope.winningTeam;
+                    team1 = true;
+                } else {
+                    futureSeries.team2_id = $scope.winningTeam;
+                    team1 = false;
+                }
+                if (futureSeries.team1_id && futureSeries.team2_id) {
+                    futureSeries.enabled = true;
+                    toEnable = true;
+                }
+
+            }
+
+            // Make a call to DB to update winner, update num games, update one spot in a future game if applicable, and recalculate scores.
+            // Out of those four, we don't care about num games, winner, & scores for this page. Just need to disable and move one name down into a future round; if both teams are there,
+            // Enable that row.
+
+            // For the call we need winner, num_games, series_id, to_enable
+            var data = {
+                winner: $scope.winningTeam,
+                num_games: 4 + $scope.score,
+                series_id: currSeries.id,
+                team1: team1,
+                toEnable: toEnable
+            };
+            $.ajax({
+                type: 'POST',
+                url: '/updateSeries',
+                data: data,
+                dataType: 'json',
+                success: function( data ) {
+                    console.log("successfully updated");
                 }
             })
         }

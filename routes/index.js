@@ -236,7 +236,7 @@ router.get('/standings', async function(req, res, next) {
     });
 });
 
-router.get('/payment', async function(req, res, next) {
+router.get('/payments', async function(req, res, next) {
     var brackets = await models.Bracket.findAll({
        order: Sequelize.col('name')
     });
@@ -252,6 +252,9 @@ router.post('/update', async function(req, res, next) {
     var type = req.body.type;
     var value = req.body.value;
 
+    if (value == "") {
+        value = null;
+    }
     if (change === "paid" && type === "user") {
         var user = await models.Bracket.update({
             paid: value === "true"
@@ -262,19 +265,171 @@ router.post('/update', async function(req, res, next) {
         });
     } else if (type === "series") {
 
-        var model = await models.Series.findAll({
-            where: {
-                id: parseInt(id)
-            }
-        });
-        if (change === 1) {
-            await model.update({
+        // TODO is this possible to make dynamic?
+        if (change === "1") {
+            await models.Series.update({
                 game1: value
-            });
+            },
+            {
+                where: {
+                    id: parseInt(id)
+            }});
+        }
+        if (change === "2") {
+            await models.Series.update({
+                    game2: value
+                },
+                {
+                    where: {
+                        id: parseInt(id)
+                    }});
+        }
+        if (change === "3") {
+            await models.Series.update({
+                    game3: value
+                },
+                {
+                    where: {
+                        id: parseInt(id)
+                    }});
+        }
+        if (change === "4") {
+            await models.Series.update({
+                    game4: value
+                },
+                {
+                    where: {
+                        id: parseInt(id)
+                    }});
+        }
+        if (change === "5") {
+            await models.Series.update({
+                    game5: value
+                },
+                {
+                    where: {
+                        id: parseInt(id)
+                    }});
+        }
+        if (change === "6") {
+            await models.Series.update({
+                    game6: value
+                },
+                {
+                    where: {
+                        id: parseInt(id)
+                    }});
+        }
+        if (change === "7") {
+            await models.Series.update({
+                    game7: value
+                },
+                {
+                    where: {
+                        id: parseInt(id)
+                    }});
         }
     }
     res.send(true);
 
+});
+
+router.post('/updateSeries', async function(req, res, next) {
+    var winner = req.body.winner;
+    var num_games = parseInt(req.body.num_games);
+    var series_id = parseInt(req.body.series_id);
+    var team1 = req.body.team1;
+    var toEnable = req.body.toEnable === "true";
+    await models.Series.update({
+        winner: winner,
+        num_games: num_games,
+        enabled: false
+    },
+    {
+        where: {
+            id: series_id
+    }});
+    var oldSeries = await models.Series.findAll({
+        where: {
+            id: series_id
+        }
+    });
+    if (team1 === "true") {
+        await models.Series.update({
+            team1_id: winner,
+            enabled: toEnable
+        },
+            {
+                where: {
+                    id: oldSeries[0].dataValues.next_series_id
+                }
+            })
+    } else {
+        await models.Series.update({
+            team2_id: winner,
+            enabled: toEnable
+        },
+        {
+            where: {
+                id: oldSeries[0].dataValues.next_series_id
+            }
+        })
+    }
+
+    // If we enabled a new series, that means an old one closed out. Let's update the points for each player
+    var brackets = await models.Bracket.findAll();
+    for (var i = 0; i < brackets.length; i++) {
+        var bracket = brackets[i];
+        var startingPoints = bracket.dataValues.points;
+        var bracketPredictions = await models.Prediction.findAll({
+            where: {
+                bracket_id: bracket.dataValues.id,
+                series_id: series_id
+            }
+        });
+        if (bracketPredictions[0].dataValues.winner_id === winner) {
+
+            // Bracket won! Give points consistent with round #
+            switch(oldSeries[0].dataValues.round) {
+                case 1:
+                    startingPoints += 5;
+                    break;
+                case 2:
+                    startingPoints += 7;
+                    break;
+                case 3:
+                    startingPoints += 10;
+                    break;
+                case 4:
+                    startingPoints += 15;
+                    break;
+            }
+            switch(Math.abs(bracketPredictions[0].dataValues.num_games - num_games)) {
+                case 0:
+                    startingPoints += 3;
+                    break;
+                case 1:
+                    startingPoints += 2;
+                    break;
+                case 2:
+                    startingPoints += 1;
+                    break;
+                case 3:
+                    startingPoints += 0;
+                    break;
+            }
+
+            await models.Bracket.update({
+                    points: startingPoints
+                },
+                {
+                    where: {
+                        id: bracket.dataValues.id
+                    }
+                })
+        }
+
+    }
 });
 
 router.get('/series', async function(req, res, next) {
@@ -284,10 +439,12 @@ router.get('/series', async function(req, res, next) {
     var series = await models.Series.findAll({
         order: Sequelize.col('id')
     });
+    var teams = await models.Team.findAll();
     res.render('series', {
         title: 'NHL 2018',
         brackets: brackets,
-        series: series
+        series: series,
+        teams: teams
     });
 });
 

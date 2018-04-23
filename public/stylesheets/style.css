@@ -148,7 +148,6 @@ a:hover {
 .btn-secondary,
 .btn-secondary:hover,
 .btn-secondary:focus {
-  color: #333;
   text-shadow: none;
   /*background-color: #fff;*/
   /*border: .05rem solid #fff;*/
@@ -178,4 +177,20 @@ button {
   padding-bottom: 20px;
   margin-top: 10px;
   margin-bottom: 10px;
+}
+
+.navbar {
+  z-index: 99999;
+}
+
+.modal {
+  z-index: 99999;
+}
+
+.bg_color {
+  color: white !important;
+}
+
+.selection-buttons button {
+  border: 1px solid grey !important;
 }

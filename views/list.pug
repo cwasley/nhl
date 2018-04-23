@@ -18,12 +18,14 @@ block content
           div.card-body(style='padding-left:10px; padding-right:10px;')
             p.lead(style='display:inline;') {{brackets[$index].name}}
             p(style='display:inline; margin:auto; float:right;') Current points: {{brackets[$index].points}}
-            p(style="{{brackets[$index].paid ? 'color:green;' : 'color:red;'}}") {{brackets[$index].paid ? 'Paid' : 'Not paid'}}
+          span(style='padding-left:10px; padding-right:10px;')
+            p(style="display:inline; {{brackets[$index].paid ? 'color:green;' : 'color:red;'}}") {{brackets[$index].paid ? 'Paid' : 'Not paid'}}
+            p(style='display:inline; margin:auto; float:right;') Standing: {{brackets[$index].place}}
           svg(id="radial-bracket-{{$index}}" style="display:block; margin:auto;")
           div.card-body(style='padding-left:10px; padding-right:10px; padding-top: 10px; text-align:center;')
             p(style='display:inline; margin:auto;') Stanley Cup goal total: {{entry[14].num_goals}}
   script.
-    var teams = !{JSON.stringify(teams)};
-    var brackets = !{JSON.stringify(brackets)};
-    var series = !{JSON.stringify(series)};
-    var predictions = !{JSON.stringify(predictions)};
+    const TEAMS = !{JSON.stringify(teams)};
+    const BRACKETS = !{JSON.stringify(brackets)};
+    const SERIES = !{JSON.stringify(series)};
+    const PREDICTIONS = !{JSON.stringify(predictions)};
