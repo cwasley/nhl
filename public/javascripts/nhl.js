@@ -669,6 +669,12 @@ angular.module('nhl', [])
             var series = $scope.series[i];
             series.team1_color = colors[series.team1_id];
             series.team2_color = colors[series.team2_id];
+            series.lastInput = 0;
+            if (series.enabled) {
+                series.expanded = true;
+            } else {
+                series.expanded = false;
+            }
         }
 
         $scope.currSeriesNum = -1;
@@ -683,9 +689,6 @@ angular.module('nhl', [])
 
             $scope.series[series - 1]['game' + game] = newValue;
             $scope.series = disableButtons($scope.series);
-            if (newValue === null) {
-                $scope.series[series - 1]['game' + (game-1) + '_enabled'] = true;
-            }
 
             // Check to see if anyone should be moving on
             var team1count = 0, team2count = 0;
@@ -742,6 +745,7 @@ angular.module('nhl', [])
                         // We found the current game that we are on; enable it
                         lastEntry = true;
                         seriesArray[i]['game' + (j) + '_enabled'] = true;
+                        seriesArray[i].lastInput = j-1;
                     }
                 }
             }
@@ -820,6 +824,26 @@ angular.module('nhl', [])
                     console.log("successfully updated");
                 }
             })
+        };
+
+        $scope.calculateScore = function(series) {
+            var team1 = 0, team2 = 0;
+            for (var i = 1; i < 8; i++) {
+                if (series['game' + i] === series.team1_id) {
+                    team1++;
+                } else if (series['game' + i] === series.team2_id) {
+                    team2++;
+                } else {
+                    break;
+                }
+            }
+            return team1 + '-' + team2;
+
+        };
+
+        $scope.toggle = function(id) {
+            $(id).collapse('toggle');
+            $scope.series[id.replace('#series', '')].expanded = !$scope.series[id.replace('#series', '')].expanded;
         }
 
 
