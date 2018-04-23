@@ -347,11 +347,6 @@ angular.module('nhl', [])
         // node data in and generate the brackets one time
         $scope.updateBracket = function(predictions, index) {
 
-            // var predictionsCopy = angular.copy(predictions);
-            //
-            // for (var i = 0; i < predictionsCopy.length; i++) {
-            //     var prediction = predictionsCopy[i];
-
                 // Start from the 'root'; we want to copy information from the DB in a way d3 can understand
                 var nodeArray = [];
                 var rootNode = {};
@@ -680,6 +675,7 @@ angular.module('nhl', [])
         $scope.score = -1;
         $scope.winningTeam = '';
         $scope.losingTeam = '';
+        $scope.winerColor = '';
 
         $scope.series = disableButtons($scope.series);
 
@@ -696,10 +692,12 @@ angular.module('nhl', [])
             for (var i = 1; i < 8; i++) {
                 if ($scope.series[series-1]['game' + i] === $scope.series[series-1].team1_id) {
                     $scope.winningTeam = $scope.series[series-1].team1_id;
+                    $scope.winnerColor = $scope.series[series-1].team1_color;
                     $scope.losingTeam = $scope.series[series-1].team2_id;
                     team1count++;
                 } else if ($scope.series[series-1]['game' + i] === $scope.series[series-1].team2_id) {
                     $scope.winningTeam = $scope.series[series-1].team2_id;
+                    $scope.winnerColor = $scope.series[series-1].team2_color;
                     $scope.losingTeam = $scope.series[series-1].team1_id;
                     team2count++;
                 }
@@ -787,9 +785,11 @@ angular.module('nhl', [])
                 // Assign team to future series
                 if (currSeries.id % 2 === 1) {
                     futureSeries.team1_id = $scope.winningTeam;
+                    futureSeries.team1_color = $scope.winnerColor;
                     team1 = true;
                 } else {
                     futureSeries.team2_id = $scope.winningTeam;
+                    futureSeries.team2_color = $scope.winnerColor;
                     team1 = false;
                 }
                 if (futureSeries.team1_id && futureSeries.team2_id) {
