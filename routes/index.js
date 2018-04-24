@@ -190,6 +190,7 @@ router.get('/', async function(req, res, next) {
     var brackets = await models.Bracket.findAll({
         order: Sequelize.col('name')
     });
+    brackets = await calculateObtainablePoints(brackets);
     var teams = await models.Team.findAll({
         order: Sequelize.col('original_id')
     });
@@ -227,12 +228,13 @@ router.get('/', async function(req, res, next) {
 
 router.get('/standings', async function(req, res, next) {
     var brackets = await models.Bracket.findAll({
-        order: Sequelize.col('points')
+        order: Sequelize.col('name')
     });
-    brackets = brackets.reverse();
+    brackets = await calculateObtainablePoints(brackets);
     res.render('standings', {
         title: 'NHL 2018',
-        brackets: brackets
+        brackets: brackets,
+        standings: true
     });
 });
 
@@ -242,7 +244,8 @@ router.get('/payments', async function(req, res, next) {
     });
     res.render('payment', {
         title: 'NHL 2018',
-        brackets: brackets
+        brackets: brackets,
+        standings: false
     });
 });
 
@@ -338,49 +341,72 @@ router.post('/updateSeries', async function(req, res, next) {
     var winner = req.body.winner;
     var num_games = parseInt(req.body.num_games);
     var series_id = parseInt(req.body.series_id);
-    var team1 = req.body.team1;
+    var teamKey = req.body.teamKey;
     var toEnable = req.body.toEnable === "true";
-    await models.Series.update({
-        winner: winner,
-        num_games: num_games,
-        enabled: false
-    },
-    {
-        where: {
-            id: series_id
-    }});
-    var oldSeries = await models.Series.findAll({
+    var updating = req.body.updating === "true";
+    var currSeries = await models.Series.findAll({
         where: {
             id: series_id
         }
     });
-    if (team1 === "true") {
-        await models.Series.update({
-            team1_id: winner,
-            enabled: toEnable
-        },
-            {
-                where: {
-                    id: oldSeries[0].dataValues.next_series_id
-                }
-            })
-    } else {
-        await models.Series.update({
-            team2_id: winner,
-            enabled: toEnable
-        },
-        {
+    var round = currSeries[0].dataValues.round;
+
+    // Update series that is either being closed out or reopened
+    currSeries[0].winner = updating ? winner : null;
+    currSeries[0].num_games = updating ? num_games : null;
+    currSeries[0].enabled = !updating;
+    await currSeries[0].save();
+
+    // Update next series
+    if (updating) {
+        currSeries = await models.Series.findAll({
             where: {
-                id: oldSeries[0].dataValues.next_series_id
+                id: currSeries[0].dataValues.next_series_id
             }
-        })
+        });
+        currSeries[0][teamKey] = updating ? winner : null;
+        currSeries[0].enabled = toEnable;
+        await currSeries[0].save();
+    } else {
+        while(currSeries[0].dataValues.next_series_id) {
+            currSeries = await models.Series.findAll({
+                where: {
+                    id: currSeries[0].dataValues.next_series_id
+                }
+            });
+            if (currSeries[0].dataValues.team1_id === winner) {
+                currSeries[0].team1_id = null;
+            } else if (currSeries[0].dataValues.team2_id === winner) {
+                currSeries[0].team2_id = null;
+            }
+            currSeries[0].enabled = false;
+            currSeries[0].game1 = null;
+            currSeries[0].game2 = null;
+            currSeries[0].game3 = null;
+            currSeries[0].game4 = null;
+            currSeries[0].game5 = null;
+            currSeries[0].game6 = null;
+            currSeries[0].game7 = null;
+            currSeries[0].winner = null;
+            currSeries[0].num_games = null;
+            currSeries[0].num_goals = null;
+            await currSeries[0].save();
+
+
+        }
     }
+
+    // For resetting a series, we need to go through and reset every game that's been played with that team
+    // while(currSeries[0].dataValues.next_series_id && updating === false) {
+    //
+    // }
 
     // If we enabled a new series, that means an old one closed out. Let's update the points for each player
     var brackets = await models.Bracket.findAll();
     for (var i = 0; i < brackets.length; i++) {
         var bracket = brackets[i];
         var startingPoints = bracket.dataValues.points;
+        var pointDiff = 0;
         var bracketPredictions = await models.Prediction.findAll({
             where: {
                 bracket_id: bracket.dataValues.id,
@@ -390,37 +416,37 @@ router.post('/updateSeries', async function(req, res, next) {
         if (bracketPredictions[0].dataValues.winner_id === winner) {
 
             // Bracket won! Give points consistent with round #
-            switch(oldSeries[0].dataValues.round) {
+            switch(round) {
                 case 1:
-                    startingPoints += 5;
+                    pointDiff += 5;
                     break;
                 case 2:
-                    startingPoints += 7;
+                    pointDiff += 7;
                     break;
                 case 3:
-                    startingPoints += 10;
+                    pointDiff += 10;
                     break;
                 case 4:
-                    startingPoints += 15;
+                    pointDiff += 15;
                     break;
             }
             switch(Math.abs(bracketPredictions[0].dataValues.num_games - num_games)) {
                 case 0:
-                    startingPoints += 3;
+                    pointDiff += 3;
                     break;
                 case 1:
-                    startingPoints += 2;
+                    pointDiff += 2;
                     break;
                 case 2:
-                    startingPoints += 1;
+                    pointDiff += 1;
                     break;
                 case 3:
-                    startingPoints += 0;
+                    pointDiff += 0;
                     break;
             }
 
             await models.Bracket.update({
-                    points: startingPoints
+                    points: updating ? (startingPoints + pointDiff) : (startingPoints - pointDiff)
                 },
                 {
                     where: {
@@ -430,6 +456,7 @@ router.post('/updateSeries', async function(req, res, next) {
         }
 
     }
+    res.send(true);
 });
 
 router.get('/series', async function(req, res, next) {
@@ -447,6 +474,70 @@ router.get('/series', async function(req, res, next) {
         teams: teams
     });
 });
+
+async function calculateObtainablePoints(bracketArray) {
+    var series = await models.Series.findAll();
+
+    // Find each team that lost and add to array; if brackets have predictions that include these teams they will lose the points.
+    var loserArray = [];
+    for (var i = 0; i < series.length; i++) {
+        var seriesInstance = series[i];
+        if (seriesInstance.dataValues.winner) {
+            if (seriesInstance.dataValues.winner === seriesInstance.dataValues.team1_id) {
+                loserArray.push(seriesInstance.dataValues.team2_id);
+            } else if (seriesInstance.dataValues.winner === seriesInstance.dataValues.team2_id) {
+                loserArray.push(seriesInstance.dataValues.team1_id);
+            }
+        }
+    }
+
+    // Now we can loop through again and for every game that is not already counted, if both teams are not in the loser array they have potential points to win
+    for (var i = 0; i < bracketArray.length; i++) {
+        var bracket = bracketArray[i];
+        var potentialPoints = 0;
+
+        for (var j = 0; j < series.length; j++) {
+            var seriesInstance = series[j];
+            // We want to skip any series that are already counted in points
+            if (seriesInstance.dataValues.winner) {
+                continue;
+            }
+
+            var bracketPredictions = await models.Prediction.findAll({
+                where: {
+                    bracket_id: bracket.dataValues.id,
+                    series_id: seriesInstance.dataValues.id
+                }
+            });
+            var valid = true;
+            for (var k = 0; k < loserArray.length; k++) {
+                if (bracketPredictions[0].dataValues.winner_id === loserArray[k]) {
+                    valid = false;
+                }
+            }
+
+            if (valid) {
+                switch (seriesInstance.dataValues.round) {
+                    case 1:
+                        potentialPoints += 8;
+                        break;
+                    case 2:
+                        potentialPoints += 10;
+                        break;
+                    case 3:
+                        potentialPoints += 13;
+                        break;
+                    case 4:
+                        potentialPoints += 18;
+                        break;
+                }
+            }
+        }
+        bracket.dataValues.potentialPoints = potentialPoints;
+    }
+
+    return bracketArray;
+}
 
 
 module.exports = router;

@@ -317,14 +317,37 @@ angular.module('nhl', [])
         $scope.brackets = BRACKETS;
         var tempBrackets = angular.copy($scope.brackets);
         tempBrackets = tempBrackets.sort(function(a, b) {
-            return a.points > b.points;
+            if (a.points === b.points) {
+                if (a.potentialPoints === b.potentialPoints) {
+                    return a.name > b.name;
+                } else {
+                    return b.potentialPoints - a.potentialPoints;
+                }
+            } else {
+                return b.points - a.points;
+            }
         });
-        tempBrackets = tempBrackets.reverse();
-        var uniqueStandings = [...new Set(tempBrackets.map(item => item.points))];
         for (var i = 0; i < $scope.brackets.length; i++) {
-            for (var j = 0; j < uniqueStandings.length; j++) {
-                if ($scope.brackets[i].points === uniqueStandings[j]) {
-                    $scope.brackets[i].place = j + 1;
+            for (var j = 0; j < tempBrackets.length; j++) {
+                if ($scope.brackets[i].id === tempBrackets[j].id) {
+                    var place = j + 1;
+                    switch(place) {
+                        case 1:
+                        case 21:
+                            $scope.brackets[i].place = place + "st";
+                            break;
+                        case 3:
+                        case 23:
+                            $scope.brackets[i].place = place + "rd";
+                            break;
+                        case 2:
+                        case 22:
+                            $scope.brackets[i].place = place + "nd";
+                            break;
+                        default:
+                            $scope.brackets[i].place = place + "th";
+                            break;
+                    }
                     break;
                 }
             }
@@ -618,14 +641,18 @@ angular.module('nhl', [])
         $('body').bootstrapMaterialDesign();
         $scope.updating = false;
         $scope.brackets = BRACKETS;
-        var uniqueStandings = [...new Set($scope.brackets.map(item => item.points))];
-        for (var i = 0; i < $scope.brackets.length; i++) {
-            for (var j = 0; j < uniqueStandings.length; j++) {
-                if ($scope.brackets[i].points === uniqueStandings[j]) {
-                    $scope.brackets[i].place = j + 1;
-                    break;
+        if (STANDINGS) {
+            $scope.brackets = $scope.brackets.sort(function(a, b) {
+                if (a.points === b.points) {
+                    if (a.potentialPoints === b.potentialPoints) {
+                        return a.name > b.name;
+                    } else {
+                        return b.potentialPoints - a.potentialPoints;
+                    }
+                } else {
+                    return b.points - a.points;
                 }
-            }
+            });
         }
         $(function() {
             $('body').bootstrapMaterialDesign();
@@ -669,11 +696,20 @@ angular.module('nhl', [])
             var series = $scope.series[i];
             series.team1_color = colors[series.team1_id];
             series.team2_color = colors[series.team2_id];
-            series.lastInput = 0;
-            if (series.enabled) {
-                series.expanded = true;
-            } else {
-                series.expanded = false;
+            series.lastInput = 7;
+            series.expanded = false;
+            switch (series.round) {
+                case 1:
+                    series.roundName = "First Round";
+                    break;
+                case 2:
+                    series.roundName = "Second Round";
+                    break;
+                case 3:
+                    series.roundName = "Conference Finals";
+                    break;
+                case 4:
+                    series.roundName = "Stanley Cup Final";
             }
         }
 
@@ -682,11 +718,17 @@ angular.module('nhl', [])
         $scope.winningTeam = '';
         $scope.losingTeam = '';
         $scope.winerColor = '';
+        $scope.params = [];
 
         $scope.series = disableButtons($scope.series);
 
         $scope.updateDB = function(series, game, newValue) {
 
+            if ($scope.series[series-1].enabled === false) {
+                $scope.params = [series, game, newValue];
+                $("#resetModal").modal();
+                return;
+            }
             $scope.series[series - 1]['game' + game] = newValue;
             $scope.series = disableButtons($scope.series);
 
@@ -707,6 +749,9 @@ angular.module('nhl', [])
                 if (team1count > 3 || team2count > 3) {
                     $scope.currSeriesNum = series;
                     $scope.score = i - 4;
+                    if (i === 7) {
+                        $scope.series[series-1].lastInput = 7;
+                    }
                     $("#winnerModal").modal({
                         backdrop: 'static'
                     });
@@ -727,6 +772,53 @@ angular.module('nhl', [])
                 dataType: 'json',
                 success: function( data ) {
                     console.log("successful request");
+                }
+            })
+        };
+
+        $scope.callUpdate = function() {
+            var currSeries = $scope.series[$scope.params[0]-1];
+            var id = currSeries.id;
+            var winner  = currSeries.winner;
+            var num_games = currSeries.num_games;
+            var teamKey = '';
+            if (currSeries.id % 2 === 1) {
+                teamKey = "team1_id";
+            } else {
+                teamKey = "team2_id";
+            }
+            currSeries.enabled = true;
+            var winner = currSeries.winner;
+            currSeries.winner = currSeries.num_games = currSeries.num_goals = null;
+            while (currSeries.next_series_id !== null) {
+                currSeries = $scope.series[currSeries.next_series_id - 1];
+                currSeries.enabled = false;
+                if (currSeries.team1_id === winner) {
+                    currSeries.team1_id = null;
+                    currSeries.team1_color = null;
+                } else {
+                    currSeries.team2_id = null;
+                    currSeries.team2_color = null;
+                }
+                currSeries.winner = currSeries.num_games = currSeries.num_goals = currSeries.game1 = currSeries.game2 = currSeries.game3 = currSeries.game4 = currSeries.game5 = currSeries.game6 = currSeries.game7 = null;
+            }
+
+            $scope.updateDB($scope.params[0], $scope.params[1], $scope.params[2]);
+            var data = {
+                winner: winner,
+                num_games: num_games,
+                series_id: id,
+                teamKey: teamKey,
+                toEnable: false,
+                updating: false
+            };
+            $.ajax({
+                type: 'POST',
+                url: '/updateSeries',
+                data: data,
+                dataType: 'json',
+                success: function( data ) {
+                    console.log("successfully updated");
                 }
             })
         };
@@ -781,7 +873,9 @@ angular.module('nhl', [])
         $scope.closeOut = function() {
             var currSeries = $scope.series[$scope.currSeriesNum - 1];
             currSeries.enabled = false;
-            var team1 = false;
+            currSeries.winner = $scope.winningTeam;
+            currSeries.num_games = 4 + $scope.score;
+            var teamKey = '';
             var toEnable = "false";
             if (currSeries.next_series_id) {
 
@@ -790,11 +884,11 @@ angular.module('nhl', [])
                 if (currSeries.id % 2 === 1) {
                     futureSeries.team1_id = $scope.winningTeam;
                     futureSeries.team1_color = $scope.winnerColor;
-                    team1 = true;
+                    teamKey = "team1_id";
                 } else {
                     futureSeries.team2_id = $scope.winningTeam;
                     futureSeries.team2_color = $scope.winnerColor;
-                    team1 = false;
+                    teamKey = "team2_id";
                 }
                 if (futureSeries.team1_id && futureSeries.team2_id) {
                     futureSeries.enabled = true;
@@ -812,8 +906,9 @@ angular.module('nhl', [])
                 winner: $scope.winningTeam,
                 num_games: 4 + $scope.score,
                 series_id: currSeries.id,
-                team1: team1,
-                toEnable: toEnable
+                teamKey: teamKey,
+                toEnable: toEnable,
+                updating: true
             };
             $.ajax({
                 type: 'POST',

@@ -17,16 +17,13 @@ block content
 
     div.row(style='margin:auto;' ng-repeat="member in series track by $index")
       div.col
-        div.card(style="padding-bottom: 0px;")
-          div.card-header(ng-click='toggle("#series" + $index);' style='cursor: pointer;')
-            div.bmd-list-group-col(ng-if="member.team1_id && member.team2_id")
-              h6 {{member.team1_id}} v. {{member.team2_id}}: {{!member.enabled ? 'Finished' : 'Ongoing'}}
-              p {{!member.enabled ? 'Final' : 'Current'}} Score: {{calculateScore(member)}} {{!member.enabled ? member.winner : ''}}
-              i.text-center.material-icons {{member.expanded ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}
-            div.bmd-list-group-col(ng-if="!member.team1_id || !member.team2_id")
-              h6 FUTURE GAME
-              i.text-center.material-icons keyboard_arrow_down
-          div.collapse(id="series{{$index}}", ng-class="{show: member.enabled}")
+        div.card(style="padding: 0px;" )
+          div.card-header.bmd-list-group-col.text-center(ng-click='toggle("#series" + $index);' style='cursor: pointer; color: white;' class="{{member.team1_id && member.team2_id && !member.enabled ? 'bg-success' : ''}}{{member.team1_id && member.team2_id && member.enabled ? 'bg-info' : ''}}{{!member.team1_id || !member.team2_id ? 'bg-secondary' : ''}}")
+            h5 {{member.name}}
+            h6(ng-if="member.team1_id && member.team2_id") {{member.team1_id}} v. {{member.team2_id}}: {{!member.enabled ? 'Finished' : 'Ongoing'}}
+            p(ng-if="member.team1_id && member.team2_id") Series: {{calculateScore(member)}} {{!member.enabled ? member.winner : ''}}
+            i.text-center.material-icons {{member.expanded ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}
+          div.collapse(id="series{{$index}}")
             table.table
               thead
                 tr
@@ -35,12 +32,12 @@ block content
               tbody
                 - var i = 1;
                 while i < 8
-                  tr
+                  tr(ng-if="!member.team1_id || !member.team2_id || member.enabled || member['game" + i + "']")
                     td= i
                     td
                       - var model = "member['game" + (i) + "']";
                       //i.material-icons(style="padding-right: 5px; margin-left: -29px; cursor: pointer;" ng-if="member.enabled && member.lastInput == " + i ng-click="updateDB(member.id, " + i + ", null)") replay
-                      p(style="display:inline; padding-right: 5px; margin-left: -29px; cursor: pointer;" ng-if="member.enabled && member.lastInput == " + i ng-click="updateDB(member.id, " + i + ", null)") edit
+                      p(style="display:inline; padding-right: 5px; margin-left: -29px; cursor: pointer;" ng-if="member.lastInput == " + i ng-click="updateDB(member.id, " + i + ", null)") edit
                       div.btn-group.selection-buttons(style="box-shadow: none; background-color: transparent;")
                         button.btn.btn-lg.btn-secondary.btn-outline(type="button" ng-style="{'background-color': " + model + "== member.team1_id || (member['game" + i + "_enabled'] && member.enabled) ? member.team1_color : ''}" ng-disabled="!member.enabled || !member['game" + i + "_enabled']" ng-class="{active: " + model + "== member.team1_id, bg_color: member.team1_id && " + model + "== member.team1_id || (member['game" + i + "_enabled'] && member.enabled)}" ng-click="updateDB(member.id, " + i + ", member.team1_id)") {{member.team1_id ? member.team1_id : 'TBD'}}
                         button.btn.btn-lg.btn-secondary.btn-outline(type="button" ng-style="{'background-color': " + model + "== member.team2_id || (member['game" + i + "_enabled'] && member.enabled) ? member.team2_color : ''}" ng-disabled="!member.enabled || !member['game" + i + "_enabled']" ng-class="{active: " + model + "== member.team2_id, bg_color: member.team2_id && " + model + "== member.team2_id || (member['game" + i + "_enabled'] && member.enabled)}" ng-click="updateDB(member.id, " + i + ", member.team2_id)") {{member.team2_id ? member.team2_id : 'TBD'}}
@@ -55,6 +52,16 @@ block content
           div.modal-footer
             button.btn.btn-secondary(type="button" data-dismiss="modal" ng-click="ignoreLast()") Cancel
             button.btn.btn-primary(type="button" data-dismiss="modal" ng-click="closeOut()") Confirm
+    div.modal.fade#resetModal(tabindex="-1")
+      div.modal-dialog.modal-sm.modal-dialog-centered
+        div.modal-content
+          div.modal-header
+            h5.modal-title Confirm Change
+          div.modal-body
+            p Are you sure you want to edit this series? It's already finished so changes here will reset any future series with this team.
+          div.modal-footer
+            button.btn.btn-secondary(type="button" data-dismiss="modal") Cancel
+            button.btn.btn-primary(type="button" data-dismiss="modal" ng-click="callUpdate()") Confirm
   script.
       const SERIES = !{JSON.stringify(series)};
       const BRACKETS = !{JSON.stringify(brackets)};

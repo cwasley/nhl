@@ -20,11 +20,20 @@ block content
             th Place
             th Name
             th Points
+            th Potential Points
+            th Max Possible Points
         tbody
           tr(ng-repeat='bracket in brackets track by $index')
-            td {{bracket.place}}
-            td {{bracket.name}}
+            td {{$index + 1}}
+            td
+              div(style="display:inline;")
+                i.align-top.material-icons(style="padding-right:5px; font-size: 21px;" ng-if="$index < 3") mood
+              p(style="display:inline;") {{bracket.name}}
             td {{bracket.points}}
+            td {{bracket.potentialPoints}}
+            td {{bracket.potentialPoints + bracket.points}}
+              i.align-top.material-icons(style="padding-left:5px; font-size: 21px;" ng-if="(bracket.potentialPoints + bracket.points) < brackets[2].points") sentiment_very_dissatisfied
 
   script.
     const BRACKETS = !{JSON.stringify(brackets)};
+    const STANDINGS = !{JSON.stringify(standings)};

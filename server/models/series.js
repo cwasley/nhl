@@ -57,6 +57,9 @@ module.exports = (sequelize, DataTypes) => {
       },
       enabled: {
           type: DataTypes.BOOLEAN
+      },
+      name: {
+          type: DataTypes.STRING
       }
   }, {});
   Series.associate = function(models) {
