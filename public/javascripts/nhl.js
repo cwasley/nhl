@@ -639,6 +639,7 @@ angular.module('nhl', [])
     .controller('StandingsController', ['$scope', '$http', function($scope, $http) {
 
         $('body').bootstrapMaterialDesign();
+        $scope.width = $(window).width();
         $scope.updating = false;
         $scope.brackets = BRACKETS;
         if (STANDINGS) {

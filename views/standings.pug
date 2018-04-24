@@ -14,14 +14,15 @@ block content
   div.container(style="padding-top:60px;" ng-controller='StandingsController')
     div.row.justify-content-center
       h3.text-center Standings
+      p.lead(ng-if="width < 370") Your browser width might be too small to see maximum points. Check this page on a larger screen
       table.table
         thead
           tr
-            th Place
+            th(style="max-width:20px;") #
             th Name
-            th Points
-            th Potential Points
-            th Max Possible Points
+            th(style="max-width:20px;") Pts
+            th(style="max-width:70px;") Potential Points
+            th(style="max-width:70px;") Max Points
         tbody
           tr(ng-repeat='bracket in brackets track by $index')
             td {{$index + 1}}
