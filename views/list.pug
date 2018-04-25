@@ -20,7 +20,7 @@ block content
             p(style='display:inline; margin:auto; float:right;') Current points: {{brackets[$index].points}}
           span(style='padding-left:10px; padding-right:10px;')
             p(style="display:inline; {{brackets[$index].paid ? 'color:green;' : 'color:red;'}}") {{brackets[$index].paid ? 'Paid' : 'Not paid'}}
-            p(style="display:inline; margin: auto; float: right;") {{brackets[$index].potentialPoints + brackets[$index].points}} max possible
+            p(style="display:inline; margin: auto; float: right;") Max points: {{brackets[$index].potentialPoints + brackets[$index].points}}
           span(style='padding-left:10px; padding-right:10px; padding-top: 10px;')
             p(style='display:inline; margin:auto; float:right;') Standing: {{brackets[$index].place}}
           svg(id="radial-bracket-{{$index}}" style="display:block; margin:auto;")
