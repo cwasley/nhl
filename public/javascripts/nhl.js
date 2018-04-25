@@ -655,8 +655,29 @@ angular.module('nhl', [])
                 }
             });
         }
+        for (var i = 0; i < $scope.brackets.length; i++) {
+            var place = i + 1;
+            switch(place) {
+                case 1:
+                case 21:
+                    $scope.brackets[i].place = place + "st";
+                    break;
+                case 3:
+                case 23:
+                    $scope.brackets[i].place = place + "rd";
+                    break;
+                case 2:
+                case 22:
+                    $scope.brackets[i].place = place + "nd";
+                    break;
+                default:
+                    $scope.brackets[i].place = place + "th";
+                    break;
+            }
+
+        }
         $(function() {
-            $('body').bootstrapMaterialDesign();
+            $("[rel=tooltip]").tooltip({placement: 'top'});
         });
 
         $scope.updateDB = function(bracket) {

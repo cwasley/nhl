@@ -14,26 +14,25 @@ block content
   div.container(style="padding-top:60px;" ng-controller='StandingsController')
     div.row.justify-content-center
       h3.text-center Standings
-      p.lead(ng-if="width < 370") Your browser width might be too small to see maximum points. Check this page on a larger screen
+      p.lead(style="padding:10px;" ng-if="width < 370") Your browser width might be too small to see maximum points. Check this page on a larger screen.
       table.table
         thead
           tr
             th(style="max-width:20px;") #
             th Name
-            th(style="max-width:20px;") Pts
+            th(style="max-width:50px;") Points
             th(style="max-width:70px;") Potential Points
             th(style="max-width:70px;") Max Points
         tbody
           tr(ng-repeat='bracket in brackets track by $index')
             td {{$index + 1}}
             td
-              div(style="display:inline;")
-                i.align-top.material-icons(style="padding-right:5px; font-size: 21px;" ng-if="$index < 3") mood
-              p(style="display:inline;") {{bracket.name}}
+              i.align-top.material-icons(rel="tooltip" title="This bracket is in {{bracket.place}} place" style="padding-right:5px; font-size: 21px; margin-left: -25px; color: {{$index === 0 ? '#D9A441' : ''}}{{$index === 1 ? '#A8A8A8' : ''}}{{$index === 2 ? '#965A38' : ''}};" ng-if="$index < 3") star
+              i.align-top.material-icons(rel="tooltip" title="Unfortunately this bracket's max points is less than the 3rd place current points, better luck next time :(" style="padding-right:5px; font-size: 21px; margin-left: -25px;" ng-if="(bracket.potentialPoints + bracket.points) < brackets[2].points") sentiment_very_dissatisfied
+              ="{{bracket.name}}"
             td {{bracket.points}}
             td {{bracket.potentialPoints}}
             td {{bracket.potentialPoints + bracket.points}}
-              i.align-top.material-icons(style="padding-left:5px; font-size: 21px;" ng-if="(bracket.potentialPoints + bracket.points) < brackets[2].points") sentiment_very_dissatisfied
 
   script.
     const BRACKETS = !{JSON.stringify(brackets)};
