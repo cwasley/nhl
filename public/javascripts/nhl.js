@@ -703,10 +703,11 @@ angular.module('nhl', [])
     }])
     .controller('SeriesController', ['$scope', '$http', function($scope, $http) {
 
-        $('body').bootstrapMaterialDesign();
         $scope.brackets = BRACKETS;
         $scope.series = SERIES;
         $scope.teams = TEAMS;
+
+        $scope.stanleyCupGoals = 0;
 
         // Make a color mapping for buttons
         var colors = {};
@@ -732,6 +733,10 @@ angular.module('nhl', [])
                     break;
                 case 4:
                     series.roundName = "Stanley Cup Final";
+                    series.num_goals = 0;
+                    for (var j = 0; j < series.goal_array.length; j++) {
+                        series.num_goals += series.goal_array[j] ? parseInt(series.goal_array[j]) : 0;
+                    }
             }
         }
 
@@ -742,6 +747,7 @@ angular.module('nhl', [])
         $scope.winerColor = '';
         $scope.params = [];
 
+        $('body').bootstrapMaterialDesign();
         $scope.series = disableButtons($scope.series);
 
         $scope.updateDB = function(series, game, newValue) {
@@ -811,17 +817,22 @@ angular.module('nhl', [])
             }
             currSeries.enabled = true;
             var winner = currSeries.winner;
+            var loserArray = [];
+            loserArray.push(winner);
             currSeries.winner = currSeries.num_games = currSeries.num_goals = null;
             while (currSeries.next_series_id !== null) {
                 currSeries = $scope.series[currSeries.next_series_id - 1];
                 currSeries.enabled = false;
-                if (currSeries.team1_id === winner) {
-                    currSeries.team1_id = null;
-                    currSeries.team1_color = null;
-                } else {
-                    currSeries.team2_id = null;
-                    currSeries.team2_color = null;
+                for (var i = 0; i < loserArray.length; i++) {
+                    if (currSeries.team1_id === loserArray[i]) {
+                        currSeries.team1_id = null;
+                        currSeries.team1_color = null;
+                    } else if (currSeries.team2_id === loserArray[i]) {
+                        currSeries.team2_id = null;
+                        currSeries.team2_color = null;
+                    }
                 }
+                loserArray.push(currSeries.winner);
                 currSeries.winner = currSeries.num_games = currSeries.num_goals = currSeries.game1 = currSeries.game2 = currSeries.game3 = currSeries.game4 = currSeries.game5 = currSeries.game6 = currSeries.game7 = null;
             }
 
@@ -844,27 +855,6 @@ angular.module('nhl', [])
                 }
             })
         };
-
-        // Disable/Enable games to be picked throughout a series
-        function disableButtons(seriesArray, undoApplied) {
-            for (var i = 0; i < seriesArray.length; i++) {
-                var lastEntry = false;
-
-                // Enable/disable individual buttons
-                for (var j = 1; j < 8; j++) {
-                    var currentGame = seriesArray[i]['game' + j];
-                    seriesArray[i]['game' + j + '_enabled'] = false;
-                    if (currentGame === null && !lastEntry) {
-
-                        // We found the current game that we are on; enable it
-                        lastEntry = true;
-                        seriesArray[i]['game' + (j) + '_enabled'] = true;
-                        seriesArray[i].lastInput = j-1;
-                    }
-                }
-            }
-            return seriesArray;
-        }
 
         $('#winnerModal').on('show.bs.modal', function (event) {
             var modal = $(this);
@@ -961,8 +951,62 @@ angular.module('nhl', [])
         $scope.toggle = function(id) {
             $(id).collapse('toggle');
             $scope.series[id.replace('#series', '')].expanded = !$scope.series[id.replace('#series', '')].expanded;
+        };
+
+        $scope.recalculateStanleyCup = function() {
+            recalculateHelper();
+        };
+
+        function recalculateHelper() {
+            var finalSeries = $scope.series[14];
+            finalSeries.num_goals = 0;
+            for (var j = 0; j < finalSeries.goal_array.length; j++) {
+                if (finalSeries.goal_array[j] === '') {
+                    finalSeries.goal_array[j] = null;
+                }
+                finalSeries.num_goals += finalSeries.goal_array[j] ? parseInt(finalSeries.goal_array[j]) : 0;
+            }
+            var data = {
+                value: JSON.stringify(finalSeries.goal_array),
+                change: "finalGoals"
+            };
+            $.ajax({
+                type: 'POST',
+                url: '/update',
+                data: data,
+                dataType: 'json',
+                success: function( data ) {
+                    console.log("successfully updated");
+                }
+            })
         }
 
+        // Disable/Enable games to be picked throughout a series
+        function disableButtons(seriesArray) {
+            for (var i = 0; i < seriesArray.length; i++) {
+                var lastEntry = false;
 
+                // Enable/disable individual buttons
+                for (var j = 1; j < 8; j++) {
+                    var currentGame = seriesArray[i]['game' + j];
+                    seriesArray[i]['game' + j + '_enabled'] = false;
 
+                    // Want to null out goals as well if we're going backwards
+                    if (lastEntry && seriesArray[i].goal_array) {
+                        if (seriesArray[i].goal_array[j - 1]) {
+                            seriesArray[i].goal_array[j - 1] = null;
+                            recalculateHelper();
+                        }
+                    }
+                    if (currentGame === null && !lastEntry) {
+
+                        // We found the current game that we are on; enable it
+                        lastEntry = true;
+                        seriesArray[i]['game' + (j) + '_enabled'] = true;
+                        seriesArray[i].lastInput = j-1;
+                    }
+                }
+            }
+            return seriesArray;
+        }
     }]);

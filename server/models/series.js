@@ -60,6 +60,9 @@ module.exports = (sequelize, DataTypes) => {
       },
       name: {
           type: DataTypes.STRING
+      },
+      goal_array: {
+          type: DataTypes.ARRAY(DataTypes.INTEGER)
       }
   }, {});
   Series.associate = function(models) {

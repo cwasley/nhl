@@ -194,3 +194,17 @@ button {
 .selection-buttons button {
   border: 1px solid grey !important;
 }
+
+/* TODO these are for disabled tooltip but it doesn't seem to be working */
+/*.disabled-wrapper {*/
+  /*display: inline-block;*/
+  /*margin: 50px;*/
+/*}*/
+
+/*.disabled-wrapper .btn[disabled] {*/
+  /*pointer-events: none;*/
+/*}*/
+
+/*.disabled-wrapper.disabled {*/
+  /*cursor: not-allowed;*/
+/*}*/

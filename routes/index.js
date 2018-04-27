@@ -190,7 +190,7 @@ router.get('/', async function(req, res, next) {
     var brackets = await models.Bracket.findAll({
         order: Sequelize.col('name')
     });
-    brackets = await calculateObtainablePoints(brackets);
+    brackets = await calculatePoints(brackets);
     var teams = await models.Team.findAll({
         order: Sequelize.col('original_id')
     });
@@ -230,7 +230,7 @@ router.get('/standings', async function(req, res, next) {
     var brackets = await models.Bracket.findAll({
         order: Sequelize.col('name')
     });
-    brackets = await calculateObtainablePoints(brackets);
+    brackets = await calculatePoints(brackets);
     res.render('standings', {
         title: 'NHL 2018',
         brackets: brackets,
@@ -258,8 +258,17 @@ router.post('/update', async function(req, res, next) {
     if (value == "") {
         value = null;
     }
+    if (change === "finalGoals") {
+        await models.Series.update({
+            goal_array: JSON.parse(value)
+        },{
+            where: {
+                id: 15
+            }
+        })
+    }
     if (change === "paid" && type === "user") {
-        var user = await models.Bracket.update({
+        await models.Bracket.update({
             paid: value === "true"
         }, {
             where: {
@@ -269,6 +278,7 @@ router.post('/update', async function(req, res, next) {
     } else if (type === "series") {
 
         // TODO is this possible to make dynamic?
+        // TODO answer is yes (look below; change this to be dynamically updated)
         if (change === "1") {
             await models.Series.update({
                 game1: value
@@ -349,36 +359,56 @@ router.post('/updateSeries', async function(req, res, next) {
             id: series_id
         }
     });
-    var round = currSeries[0].dataValues.round;
 
     // Update series that is either being closed out or reopened
     currSeries[0].winner = updating ? winner : null;
     currSeries[0].num_games = updating ? num_games : null;
     currSeries[0].enabled = !updating;
+
+    // Figure out total num goals
+    if (currSeries[0].dataValues.goal_array) {
+        if (updating) {
+            var total_goals = 0;
+            for (var i = 0; i < currSeries[0].dataValues.goal_array.length; i++) {
+                total_goals += currSeries[0].dataValues.goal_array[i];
+            }
+            currSeries[0].num_goals = total_goals;
+        } else {
+            currSeries[0].num_goals = null;
+        }
+    }
     await currSeries[0].save();
 
     // Update next series
-    if (updating) {
+    if (updating && currSeries[0].dataValues.next_series_id) {
         currSeries = await models.Series.findAll({
             where: {
                 id: currSeries[0].dataValues.next_series_id
             }
         });
-        currSeries[0][teamKey] = updating ? winner : null;
+        currSeries[0][teamKey] = winner;
         currSeries[0].enabled = toEnable;
         await currSeries[0].save();
-    } else {
+    } else if (!updating && currSeries[0].dataValues.next_series_id) {
+        var loserArray = [];
+        loserArray.push(winner);
         while(currSeries[0].dataValues.next_series_id) {
             currSeries = await models.Series.findAll({
                 where: {
                     id: currSeries[0].dataValues.next_series_id
                 }
             });
-            if (currSeries[0].dataValues.team1_id === winner) {
-                currSeries[0].team1_id = null;
-            } else if (currSeries[0].dataValues.team2_id === winner) {
-                currSeries[0].team2_id = null;
+
+            // Need to not only check for winner but also for any other teams that the team being taken out touches
+            for (var i = 0; i < loserArray.length; i++) {
+                if (currSeries[0].dataValues.team1_id === loserArray[i]) {
+                    currSeries[0].team1_id = null;
+                } else if (currSeries[0].dataValues.team2_id === loserArray[i]) {
+                    currSeries[0].team2_id = null;
+                }
             }
+
+            loserArray.push(currSeries[0].winner);
             currSeries[0].enabled = false;
             currSeries[0].game1 = null;
             currSeries[0].game2 = null;
@@ -391,71 +421,9 @@ router.post('/updateSeries', async function(req, res, next) {
             currSeries[0].num_games = null;
             currSeries[0].num_goals = null;
             await currSeries[0].save();
-
-
         }
     }
 
-    // For resetting a series, we need to go through and reset every game that's been played with that team
-    // while(currSeries[0].dataValues.next_series_id && updating === false) {
-    //
-    // }
-
-    // If we enabled a new series, that means an old one closed out. Let's update the points for each player
-    var brackets = await models.Bracket.findAll();
-    for (var i = 0; i < brackets.length; i++) {
-        var bracket = brackets[i];
-        var startingPoints = bracket.dataValues.points;
-        var pointDiff = 0;
-        var bracketPredictions = await models.Prediction.findAll({
-            where: {
-                bracket_id: bracket.dataValues.id,
-                series_id: series_id
-            }
-        });
-        if (bracketPredictions[0].dataValues.winner_id === winner) {
-
-            // Bracket won! Give points consistent with round #
-            switch(round) {
-                case 1:
-                    pointDiff += 5;
-                    break;
-                case 2:
-                    pointDiff += 7;
-                    break;
-                case 3:
-                    pointDiff += 10;
-                    break;
-                case 4:
-                    pointDiff += 15;
-                    break;
-            }
-            switch(Math.abs(bracketPredictions[0].dataValues.num_games - num_games)) {
-                case 0:
-                    pointDiff += 3;
-                    break;
-                case 1:
-                    pointDiff += 2;
-                    break;
-                case 2:
-                    pointDiff += 1;
-                    break;
-                case 3:
-                    pointDiff += 0;
-                    break;
-            }
-
-            await models.Bracket.update({
-                    points: updating ? (startingPoints + pointDiff) : (startingPoints - pointDiff)
-                },
-                {
-                    where: {
-                        id: bracket.dataValues.id
-                    }
-                })
-        }
-
-    }
     res.send(true);
 });
 
@@ -475,10 +443,12 @@ router.get('/series', async function(req, res, next) {
     });
 });
 
-async function calculateObtainablePoints(bracketArray) {
-    var series = await models.Series.findAll();
+async function calculatePoints(bracketArray) {
+    var series = await models.Series.findAll({
+        order: Sequelize.col('id')
+    });
 
-    // Find each team that lost and add to array; if brackets have predictions that include these teams they will lose the points.
+    // Find each team that lost and add to array; if brackets have predictions that include these teams they will not get those points.
     var loserArray = [];
     for (var i = 0; i < series.length; i++) {
         var seriesInstance = series[i];
@@ -491,17 +461,14 @@ async function calculateObtainablePoints(bracketArray) {
         }
     }
 
-    // Now we can loop through again and for every game that is not already counted, if both teams are not in the loser array they have potential points to win
+    // Now loop through each series
     for (var i = 0; i < bracketArray.length; i++) {
         var bracket = bracketArray[i];
+        var points = 0;
         var potentialPoints = 0;
 
         for (var j = 0; j < series.length; j++) {
             var seriesInstance = series[j];
-            // We want to skip any series that are already counted in points
-            if (seriesInstance.dataValues.winner) {
-                continue;
-            }
 
             var bracketPredictions = await models.Prediction.findAll({
                 where: {
@@ -509,30 +476,86 @@ async function calculateObtainablePoints(bracketArray) {
                     series_id: seriesInstance.dataValues.id
                 }
             });
-            var valid = true;
-            for (var k = 0; k < loserArray.length; k++) {
-                if (bracketPredictions[0].dataValues.winner_id === loserArray[k]) {
-                    valid = false;
-                }
-            }
+            if (seriesInstance.dataValues.winner) {
+                // Calculate points
 
-            if (valid) {
-                switch (seriesInstance.dataValues.round) {
-                    case 1:
-                        potentialPoints += 8;
-                        break;
-                    case 2:
-                        potentialPoints += 10;
-                        break;
-                    case 3:
-                        potentialPoints += 13;
-                        break;
-                    case 4:
-                        potentialPoints += 18;
-                        break;
+                // Calculate bonus points for final game if in that round;
+                // we do this outside the main if because you can win these points even if you don't guess correctly
+                if (seriesInstance.dataValues.round === 4) {
+                    var numGoalsDiff = 10 - Math.abs(bracketPredictions[0].dataValues.num_goals - seriesInstance.dataValues.num_goals);
+                    points += numGoalsDiff > 0 ? numGoalsDiff : 0;
+                }
+
+
+                if (bracketPredictions[0].dataValues.winner_id === seriesInstance.dataValues.winner) {
+
+                    // Round points
+                    switch(seriesInstance.dataValues.round) {
+                        case 1:
+                            points += 5;
+                            break;
+                        case 2:
+                            points += 7;
+                            break;
+                        case 3:
+                            points += 10;
+                            break;
+                        case 4:
+                            points += 15;
+                            break;
+                    }
+
+                    // Bonus points
+                    switch(Math.abs(bracketPredictions[0].dataValues.num_games - seriesInstance.dataValues.num_games)) {
+                        case 0:
+                            points += 3;
+                            break;
+                        case 1:
+                            points += 2;
+                            break;
+                        case 2:
+                            points += 1;
+                            break;
+                        case 3:
+                            points += 0;
+                            break;
+                    }
+                }
+            } else {
+
+                // Calculate potential points
+
+                var valid = true;
+                for (var k = 0; k < loserArray.length; k++) {
+                    if (bracketPredictions[0].dataValues.winner_id === loserArray[k]) {
+                        valid = false;
+                    }
+                }
+
+                if (valid) {
+                    // All these assume the max bonus points of 3
+                    switch (seriesInstance.dataValues.round) {
+                        case 1:
+                            potentialPoints += 8;
+                            break;
+                        case 2:
+                            potentialPoints += 10;
+                            break;
+                        case 3:
+                            potentialPoints += 13;
+                            break;
+                        case 4:
+                            potentialPoints += 18;
+                            break;
+                    }
                 }
             }
         }
+
+        // If we don't yet have a winner for the Stanley Cup Final, assign 10 bonus points to every bracket
+        potentialPoints = !series[14].dataValues.winner ? (potentialPoints + 10) : potentialPoints;
+
+        bracket.dataValues.points = points;
         bracket.dataValues.potentialPoints = potentialPoints;
     }
 

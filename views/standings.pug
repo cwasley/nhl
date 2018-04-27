@@ -18,21 +18,21 @@ block content
       table.table
         thead
           tr
-            th(style="max-width:20px;") #
-            th Name
-            th(style="max-width:50px;") Points
-            th(style="max-width:70px;") Potential Points
-            th(style="max-width:70px;") Max Points
+            th(style="max-width:55px;") Place
+            th(style="max-width:50px;") Bracket
+            th(style="max-width:100px;text-align:right;") Current Points
+            th(style="max-width:70px;text-align:right;") Potential Points
+            th(style="max-width:70px;text-align:right;") Max Points
         tbody
           tr(ng-repeat='bracket in brackets track by $index')
             td {{$index + 1}}
-            td
-              i.align-top.material-icons(rel="tooltip" title="This bracket is in {{bracket.place}} place" style="padding-right:5px; font-size: 21px; margin-left: -25px; color: {{$index === 0 ? '#D9A441' : ''}}{{$index === 1 ? '#A8A8A8' : ''}}{{$index === 2 ? '#965A38' : ''}};" ng-if="$index < 3") star
-              i.align-top.material-icons(rel="tooltip" title="Unfortunately this bracket's max points is less than the 3rd place current points, better luck next time :(" style="padding-right:5px; font-size: 21px; margin-left: -25px;" ng-if="(bracket.potentialPoints + bracket.points) < brackets[2].points") sentiment_very_dissatisfied
+            td(style='max-width:100px;')
+              p(rel="tooltip" title="This bracket is in {{bracket.place}} place" style="display:inline; padding-right:5px; font-size: 21px; margin-left: -25px;" ng-if="$index < 3") {{$index === 0 ? '🥇' : ''}}{{$index === 1 ? '🥈' : ''}}{{$index === 2 ? '🥉' : ''}}
+              p(rel="tooltip" title="This bracket's max points is less than top 3 current points :(" style="padding-right:5px; font-size: 21px; margin-left: -25px; display:inline;" ng-if="(bracket.potentialPoints + bracket.points) < brackets[2].points") 😢
               ="{{bracket.name}}"
-            td {{bracket.points}}
-            td {{bracket.potentialPoints}}
-            td {{bracket.potentialPoints + bracket.points}}
+            td(align='right') {{bracket.points}}
+            td(align='right') {{bracket.potentialPoints}}
+            td(align='right') {{bracket.potentialPoints + bracket.points}}
 
   script.
     const BRACKETS = !{JSON.stringify(brackets)};

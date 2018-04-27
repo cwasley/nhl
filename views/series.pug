@@ -27,21 +27,27 @@ block content
             table.table
               thead
                 tr
-                  th Game #
+                  th(style="max-width:77px;") Game #
                   th Matchup
+                  th(ng-if="member.goal_array") Goals
               tbody
                 - var i = 1;
                 while i < 8
                   tr(ng-if="!member.team1_id || !member.team2_id || member.enabled || member['game" + i + "']")
                     td= i
+                    td(ng-if="member.goal_array !== null")
+                      div.form-group(style='max-width:60px; margin-top:-6px;')
+                        label.bmd-label-floating(for="numGoals{{$index}}") # Goals
+                        input.form-control(id="numGoals{{$index}}" ng-model="member.goal_array[" + i + "-1]" ng-change="recalculateStanleyCup()" ng-disabled="!member.enabled || !member['game" + i + "_enabled']")
                     td
                       - var model = "member['game" + (i) + "']";
                       //i.material-icons(style="padding-right: 5px; margin-left: -29px; cursor: pointer;" ng-if="member.enabled && member.lastInput == " + i ng-click="updateDB(member.id, " + i + ", null)") replay
                       p(style="display:inline; padding-right: 5px; margin-left: -29px; cursor: pointer;" ng-if="member.lastInput == " + i ng-click="updateDB(member.id, " + i + ", null)") edit
-                      div.btn-group.selection-buttons(style="box-shadow: none; background-color: transparent;")
-                        button.btn.btn-lg.btn-secondary.btn-outline(type="button" ng-style="{'background-color': " + model + "== member.team1_id || (member['game" + i + "_enabled'] && member.enabled) ? member.team1_color : ''}" ng-disabled="!member.enabled || !member['game" + i + "_enabled']" ng-class="{active: " + model + "== member.team1_id, bg_color: member.team1_id && " + model + "== member.team1_id || (member['game" + i + "_enabled'] && member.enabled)}" ng-click="updateDB(member.id, " + i + ", member.team1_id)") {{member.team1_id ? member.team1_id : 'TBD'}}
-                        button.btn.btn-lg.btn-secondary.btn-outline(type="button" ng-style="{'background-color': " + model + "== member.team2_id || (member['game" + i + "_enabled'] && member.enabled) ? member.team2_color : ''}" ng-disabled="!member.enabled || !member['game" + i + "_enabled']" ng-class="{active: " + model + "== member.team2_id, bg_color: member.team2_id && " + model + "== member.team2_id || (member['game" + i + "_enabled'] && member.enabled)}" ng-click="updateDB(member.id, " + i + ", member.team2_id)") {{member.team2_id ? member.team2_id : 'TBD'}}
+                      div.btn-group.selection-buttons(rel="tooltip" style="box-shadow: none; background-color: transparent;" data-title="Please input # goals first." id="{{$index}}_" + i)
+                        button.btn.btn-lg.btn-secondary.btn-outline(type="button" ng-style="{'background-color': " + model + "== member.team1_id || (member['game" + i + "_enabled'] && member.enabled) ? member.team1_color : ''}" ng-disabled="!member.enabled || !member['game" + i + "_enabled'] || (member.goal_array && !member.goal_array[" + (i-1) + "])" ng-class="{active: " + model + "== member.team1_id, bg_color: member.team1_id && " + model + "== member.team1_id || (member['game" + i + "_enabled'] && member.enabled)}" ng-click="updateDB(member.id, " + i + ", member.team1_id)") {{member.team1_id ? member.team1_id : 'TBD'}}
+                        button.btn.btn-lg.btn-secondary.btn-outline(type="button" ng-style="{'background-color': " + model + "== member.team2_id || (member['game" + i + "_enabled'] && member.enabled) ? member.team2_color : ''}" ng-disabled="!member.enabled || !member['game" + i + "_enabled'] || (member.goal_array && !member.goal_array[" + (i-1) + "])" ng-class="{active: " + model + "== member.team2_id, bg_color: member.team2_id && " + model + "== member.team2_id || (member['game" + i + "_enabled'] && member.enabled)}" ng-click="updateDB(member.id, " + i + ", member.team2_id)") {{member.team2_id ? member.team2_id : 'TBD'}}
                       - i++;
+            p.lead.text-center(ng-if="member.goal_array") Total Goals: {{member.num_goals}}
     div.modal.fade#winnerModal(tabindex="-1")
       div.modal-dialog.modal-sm.modal-dialog-centered
         div.modal-content
