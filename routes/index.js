@@ -198,7 +198,6 @@ router.get('/', async function(req, res, next) {
     var series = await models.Series.findAll({
         order: Sequelize.col('id')
     });
-    var bracketPredictions = [];
     for (var i = 0; i < brackets.length; i++) {
         var predictions = await models.Prediction.findAll({
             where: {
@@ -215,14 +214,13 @@ router.get('/', async function(req, res, next) {
                 }
             }
         }
-        bracketPredictions.push(predictions);
+        brackets[i].dataValues.predictions = predictions;
     }
     res.render('list', {
         title: 'NHL 2018',
         teams: teams,
         brackets: brackets,
-        series: series,
-        predictions: bracketPredictions
+        series: series
     });
 });
 

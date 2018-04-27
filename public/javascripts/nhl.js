@@ -352,7 +352,6 @@ angular.module('nhl', [])
                 }
             }
         }
-        $scope.predictions = PREDICTIONS;
         $scope.series = SERIES;
 
         $scope.nodeDataArray = [];
@@ -361,13 +360,42 @@ angular.module('nhl', [])
             $('.tip').tooltip({
                 placement: "top"
             });
-            for (var i = 0; i < $scope.predictions.length; i++) {
-                $scope.updateBracket($scope.predictions[i], i)
+
+            // Initially sort alphabetically
+            for (var i = 0; i < $scope.brackets.length; i++) {
+                $scope.updateBracket($scope.brackets[i].predictions, i)
             }
         });
 
-        // TODO in the future this should be moved into the backend along with pretty much everything else; the page is mostly static so we can just send the
-        // node data in and generate the brackets one time
+        $scope.sortBrackets = function(sortType) {
+            switch(sortType) {
+                case 0:
+                    $scope.brackets = $scope.brackets.sort(function(a, b) {
+                        if (a.name > b.name) {
+                            return 1;
+                        }
+                        if (b.name > a.name) {
+                            return -1;
+                        }
+                        return 0;
+                    });
+                    break;
+                case 1:
+                    $scope.brackets = $scope.brackets.sort(function(a, b) {
+                        return b.points - a.points;
+                    });
+                    break;
+                case 2:
+                    $scope.brackets = $scope.brackets.sort(function(a, b) {
+                        return (b.points + b.potentialPoints) - (a.points + a.potentialPoints);
+                    });
+                    break;
+            }
+            for (var i = 0; i < $scope.brackets.length; i++) {
+                $scope.updateBracket($scope.brackets[i].predictions, i)
+            }
+        };
+
         $scope.updateBracket = function(predictions, index) {
 
                 // Start from the 'root'; we want to copy information from the DB in a way d3 can understand
@@ -646,7 +674,8 @@ angular.module('nhl', [])
             $scope.brackets = $scope.brackets.sort(function(a, b) {
                 if (a.points === b.points) {
                     if (a.potentialPoints === b.potentialPoints) {
-                        return a.name > b.name;
+                        if (a.name < b.name) return -1;
+                        if (b.name < a.name) return 1;
                     } else {
                         return b.potentialPoints - a.potentialPoints;
                     }
