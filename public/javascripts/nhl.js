@@ -611,17 +611,6 @@ angular.module('nhl', [])
                 .enter().append('g').attr("class", "node").append('path')
                 .attr("d", arc)
                 .style('stroke', '#fff')
-                .style('opacity', function(d) {
-                    if (d.data.status > 0) {
-                        if (d.data.games === 5) {
-                            return 0.95;
-                        } else if (d.data.games === 6) {
-                            return 0.90;
-                        } else if (d.data.games === 7) {
-                            return 0.85;
-                        }
-                    }
-                })
                 .style("fill", function (d) {
                     return d.data.status > 0 ? d.data.color : 'gray';
                 });
