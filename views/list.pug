@@ -33,7 +33,7 @@ block content
             p(style="display:inline; margin: auto; float: right;") Max Points: {{entry.potentialPoints + entry.points}}
           svg(id="radial-bracket-{{$index}}" style="display:block; margin:auto;")
           div.card-body(style='padding-left:10px; padding-right:10px; padding-top: 10px; text-align:center;')
-            p(style='display:inline; margin:auto;') Stanley Cup goal total: {{entry[14].num_goals}}
+            p(style='display:inline; margin:auto;') Stanley Cup goal total: {{entry.predictions[14].num_goals}}
   script.
     const TEAMS = !{JSON.stringify(teams)};
     const BRACKETS = !{JSON.stringify(brackets)};

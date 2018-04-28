@@ -427,7 +427,7 @@ angular.module('nhl', [])
                             }
                         }
                     } else if (predictions[$scope.series[j].next_series_id - 1].winner_id !== predictions[j].winner_id){
-                        branchNode.status = -1;
+                        branchNode.status = 0;
                     } else {
                         branchNode.games = predictions[$scope.series[j].next_series_id - 1].num_games;
                         branchNode.status = 1;
@@ -465,7 +465,7 @@ angular.module('nhl', [])
                             leafNode1.status = 1;
                         }
                     } else {
-                        leafNode1.status = -1;
+                        leafNode1.status = 0;
                     }
 
                     if (nodeArray[j].name === $scope.teams[j * 2 + 1].id) {
@@ -486,7 +486,7 @@ angular.module('nhl', [])
                             leafNode2.status = 1;
                         }
                     } else {
-                        leafNode2.status = -1;
+                        leafNode2.status = 0;
                     }
 
                     leafNodes.unshift(leafNode1);
@@ -572,12 +572,17 @@ angular.module('nhl', [])
             var height = 360;
             var radius = Math.min(width, height) / 2;
 
+            const texture = textures.lines()
+                .size(10).strokeWidth(2).background("#666666").stroke("#3f3f3f");
+
             // Create primary <g> element
             var g = d3.select('#radial-bracket-' + i)
                 .attr('width', width)
                 .attr('height', height)
                 .append('g')
                 .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
+
+            g.call(texture);
 
             // Data strucure
             var partition = d3.partition()
@@ -599,25 +604,50 @@ angular.module('nhl', [])
                     return d.x1
                 })
                 .innerRadius(function (d) {
-                    return d.y0
+                    if (d.parent) {
+                        return d.y0 + 2
+                    } else {
+                        return d.y0
+                    }
                 })
                 .outerRadius(function (d) {
-                    return d.y1
+                    return d.y1;
                 });
 
             // Put it all together
             g.selectAll('g')
                 .data(root.descendants())
                 .enter().append('g').attr("class", "node").append('path')
+                .attr("id", function(d, j) {
+                    return "radialNode_" + j + i;
+                })
                 .attr("d", arc)
                 .style('stroke', '#fff')
+                .attr('stroke-width', function (d) {
+                    return '0';
+                })
                 .style("fill", function (d) {
-                    return d.data.status > 0 ? d.data.color : 'gray';
+                    if (d.data.status > 0) {
+                        return d.data.color;
+                    }
+                    if (d.data.status === 0) {
+                        return 'gray';
+                    }
+                    if (d.data.status < 0) {
+                        return texture.url();
+                    }
                 });
 
             g.selectAll(".node")
                 .append("text")
-                .attr("transform", function (d) {
+                // .attr("dx", function(d) {
+                // })
+                // .attr("dy", 20)
+                // .append("textPath")
+                // .attr("xlink:href", function(d, j) {
+                //     return "#radialNode_" + j + i;
+                // })
+                .attr("transform", function(d) {
                     if (d.parent) {
                         return "translate(" + arc.centroid(d) + ")rotate(" + computeTextRotation(d) + ")";
                     } else {
@@ -626,8 +656,8 @@ angular.module('nhl', [])
                 })
                 .attr("dx", function (d) {
                     // TODO fixME
-                    if (d.parent && d.data.color === 'gray') {
-                        return "-20";
+                    if (d.data.status < 1) {
+                        return "-10";
                     } else if (d.parent) {
                         return "-28";
                     } else {
@@ -647,9 +677,69 @@ angular.module('nhl', [])
                 })
                 .append("tspan")
                 .style("font-weight", "bold")
+
+                // TODO change me to use full points for the round
                 .text(function(d) {
                     return d.data.status > 1 ? '(+' + (d.data.status - 5) + ')' : '';
-                })
+                });
+
+            // TODO make this programmatic
+            g.append("line")
+                .attr("x1", -180)
+                .attr("x2", -108)
+                .attr("y1", 0)
+                .attr("y2", 0)
+                .attr("stroke-width", 2)
+                .attr("stroke", "white");
+            g.append("line")
+                .attr("x1", -102)
+                .attr("x2", -180)
+                .attr("y1", 102)
+                .attr("y2", 180)
+                .attr("stroke-width", 2)
+                .attr("stroke", "white");
+            g.append("line")
+                .attr("x1", 0)
+                .attr("x2", 0)
+                .attr("y1", 74)
+                .attr("y2", 180)
+                .attr("stroke-width", 2)
+                .attr("stroke", "white");
+            g.append("line")
+                .attr("x1", 102)
+                .attr("x2", 180)
+                .attr("y1", 102)
+                .attr("y2", 180)
+                .attr("stroke-width", 2)
+                .attr("stroke", "white");
+            g.append("line")
+                .attr("x1", 180)
+                .attr("x2", 108)
+                .attr("y1", 0)
+                .attr("y2", 0)
+                .attr("stroke-width", 2)
+                .attr("stroke", "white");
+            g.append("line")
+                .attr("x1", 102)
+                .attr("x2", 180)
+                .attr("y1", -102)
+                .attr("y2", -180)
+                .attr("stroke-width", 2)
+                .attr("stroke", "white");
+            g.append("line")
+                .attr("x1", 0)
+                .attr("x2", 0)
+                .attr("y1", -74)
+                .attr("y2", -180)
+                .attr("stroke-width", 2)
+                .attr("stroke", "white");
+            g.append("line")
+                .attr("x1", -102)
+                .attr("x2", -180)
+                .attr("y1", -102)
+                .attr("y2", -180)
+                .attr("stroke-width", 2)
+                .attr("stroke", "white");
         }
 
     }])
