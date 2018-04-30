@@ -20,15 +20,15 @@ block content
           tr
             th(style="max-width:55px;") Place
             th(style="max-width:50px;") Bracket
-            th(style="max-width:100px;text-align:right;") Current Points
+            th(style="max-width:110px;text-align:right;") Current Points
             th(style="max-width:70px;text-align:right;") Potential Points
             th(style="max-width:70px;text-align:right;") Max Points
         tbody
-          tr(ng-repeat='bracket in brackets track by $index')
+          tr(ng-repeat='bracket in brackets track by $index' style='height:60px;')
             td {{$index + 1}}
-            td(style='max-width:100px;')
-              p(rel="tooltip" title="This bracket is in {{bracket.place}} place" style="display:inline; padding-right:5px; font-size: 21px; margin-left: -25px;" ng-if="$index < 3") {{$index === 0 ? '🥇' : ''}}{{$index === 1 ? '🥈' : ''}}{{$index === 2 ? '🥉' : ''}}
-              p(rel="tooltip" title="This bracket's max points is less than top 3 current points :(" style="padding-right:5px; font-size: 21px; margin-left: -25px; display:inline;" ng-if="(bracket.potentialPoints + bracket.points) < brackets[2].points") 😢
+            td(style='max-width:110px;')
+              p(rel="tooltip" title="This bracket is in {{bracket.place}} place" style="display:inline; padding-right:5px; margin-left: -25px;" ng-if="$index < 3") {{$index === 0 ? '🥇' : ''}}{{$index === 1 ? '🥈' : ''}}{{$index === 2 ? '🥉' : ''}}
+              p(rel="tooltip" title="This bracket's max points is less than top 3 current points :(" style="padding-right:5px;margin-left: -25px; display:inline;" ng-if="(bracket.potentialPoints + bracket.points) < brackets[2].points") 😢
               ="{{bracket.name}}"
             td(align='right') {{bracket.points}}
             td(align='right') {{bracket.potentialPoints}}
