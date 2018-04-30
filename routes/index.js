@@ -207,8 +207,14 @@ router.get('/', async function(req, res, next) {
         });
         for (var k = 0; k < predictions.length; k++) {
             var prediction = predictions[k];
+            for (var j = 0; j < series.length; j++) {
+                if (prediction.series_id === series[j].id) {
+                    prediction.dataValues.round = series[j].round;
+                    break;
+                }
+            }
             for (var j = 0; j < teams.length; j++) {
-                if (prediction.winner_id == teams[j].id) {
+                if (prediction.winner_id === teams[j].id) {
                     prediction.dataValues.color = teams[j].color;
                     break;
                 }

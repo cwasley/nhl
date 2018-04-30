@@ -313,6 +313,9 @@ angular.module('nhl', [])
     .controller('ListController', ['$scope', '$http', function($scope, $http) {
 
         $('body').bootstrapMaterialDesign();
+        $scope.state = 0;
+        $scope.roundPoints = [0,8,10,13,18];
+
         $scope.teams = TEAMS;
         $scope.brackets = BRACKETS;
         var tempBrackets = angular.copy($scope.brackets);
@@ -394,6 +397,7 @@ angular.module('nhl', [])
             for (var i = 0; i < $scope.brackets.length; i++) {
                 $scope.updateBracket($scope.brackets[i].predictions, i)
             }
+            $scope.state = sortType;
         };
 
         $scope.updateBracket = function(predictions, index) {
@@ -413,9 +417,9 @@ angular.module('nhl', [])
                     var nextGame = $scope.series[$scope.series[j].next_series_id - 1];
                     var gameFinished = nextGame.winner;
                     if (gameFinished && nextGame.winner === predictions[$scope.series[j].next_series_id - 1].winner_id && nextGame.winner === predictions[j].winner_id) {
+
                         // Correct Prediction
-                        // TODO make this dynamic per round
-                        branchNode.status = 8 - Math.abs(predictions[$scope.series[j].next_series_id - 1].num_games - nextGame.num_games);
+                        branchNode.status = $scope.roundPoints[predictions[$scope.series[j].next_series_id - 1].round] - Math.abs(predictions[$scope.series[j].next_series_id - 1].num_games - nextGame.num_games);
                     } else if (gameFinished && nextGame.winner !== predictions[j].winner_id) {
                         // Incorrect Prediction
                         branchNode.status = -1;
@@ -450,7 +454,7 @@ angular.module('nhl', [])
                     if (nodeArray[j].name === $scope.teams[j * 2].id) {
                         if ($scope.series[j].winner) {
                             if ($scope.series[j].winner === nodeArray[j].name) {
-                                leafNode1.status = 8 - Math.abs($scope.series[j].num_games - nodeArray[j].lowerGames);
+                                leafNode1.status = $scope.roundPoints[$scope.series[j].round] - Math.abs($scope.series[j].num_games - nodeArray[j].lowerGames);
                             } else {
                                 leafNode1.status = -1;
 
@@ -471,7 +475,7 @@ angular.module('nhl', [])
                     if (nodeArray[j].name === $scope.teams[j * 2 + 1].id) {
                         if ($scope.series[j].winner) {
                             if ($scope.series[j].winner === nodeArray[j].name) {
-                                leafNode2.status = 8 - Math.abs($scope.series[j].num_games - nodeArray[j].lowerGames);
+                                leafNode2.status = $scope.roundPoints[$scope.series[j].round] - Math.abs($scope.series[j].num_games - nodeArray[j].lowerGames);
                             } else {
                                 leafNode2.status = -1;
 
@@ -503,8 +507,8 @@ angular.module('nhl', [])
         function computeTextRotation(d) {
             var angle = (d.x0 + d.x1) / Math.PI * 90;
 
-            // Avoid upside-down labels
-            return (angle < 100 || angle > 260) ? angle : angle + 180;  // labels as rims
+            // Avoid upside-down labels; labels as rims
+            return (angle < 120 || angle > 270) ? angle : angle + 180;
             //return (angle < 180) ? angle - 90 : angle + 90;  // labels as spokes
         }
         function calculateBracket(nodeArray) {
@@ -566,17 +570,17 @@ angular.module('nhl', [])
             return nodeData;
         }
 
-        function generateBracket(nodeData, i) {
+        function generateBracket(nodeData, index) {
             // Variables
             var width = 360;
             var height = 360;
             var radius = Math.min(width, height) / 2;
 
             const texture = textures.lines()
-                .size(10).strokeWidth(2).background("#666666").stroke("#3f3f3f");
+                .size(10).strokeWidth(3).background("#666666").stroke("#3f3f3f");
 
             // Create primary <g> element
-            var g = d3.select('#radial-bracket-' + i)
+            var g = d3.select('#radial-bracket-' + index)
                 .attr('width', width)
                 .attr('height', height)
                 .append('g')
@@ -591,7 +595,7 @@ angular.module('nhl', [])
             // Find data root
             var root = d3.hierarchy(nodeData)
                 .sum(function (d) {
-                    return d.size
+                    return d.size;
                 });
 
             // Size arcs
@@ -605,7 +609,7 @@ angular.module('nhl', [])
                 })
                 .innerRadius(function (d) {
                     if (d.parent) {
-                        return d.y0 + 2
+                        return d.y0 + 4
                     } else {
                         return d.y0
                     }
@@ -618,10 +622,10 @@ angular.module('nhl', [])
             g.selectAll('g')
                 .data(root.descendants())
                 .enter().append('g').attr("class", "node").append('path')
-                .attr("id", function(d, j) {
-                    return "radialNode_" + j + i;
-                })
                 .attr("d", arc)
+                .attr("id", function (d, i) {
+                    return "radialNode_" + index + "_" + i;
+                })
                 .style('stroke', '#fff')
                 .attr('stroke-width', function (d) {
                     return '0';
@@ -636,51 +640,110 @@ angular.module('nhl', [])
                     if (d.data.status < 0) {
                         return texture.url();
                     }
+                })
+                .each(function(d,i) {
+
+                    // TODO big task: need to get this working programmatically before it can be applied to anything besides this year
+                    if (i === 0 || (d.parent && !d.parent.parent) || d.data.name === "MIN" || d.data.name === "WPG" || d.data.name === "COL" || d.data.name === "NSH" || d.data.name === "TBL" || d.data.name === "NJD" || d.data.name === "BOS" || d.data.name === "TOR") {
+                    } else {
+                        //Search pattern for everything between the start and the first capital L
+                        var firstArcSection = /(^.+?)L/;
+
+                        //Grab everything up to the first Line statement
+                        var newArc = firstArcSection.exec(d3.select(this).attr("d"))[1];
+                        //Replace all the comma's so that IE can handle it
+                        newArc = newArc.replace(/,/g , " ");
+
+                        var startLoc = /M(.*?)A/,		//Everything between the first capital M and first capital A
+                            middleLoc = /A(.*?)0 [01] 1/,	//Everything between the first capital A and 0 0 1
+                            endLoc = /0 [01] 1 (.*?)$/;	//Everything between the first 0 0 1 and the end of the string (denoted by $)
+                        //Flip the direction of the arc by switching the start en end point (and sweep flag)
+                        //of those elements that are below the horizontal line
+
+                        if (/A(.*?)0 [01] 1/) {
+                            var newStart = endLoc.exec(newArc)[1];
+                            var newEnd = startLoc.exec(newArc)[1];
+                            var middleSec = middleLoc.exec(newArc)[1];
+
+                            //Build up the new arc notation, set the sweep-flag to 0
+                            newArc = "M" + newStart + "A" + middleSec + "0 0 0 " + newEnd;
+                        }
+
+                        //Create a new invisible arc that the text can flow along
+                        g.append("path")
+                            .attr("class", "hiddenDonutArcs")
+                            .attr("id", function (d) {
+                                return "radialNode_" + index + "_" + i + "_swapped";
+                            })
+                            .attr("d", newArc)
+                            .style("fill", "none");
+                    }
                 });
+
 
             g.selectAll(".node")
                 .append("text")
-                // .attr("dx", function(d) {
-                // })
-                // .attr("dy", 20)
-                // .append("textPath")
-                // .attr("xlink:href", function(d, j) {
-                //     return "#radialNode_" + j + i;
-                // })
-                .attr("transform", function(d) {
-                    if (d.parent) {
-                        return "translate(" + arc.centroid(d) + ")rotate(" + computeTextRotation(d) + ")";
-                    } else {
-                        return "";
+                .attr("dx", function (d) {
+                    if ((d.parent && !d.parent.parent) || d.data.name === "MIN" || d.data.name === "WPG" || d.data.name === "COL" || d.data.name === "NSH" || d.data.name === "TBL" || d.data.name === "NJD" || d.data.name === "BOS" || d.data.name === "TOR") {
+                        var c = arc.centroid(d);
+                        return c[0];
                     }
                 })
                 .attr("dx", function (d) {
-                    // TODO fixME
-                    if (d.data.status < 1) {
-                        return "-10";
-                    } else if (d.parent) {
-                        return "-28";
+                    var regular = false;
+                    if ((d.parent && !d.parent.parent) || d.data.name === "MIN" || d.data.name === "WPG" || d.data.name === "COL" || d.data.name === "NSH" || d.data.name === "TBL" || d.data.name === "NJD" || d.data.name === "BOS" || d.data.name === "TOR") {
+                        regular = true;
+                    }
+                    if (d.children) {
+                        if (d.children[0].children) {
+                            if (d.children[0].children[0].children) {
+                                return "10";
+                            }
+                            return regular ? "0" : "40";
+                        }
+                        return regular ? "-10" : "26";
+                    }
+                    return regular ? "-12" : "17";
+
+                })
+                .attr("dy", function(d) {
+                    if ( (d.parent && !d.parent.parent) ||d.data.name === "MIN" || d.data.name === "WPG" || d.data.name === "COL" || d.data.name === "NSH" || d.data.name === "TBL" || d.data.name === "NJD" || d.data.name === "BOS" || d.data.name === "TOR") {
+                        return "20";
                     } else {
-                        return "-13";
+                        return "-10";
                     }
                 })
-                .attr("dy", ".5em") // rotation align
+                .style("text-anchor", "middle")
+                .attr("letter-spacing", function (d) {
+                    if (d.parent && d.parent.parent) {
+
+                    } else {
+                        return "2";
+                    }
+                })
+                .append("textPath")
+                .attr("xlink:href", function(d, i) {
+                    if ((d.parent && !d.parent.parent) || d.data.name === "MIN" || d.data.name === "WPG" || d.data.name === "COL" || d.data.name === "NSH" || d.data.name === "TBL" || d.data.name === "NJD" || d.data.name === "BOS" || d.data.name === "TOR") {
+                        return "#radialNode_" + index + "_" + i;
+                    } else {
+                        return "#radialNode_" + index + "_" + i + "_swapped";
+                    }
+                })
+                .attr("startOffset", "25%")
                 .style("fill", function (d) {
                     return "#fff";
                 })
                 .text(function (d) {
                     if (d.data.status === 1 && d.parent) {
                         return d.data.name + ' in ' + d.data.games;
-                    } else {
+                    } else if (d.parent) {
                         return d.data.name;
                     }
                 })
                 .append("tspan")
                 .style("font-weight", "bold")
-
-                // TODO change me to use full points for the round
                 .text(function(d) {
-                    return d.data.status > 1 ? '(+' + (d.data.status - 5) + ')' : '';
+                    return d.data.status > 1 ? '(+' + (d.data.status) + ')' : '';
                 });
 
             // TODO make this programmatic
@@ -689,57 +752,63 @@ angular.module('nhl', [])
                 .attr("x2", -108)
                 .attr("y1", 0)
                 .attr("y2", 0)
-                .attr("stroke-width", 2)
+                .attr("stroke-width", 4)
                 .attr("stroke", "white");
             g.append("line")
                 .attr("x1", -102)
                 .attr("x2", -180)
                 .attr("y1", 102)
                 .attr("y2", 180)
-                .attr("stroke-width", 2)
+                .attr("stroke-width", 4)
                 .attr("stroke", "white");
             g.append("line")
                 .attr("x1", 0)
                 .attr("x2", 0)
                 .attr("y1", 74)
                 .attr("y2", 180)
-                .attr("stroke-width", 2)
+                .attr("stroke-width", 4)
                 .attr("stroke", "white");
             g.append("line")
                 .attr("x1", 102)
                 .attr("x2", 180)
                 .attr("y1", 102)
                 .attr("y2", 180)
-                .attr("stroke-width", 2)
+                .attr("stroke-width", 4)
                 .attr("stroke", "white");
             g.append("line")
                 .attr("x1", 180)
                 .attr("x2", 108)
                 .attr("y1", 0)
                 .attr("y2", 0)
-                .attr("stroke-width", 2)
+                .attr("stroke-width", 4)
                 .attr("stroke", "white");
             g.append("line")
                 .attr("x1", 102)
                 .attr("x2", 180)
                 .attr("y1", -102)
                 .attr("y2", -180)
-                .attr("stroke-width", 2)
+                .attr("stroke-width", 4)
                 .attr("stroke", "white");
             g.append("line")
                 .attr("x1", 0)
                 .attr("x2", 0)
                 .attr("y1", -74)
                 .attr("y2", -180)
-                .attr("stroke-width", 2)
+                .attr("stroke-width", 4)
                 .attr("stroke", "white");
             g.append("line")
                 .attr("x1", -102)
                 .attr("x2", -180)
                 .attr("y1", -102)
                 .attr("y2", -180)
-                .attr("stroke-width", 2)
+                .attr("stroke-width", 4)
                 .attr("stroke", "white");
+            g.append("text")
+                .style("text-anchor", "middle")
+                .attr("dy", "7")
+                .attr("font-size", 18)
+                .attr("fill", "#fff")
+                .text(root.data.name);
         }
 
     }])

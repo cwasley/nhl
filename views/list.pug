@@ -13,13 +13,12 @@ block content
           a.nav-link(href='/standings') Standings
   div.container-fluid(style="padding-top:60px;" ng-controller='ListController')
     div.row
-      div.dropdown
-        button.btn.btn-secondary.btn-lg.dropdown-toggle#sortMenu(type="button" data-toggle="dropdown")
-          = "Sort"
-        div.dropdown-menu
-          a.dropdown-item(ng-click="sortBrackets(0)") A-Z
-          a.dropdown-item(ng-click="sortBrackets(1)") Current Points
-          a.dropdown-item(ng-click="sortBrackets(2)") Max Points
+      div.col
+        p.lead(style="display:inline; padding-right:10px;") Sort:
+        div.btn-group(role="group")
+          button.btn.btn-secondary(type="button" ng-click="sortBrackets(0)" class="{{state === 0 ? 'active' : ''}}") A-Z
+          button.btn.btn-secondary(type="button" ng-click="sortBrackets(1)" class="{{state === 1 ? 'active' : ''}}") Current Points
+          button.btn.btn-secondary(type="button" ng-click="sortBrackets(2)" class="{{state === 2 ? 'active' : ''}}") Max Points
     div.row
       div.col-3(ng-repeat='entry in brackets track by $index' style="min-width:400px;")
         div.card(style="min-width:350px;")
