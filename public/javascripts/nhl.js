@@ -385,11 +385,23 @@ angular.module('nhl', [])
                     break;
                 case 1:
                     $scope.brackets = $scope.brackets.sort(function(a, b) {
-                        return b.points - a.points;
+                        return parseInt(a.place) - parseInt(b.place);
                     });
                     break;
                 case 2:
                     $scope.brackets = $scope.brackets.sort(function(a, b) {
+                        if ((b.points + b.potentialPoints) === (a.points + a.potentialPoints)) {
+                            if (b.points === a.points) {
+                                if (a.name > b.name) {
+                                    return 1;
+                                }
+                                if (b.name > a.name) {
+                                    return -1;
+                                }
+                                return 0;
+                            }
+                            return b.points - a.points;
+                        }
                         return (b.points + b.potentialPoints) - (a.points + a.potentialPoints);
                     });
                     break;
